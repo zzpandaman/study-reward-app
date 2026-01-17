@@ -91,13 +91,6 @@ jobs:
         echo "=== Running Capacitor Sync ==="
         ./node_modules/.bin/cap sync android || npx --yes @capacitor/cli@latest sync android
       
-    - name: Build Debug APK
-      run: |
-        cd android
-        ./gradlew assembleDebug
-      env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
-        
     - name: Prepare Keystore for Release Build
       run: |
         cd android
@@ -119,10 +112,11 @@ PROPEOF
       env:
         JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.17-9/x64
         
-    - name: Build Release APK
+    - name: Build Debug and Release APKs
       run: |
         cd android
-        ./gradlew assembleRelease
+        # 同时构建调试版和发布版 APK
+        ./gradlew assembleDebug assembleRelease
       env:
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         
