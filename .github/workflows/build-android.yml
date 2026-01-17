@@ -71,9 +71,26 @@ jobs:
         
     - name: Sync Capacitor
       run: |
-        node --version
-        npm list @capacitor/cli || echo "Capacitor CLI not installed yet"
-        npx --yes @capacitor/cli@latest sync android
+        echo "=== Node.js Environment Check ==="
+        echo "Node.js version: $(node --version)"
+        echo "Node.js path: $(which node)"
+        echo "npm version: $(npm --version)"
+        echo "npm path: $(which npm)"
+        echo "npx path: $(which npx)"
+        echo ""
+        echo "=== Verifying Node.js >= 22.0.0 ==="
+        NODE_VER=$(node -p "process.version.replace('v', '')")
+        echo "Detected version: $NODE_VER"
+        NODE_MAJOR=$(node -p "process.version.match(/^v(\d+)/)[1]")
+        if [ "$NODE_MAJOR" -lt "22" ]; then
+          echo "ERROR: Node.js major version $NODE_MAJOR is less than 22"
+          exit 1
+        fi
+        echo "✓ Node.js version check passed"
+        echo ""
+        echo "=== Running Capacitor Sync ==="
+        # 使用本地安装的 Capacitor CLI，而不是 npx
+        ./node_modules/.bin/cap sync android || npx --yes @capacitor/cli@latest sync android
       
     - name: Build Debug APK
       run: |
