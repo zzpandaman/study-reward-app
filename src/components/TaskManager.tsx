@@ -4,6 +4,13 @@ import { taskTemplateStorage, taskExecutionStorage, userDataStorage, calculateRe
 import { TaskTemplateAPI } from '../api';
 import './TaskManager.css';
 
+// Wake Lock API 类型定义
+interface WakeLockSentinel extends EventTarget {
+  released: boolean;
+  type: 'screen';
+  release(): Promise<void>;
+}
+
 const TaskManager: React.FC = () => {
   const [taskTemplates, setTaskTemplates] = useState<TaskTemplate[]>([]);
   const [executions, setExecutions] = useState<TaskExecution[]>([]);
@@ -14,6 +21,8 @@ const TaskManager: React.FC = () => {
   const [showAddTaskDialog, setShowAddTaskDialog] = useState(false);
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [isPageVisible, setIsPageVisible] = useState(true);
+  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
 
   useEffect(() => {
     loadTaskTemplates();
@@ -35,9 +44,71 @@ const TaskManager: React.FC = () => {
     }
   }, [executions.length]);
 
+  // 页面可见性检测：防止后台运行
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const visible = !document.hidden;
+      setIsPageVisible(visible);
+      
+      // 如果页面隐藏且任务正在运行，自动暂停
+      if (!visible && runningExecution && runningExecution.status === 'running' && !isPaused) {
+        // 直接执行暂停逻辑，避免循环依赖
+        const updatedExecution: TaskExecution = {
+          ...runningExecution,
+          status: 'paused',
+          pausedTime: Date.now(),
+        };
+        taskExecutionStorage.update(updatedExecution);
+        setRunningExecution(updatedExecution);
+        setIsPaused(true);
+        loadExecutions();
+        alert('⚠️ 检测到页面已切换到后台，任务已自动暂停。请保持页面在前台以确保计时准确。');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    setIsPageVisible(!document.hidden);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [runningExecution, isPaused]);
+
+  // Wake Lock API：防止锁屏（移动端）
+  useEffect(() => {
+    if (!runningExecution || runningExecution.status !== 'running' || isPaused) {
+      // 释放 Wake Lock
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        setWakeLock(null);
+      }
+      return;
+    }
+
+    // 请求 Wake Lock（如果支持）
+    if ('wakeLock' in navigator) {
+      (navigator as any).wakeLock.request('screen').then((lock: WakeLockSentinel) => {
+        setWakeLock(lock);
+        lock.addEventListener('release', () => {
+          setWakeLock(null);
+        });
+      }).catch(() => {
+        // Wake Lock 请求失败（可能用户拒绝或浏览器不支持）
+        console.log('Wake Lock 不可用');
+      });
+    }
+
+    return () => {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        setWakeLock(null);
+      }
+    };
+  }, [runningExecution?.id, runningExecution?.status, isPaused]);
+
   useEffect(() => {
     // 计时器：只在任务运行且未暂停时计时
-    if (!runningExecution || runningExecution.status !== 'running' || isPaused) {
+    if (!runningExecution || runningExecution.status !== 'running' || isPaused || !isPageVisible) {
       return;
     }
 
@@ -46,7 +117,7 @@ const TaskManager: React.FC = () => {
       const currentExecutions = taskExecutionStorage.get();
       const currentExecution = currentExecutions.find((e) => e.id === runningExecution.id);
       
-      if (currentExecution && currentExecution.status === 'running' && !isPaused) {
+      if (currentExecution && currentExecution.status === 'running' && !isPaused && isPageVisible) {
         // 基于实际开始时间计算，而不是累加
         const now = Date.now();
         const pausedDuration = currentExecution.totalPausedDuration * 1000;
@@ -57,7 +128,7 @@ const TaskManager: React.FC = () => {
     }, 1000);
     
     return () => clearInterval(interval);
-  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused]);
+  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused, isPageVisible]);
 
   const loadTaskTemplates = () => {
     // 过滤掉无效的任务模板（name或description为空/undefined）
@@ -332,6 +403,11 @@ const TaskManager: React.FC = () => {
       {runningExecution && (
         <div className="running-task">
           <h3>正在执行: {runningExecution.taskName}</h3>
+          {!isPageVisible && (
+            <div className="timer-warning" style={{ background: 'rgba(255, 193, 7, 0.3)', marginBottom: '12px' }}>
+              ⚠️ 页面已切换到后台，请保持页面在前台以确保计时准确
+            </div>
+          )}
           <div className="timer">
             <div className="timer-display">
               {formatTime(elapsedSeconds)}
@@ -343,6 +419,11 @@ const TaskManager: React.FC = () => {
             {isPaused && (
               <div className="pause-notice">
                 ⏸️ 任务已暂停，暂停时间不计入学习时间
+              </div>
+            )}
+            {!isPageVisible && !isPaused && (
+              <div className="pause-notice" style={{ background: 'rgba(255, 193, 7, 0.2)' }}>
+                ⚠️ 请保持页面在前台，切换到后台会自动暂停计时
               </div>
             )}
           </div>
