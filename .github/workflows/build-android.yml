@@ -1,0 +1,122 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'android/**'
+      - 'package.json'
+      - 'capacitor.config.ts'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        
+    - name: Verify Node.js version
+      run: |
+        echo "Node.js version:"
+        node --version
+        echo "npm version:"
+        npm --version
+        echo "Required: Node.js >= 22.0.0"
+        
+    - name: Clear npm cache
+      run: npm cache clean --force
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Verify Node.js before build
+      run: |
+        echo "Current Node.js version: $(node --version)"
+        echo "Current npm version: $(npm --version)"
+        NODE_VERSION=$(node --version | sed 's/v//')
+        REQUIRED_VERSION="22.0.0"
+        if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$NODE_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
+          echo "ERROR: Node.js version $NODE_VERSION is less than required $REQUIRED_VERSION"
+          exit 1
+        fi
+        echo "✓ Node.js version check passed"
+      
+    - name: Build web app
+      run: npm run build
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Verify Node.js before Capacitor
+      run: |
+        echo "Node.js version before Capacitor sync:"
+        node --version
+        which node
+        which npx
+        
+    - name: Sync Capacitor
+      run: |
+        echo "=== Node.js Environment Check ==="
+        echo "Node.js version: $(node --version)"
+        echo "Node.js path: $(which node)"
+        echo "npm version: $(npm --version)"
+        echo "npm path: $(which npm)"
+        echo "npx path: $(which npx)"
+        echo ""
+        echo "=== Verifying Node.js >= 22.0.0 ==="
+        NODE_VER=$(node -p "process.version.replace('v', '')")
+        echo "Detected version: $NODE_VER"
+        NODE_MAJOR=$(node -p "process.version.match(/^v(\d+)/)[1]")
+        if [ "$NODE_MAJOR" -lt "22" ]; then
+          echo "ERROR: Node.js major version $NODE_MAJOR is less than 22"
+          exit 1
+        fi
+        echo "✓ Node.js version check passed"
+        echo ""
+        echo "=== Running Capacitor Sync ==="
+        ./node_modules/.bin/cap sync android || npx --yes @capacitor/cli@latest sync android
+      
+    - name: Build Debug APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        
+    - name: Build Release APK
+      run: |
+        cd android
+        ./gradlew assembleRelease
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        SIGNING_KEY_PASSWORD: android
+        KEY_PASSWORD: android
+        
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
