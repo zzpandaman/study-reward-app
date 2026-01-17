@@ -98,6 +98,24 @@ const TaskManager: React.FC = () => {
     }
   };
 
+  const handleDeleteTask = async (id: string) => {
+    if (!confirm('确定要删除这个任务吗？')) {
+      return;
+    }
+
+    try {
+      const response = await TaskTemplateAPI.deleteTaskTemplate(id);
+      if (response.success) {
+        alert('任务删除成功！');
+        loadTaskTemplates();
+      } else {
+        alert('删除失败：' + (response.error || '未知错误'));
+      }
+    } catch (error) {
+      alert('删除失败：' + (error as Error).message);
+    }
+  };
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -277,10 +295,25 @@ const TaskManager: React.FC = () => {
                   selectedTemplateId === template.id ? 'selected' : ''
                 }`}
                 onClick={() => setSelectedTemplateId(template.id)}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
               >
-                <h4>{template.name}</h4>
-                <p>{template.description}</p>
-                <div className="reward-info">积分: 1/分钟</div>
+                <div style={{ flex: 1 }}>
+                  <h4>{template.name}</h4>
+                  <p>{template.description}</p>
+                  <div className="reward-info">积分: 1/分钟</div>
+                </div>
+                {!template.isPreset && (
+                  <button
+                    className="delete-task-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteTask(template.id);
+                    }}
+                    title="删除任务"
+                  >
+                    🗑️
+                  </button>
+                )}
               </div>
             ))}
           </div>

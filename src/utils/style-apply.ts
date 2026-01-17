@@ -16,20 +16,26 @@ import {
  * 应用自定义样式到全局
  */
 export function applyCustomStyle(customStyle?: CustomStyle): void {
-  if (!customStyle) {
-    return;
-  }
-
   const root = document.documentElement;
   
   // 应用边框样式
-  applyBorderStyle(customStyle, root);
-  
-  // 应用背景样式
-  applyBackgroundStyle(customStyle, root);
-  
-  // 应用鼠标样式
-  applyCursorStyle(customStyle, root);
+  if (customStyle) {
+    applyBorderStyle(customStyle, root);
+    // 应用背景样式（如果有自定义背景，会覆盖主题背景）
+    applyBackgroundStyle(customStyle, root);
+    // 应用鼠标样式
+    applyCursorStyle(customStyle, root);
+  } else {
+    // 如果没有自定义样式，清除所有自定义背景，让主题背景生效
+    const appElement = document.querySelector('.app') as HTMLElement;
+    if (appElement) {
+      appElement.style.removeProperty('background');
+      appElement.style.removeProperty('background-image');
+      appElement.style.removeProperty('background-size');
+      appElement.style.removeProperty('background-position');
+      appElement.style.removeProperty('background-repeat');
+    }
+  }
 }
 
 /**
@@ -61,39 +67,42 @@ function applyBorderStyle(customStyle: CustomStyle, root: HTMLElement): void {
 
 /**
  * 应用背景样式
+ * 背景样式覆盖主题背景，统一应用到 .app 元素
+ * 如果有自定义背景，覆盖主题；如果没有，清除自定义背景，让主题生效
  */
-function applyBackgroundStyle(customStyle: CustomStyle, root: HTMLElement): void {
+function applyBackgroundStyle(customStyle: CustomStyle, _root: HTMLElement): void {
+  const appElement = document.querySelector('.app') as HTMLElement;
+  if (!appElement) return;
+
   // 移除之前的背景样式类
   BACKGROUND_STYLE_PRESETS.forEach((preset) => {
     document.body.classList.remove(`background-style-${preset.id}`);
   });
 
-  // 清除自定义背景图片样式
-  document.body.style.removeProperty('--background-image');
-  document.body.style.removeProperty('background-image');
-  document.body.style.removeProperty('background-size');
-  document.body.style.removeProperty('background-position');
-  document.body.style.removeProperty('background-repeat');
+  // 清除所有背景样式
+  appElement.style.removeProperty('background');
+  appElement.style.removeProperty('background-image');
+  appElement.style.removeProperty('background-size');
+  appElement.style.removeProperty('background-position');
+  appElement.style.removeProperty('background-repeat');
 
   // 如果使用预设背景样式
   if (customStyle.backgroundStyle) {
     const preset = getBackgroundStylePreset(customStyle.backgroundStyle);
-    if (preset) {
+    if (preset && preset.cssValue) {
+      appElement.style.background = preset.cssValue;
       document.body.classList.add(`background-style-${preset.id}`);
-      if (preset.cssValue) {
-        root.style.setProperty('--background-style', preset.cssValue);
-      }
     }
   }
-
   // 如果使用自定义背景图片
-  if (customStyle.backgroundImage) {
-    document.body.style.setProperty('--background-image', `url(${customStyle.backgroundImage})`);
-    document.body.style.backgroundImage = `url(${customStyle.backgroundImage})`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
+  else if (customStyle.backgroundImage) {
+    appElement.style.backgroundImage = `url(${customStyle.backgroundImage})`;
+    appElement.style.backgroundSize = 'cover';
+    appElement.style.backgroundPosition = 'center';
+    appElement.style.backgroundRepeat = 'no-repeat';
   }
+  // 如果没有自定义背景，清除内联样式，让 CSS 中的 var(--gradient) 生效
+  // 这样主题背景会自动显示
 }
 
 /**

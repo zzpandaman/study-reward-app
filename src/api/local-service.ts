@@ -89,6 +89,13 @@ export class LocalService {
       if (template.isPreset) {
         return { success: false, error: 'Cannot delete preset task template' };
       }
+      
+      // 检查是否有任务执行记录使用此模板
+      const hasExecutions = appData.taskExecutions.some((e) => e.taskTemplateId === id);
+      if (hasExecutions) {
+        return { success: false, error: 'Cannot delete task template that has execution records' };
+      }
+      
       appData.taskTemplates = appData.taskTemplates.filter((t) => t.id !== id);
       dataManager.saveAppData(appData);
       return { success: true, message: 'Task template deleted' };
@@ -313,6 +320,21 @@ export class LocalService {
       if (product.isPreset) {
         return { success: false, error: 'Cannot delete preset product' };
       }
+      
+      // 检查是否有兑换记录（积分消耗记录）
+      const hasSpendRecords = appData.userData.pointRecords.some(
+        (r) => r.type === 'spend' && r.relatedId === id
+      );
+      if (hasSpendRecords) {
+        return { success: false, error: 'Cannot delete product that has exchange records' };
+      }
+      
+      // 检查背包中是否有该商品
+      const hasInventory = appData.userData.inventory.some((item) => item.productId === id);
+      if (hasInventory) {
+        return { success: false, error: 'Cannot delete product that exists in inventory' };
+      }
+      
       appData.products = appData.products.filter((p) => p.id !== id);
       dataManager.saveAppData(appData);
       return { success: true, message: 'Product deleted' };

@@ -12,12 +12,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: var(--gradient, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
   min-height: 100vh;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 #root {
   max-width: 800px;
   margin: 0 auto;
+  padding: 20px;
 }
 
 code {
@@ -25,29 +27,74 @@ code {
     monospace;
 }
 
-/* 边框样式类 - 只使用安全的圆角，不影响布局 */
+/* 边框样式类 - 应用到所有带框的元素 */
 .border-style-rectangle .task-template-card,
 .border-style-rectangle .exchange-card,
-.border-style-rectangle .app-header {
-  border-radius: 8px;
+.border-style-rectangle .app-header,
+.border-style-rectangle .task-manager,
+.border-style-rectangle .shop,
+.border-style-rectangle .inventory,
+.border-style-rectangle .modal-content,
+.border-style-rectangle .history-item,
+.border-style-rectangle .product-card,
+.border-style-rectangle .inventory-item,
+.border-style-rectangle .summary-item,
+.border-style-rectangle .running-task,
+.border-style-rectangle .exchange-form,
+.border-style-rectangle .price-info,
+.border-style-rectangle input[type="text"],
+.border-style-rectangle input[type="number"],
+.border-style-rectangle textarea,
+.border-style-rectangle button,
+.border-style-rectangle .duration-selection,
+.border-style-rectangle .reward-preview {
+  border-radius: 8px !important;
 }
 
 .border-style-rounded .task-template-card,
 .border-style-rounded .exchange-card,
-.border-style-rounded .app-header {
-  border-radius: 20px;
+.border-style-rounded .app-header,
+.border-style-rounded .task-manager,
+.border-style-rounded .shop,
+.border-style-rounded .inventory,
+.border-style-rounded .modal-content,
+.border-style-rounded .history-item,
+.border-style-rounded .product-card,
+.border-style-rounded .inventory-item,
+.border-style-rounded .summary-item,
+.border-style-rounded .running-task,
+.border-style-rounded .exchange-form,
+.border-style-rounded .price-info,
+.border-style-rounded input[type="text"],
+.border-style-rounded input[type="number"],
+.border-style-rounded textarea,
+.border-style-rounded button,
+.border-style-rounded .duration-selection,
+.border-style-rounded .reward-preview {
+  border-radius: 20px !important;
 }
 
 .border-style-soft .task-template-card,
 .border-style-soft .exchange-card,
-.border-style-soft .app-header {
-  border-radius: 16px;
-}
-
-.border-style-soft .task-template-card,
-.border-style-soft .exchange-card,
-.border-style-soft .app-header {
-  border-radius: 16px;
+.border-style-soft .app-header,
+.border-style-soft .task-manager,
+.border-style-soft .shop,
+.border-style-soft .inventory,
+.border-style-soft .modal-content,
+.border-style-soft .history-item,
+.border-style-soft .product-card,
+.border-style-soft .inventory-item,
+.border-style-soft .summary-item,
+.border-style-soft .running-task,
+.border-style-soft .exchange-form,
+.border-style-soft .price-info,
+.border-style-soft input[type="text"],
+.border-style-soft input[type="number"],
+.border-style-soft textarea,
+.border-style-soft button,
+.border-style-soft .duration-selection,
+.border-style-soft .reward-preview {
+  border-radius: 16px !important;
 }
 
 /* 背景样式类 */

@@ -16,7 +16,7 @@ export const PRESET_TASK_TEMPLATES: TaskTemplate[] = [
 ];
 
 export const DEFAULT_PRODUCTS: Product[] = [
-  { id: 'gold', name: '黄金', description: '兑换黄金', price: 48, minQuantity: 0.1, unit: 'g', isPreset: true, createdAt: Date.now() },
+  { id: 'gold', name: '黄金', description: '兑换黄金', price: 4.8, minQuantity: 0.01, unit: 'g', isPreset: true, createdAt: Date.now() },
   { id: 'phone', name: '玩手机', description: '兑换玩手机时长', price: 1, minQuantity: 1, unit: '分钟', isPreset: true, createdAt: Date.now() },
 ];
 
@@ -31,17 +31,20 @@ export class DataManager {
     const existingData = this.adapter.read();
     if (existingData) {
       // 检查版本，需要迁移则迁移
+      let data = existingData;
       if (existingData.version.schemaVersion < CURRENT_SCHEMA_VERSION) {
-        return this.migrateToCurrentVersion(existingData);
+        data = this.migrateToCurrentVersion(existingData);
       }
-      return existingData;
+      // 确保预设商品使用最新配置（不影响用户数据）
+      return this.updatePresetProducts(data);
     }
 
     // 2. 尝试从旧版本迁移
     if (this.adapter instanceof LocalStorageAdapter && this.adapter.hasLegacyData()) {
       const migrated = this.migrateFromLegacy();
       if (migrated) {
-        return migrated;
+        // 确保预设商品使用最新配置
+        return this.updatePresetProducts(migrated);
       }
     }
 
@@ -172,7 +175,7 @@ export class DataManager {
         
         // 根据商品ID或名称推断minQuantity
         if (p.id === 'gold' || p.name.includes('黄金')) {
-          return { ...p, minQuantity: 0.1 };
+          return { ...p, minQuantity: 0.01, price: 4.8 };
         } else if (p.id === 'phone' || p.name.includes('玩手机')) {
           return { ...p, minQuantity: 1 };
         } else {
@@ -182,6 +185,37 @@ export class DataManager {
     }
 
     // 保存迁移后的数据
+    this.saveAppData(data);
+    return data;
+  }
+
+  /**
+   * 更新预设商品为最新配置（不影响用户自定义商品）
+   */
+  private updatePresetProducts(data: AppData): AppData {
+    // 创建预设商品ID到最新配置的映射
+    const presetProductMap = new Map(
+      DEFAULT_PRODUCTS.map(p => [p.id, p])
+    );
+
+    // 更新预设商品，保留自定义商品
+    data.products = data.products.map(p => {
+      if (p.isPreset && presetProductMap.has(p.id)) {
+        // 使用最新的预设配置
+        return presetProductMap.get(p.id)!;
+      }
+      // 自定义商品保持不变
+      return p;
+    });
+
+    // 如果某个预设商品不存在，添加它
+    DEFAULT_PRODUCTS.forEach(presetProduct => {
+      if (!data.products.find(p => p.id === presetProduct.id)) {
+        data.products.push(presetProduct);
+      }
+    });
+
+    // 保存更新后的数据
     this.saveAppData(data);
     return data;
   }

@@ -18,7 +18,7 @@
 
 .add-product-btn {
   padding: 8px 16px;
-  background: #48bb78;
+  background: var(--primary-color, #667eea);
   color: white;
   border: none;
   border-radius: 6px;
@@ -29,7 +29,8 @@
 }
 
 .add-product-btn:hover {
-  background: #38a169;
+  background: var(--secondary-color, #5568d3);
+  opacity: 0.9;
 }
 
 .shop-header h2 {
@@ -91,6 +92,21 @@
 .exchange-rate {
   color: #666;
   font-size: 14px;
+}
+
+.delete-product-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.delete-product-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .exchange-form {
@@ -193,12 +209,13 @@
 }
 
 .exchange-btn.enabled {
-  background: #48bb78;
+  background: var(--primary-color, #667eea);
   color: white;
 }
 
 .exchange-btn.enabled:hover {
-  background: #38a169;
+  background: var(--secondary-color, #5568d3);
+  opacity: 0.9;
 }
 
 .exchange-btn.disabled {
@@ -240,7 +257,7 @@
 
 .product-card.purchased {
   background: #e6f7e6;
-  border-color: #48bb78;
+  border-color: var(--primary-color, #667eea);
 }
 
 .product-card.insufficient {
@@ -280,12 +297,13 @@
 }
 
 .purchase-btn {
-  background: #48bb78;
+  background: var(--primary-color, #667eea);
   color: white;
 }
 
 .purchase-btn:hover {
-  background: #38a169;
+  background: var(--secondary-color, #5568d3);
+  opacity: 0.9;
 }
 
 .disabled-btn {
@@ -439,5 +457,6 @@
 }
 
 .modal-actions .confirm-btn:hover {
-  background: #5568d3;
+  background: var(--secondary-color, #5568d3);
+  opacity: 0.9;
 }

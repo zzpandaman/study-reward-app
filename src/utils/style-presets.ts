@@ -3,9 +3,6 @@
  * 包含边框、背景、鼠标图标的预设样式
  */
 
-// 导入鼠标光标图片
-import zootopiaAntidotePen1 from '../assets/images/zootopia-antidote-pen-1.png';
-
 // 边框样式预设
 export interface BorderStylePreset {
   id: string;
@@ -94,22 +91,6 @@ export const CURSOR_STYLE_PRESETS: CursorStylePreset[] = [
     type: 'css',
     cssValue: 'pointer',
     preview: '👆',
-  },
-  {
-    id: 'text',
-    name: '文本选择',
-    description: '文本选择光标',
-    type: 'css',
-    cssValue: 'text',
-    preview: 'I',
-  },
-  {
-    id: 'zootopia-antidote-pen-1',
-    name: '疯狂动物城2解毒笔',
-    description: '疯狂动物城2中的解毒笔图标',
-    type: 'image',
-    imageUrl: zootopiaAntidotePen1,
-    preview: '🖊️',
   },
 ];
 

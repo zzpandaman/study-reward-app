@@ -108,6 +108,24 @@ const Shop: React.FC = () => {
     }
   };
 
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('确定要删除这个商品吗？')) {
+      return;
+    }
+
+    try {
+      const response = await ProductAPI.deleteProduct(id);
+      if (response.success) {
+        alert('商品删除成功！');
+        loadData();
+      } else {
+        alert('删除失败：' + (response.error || '未知错误'));
+      }
+    } catch (error) {
+      alert('删除失败：' + (error as Error).message);
+    }
+  };
+
   // 兑换商品
   const exchangeProduct = async (product: Product) => {
     const units = quantities[product.id] || 1;
@@ -167,8 +185,22 @@ const Shop: React.FC = () => {
             <div key={product.id} className="exchange-card">
               <div className="exchange-header">
                 <h3>{product.name}</h3>
-                <div className="exchange-rate">
-                  {product.minQuantity ?? 1}{unit} = {product.price}积分
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div className="exchange-rate">
+                    {product.minQuantity ?? 1}{unit} = {product.price}积分
+                  </div>
+                  {!product.isPreset && (
+                    <button
+                      className="delete-product-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteProduct(product.id);
+                      }}
+                      title="删除商品"
+                    >
+                      🗑️
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="exchange-form">
@@ -273,6 +305,32 @@ const Shop: React.FC = () => {
               />
             </div>
             <div className="form-group">
+              <label>每次最少买：</label>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={newProductMinQuantity}
+                  onChange={(e) => setNewProductMinQuantity(parseFloat(e.target.value) || 0)}
+                  className="form-input"
+                  style={{ flex: '1' }}
+                  placeholder="数量"
+                />
+                <input
+                  type="text"
+                  value={newProductUnit}
+                  onChange={(e) => setNewProductUnit(e.target.value)}
+                  placeholder="单位（如：g、分钟）"
+                  className="form-input"
+                  style={{ flex: '1', maxWidth: '120px' }}
+                />
+              </div>
+              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                例如：输入 1 和 g，表示每次最少买 1g
+              </small>
+            </div>
+            <div className="form-group">
               <label>单价（积分）：</label>
               <input
                 type="number"
@@ -282,29 +340,9 @@ const Shop: React.FC = () => {
                 onChange={(e) => setNewProductPrice(parseFloat(e.target.value) || 0)}
                 className="form-input"
               />
-              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>每minQuantity单位的价格</small>
-            </div>
-            <div className="form-group">
-              <label>最小数量单位：</label>
-              <input
-                type="number"
-                min="0.01"
-                step="0.01"
-                value={newProductMinQuantity}
-                onChange={(e) => setNewProductMinQuantity(parseFloat(e.target.value) || 0)}
-                className="form-input"
-              />
-              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>例如：0.1（表示0.1g）</small>
-            </div>
-            <div className="form-group">
-              <label>单位（可选）：</label>
-              <input
-                type="text"
-                value={newProductUnit}
-                onChange={(e) => setNewProductUnit(e.target.value)}
-                placeholder="例如：g、分钟"
-                className="form-input"
-              />
+              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                每次最少买的数量对应的积分价格
+              </small>
             </div>
             <div className="modal-actions">
               <button onClick={() => setShowAddProductDialog(false)}>取消</button>

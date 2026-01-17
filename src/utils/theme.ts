@@ -58,4 +58,7 @@ export const applyTheme = (theme: Theme): void => {
   root.style.setProperty('--primary-color', themeConfig.primary);
   root.style.setProperty('--secondary-color', themeConfig.secondary);
   root.style.setProperty('--gradient', themeConfig.gradient);
+  
+  // 背景统一由 applyBackgroundStyle 处理
+  // 如果没有自定义背景，CSS 中的 var(--gradient) 会自动生效
 };
