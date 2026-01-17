@@ -191,29 +191,74 @@ export class DataManager {
 
   /**
    * 更新预设商品为最新配置（不影响用户自定义商品）
+   * 确保只保留真正的预设商品（来自DEFAULT_PRODUCTS）和用户自定义商品
+   * 同类商品（相同名称）只保留最小单位的一个
    */
   private updatePresetProducts(data: AppData): AppData {
-    // 创建预设商品ID到最新配置的映射
-    const presetProductMap = new Map(
-      DEFAULT_PRODUCTS.map(p => [p.id, p])
-    );
-
-    // 更新预设商品，保留自定义商品
-    data.products = data.products.map(p => {
-      if (p.isPreset && presetProductMap.has(p.id)) {
-        // 使用最新的预设配置
-        return presetProductMap.get(p.id)!;
+    // 分离自定义商品：只保留 isPreset 为 false 的商品（确保是用户自己添加的）
+    // 根据 isPreset 字段判断，所有 isPreset: false 的商品都是用户自定义的，应该保留
+    const customProducts = data.products.filter(p => !p.isPreset);
+    
+    // 去重自定义商品：同类商品（相同名称）只保留 minQuantity 最小的一个
+    const customProductsByName = new Map<string, Product>();
+    customProducts.forEach(product => {
+      const existing = customProductsByName.get(product.name);
+      if (!existing) {
+        customProductsByName.set(product.name, product);
+      } else {
+        const currentMinQty = product.minQuantity ?? 1;
+        const existingMinQty = existing.minQuantity ?? 1;
+        if (currentMinQty < existingMinQty) {
+          customProductsByName.set(product.name, product);
+        }
       }
-      // 自定义商品保持不变
-      return p;
     });
 
-    // 如果某个预设商品不存在，添加它
+    // 构建新的商品列表：预设商品（使用最新配置）+ 去重后的自定义商品
+    const updatedProducts: Product[] = [];
+    
+    // 先添加所有预设商品（使用最新配置）
     DEFAULT_PRODUCTS.forEach(presetProduct => {
-      if (!data.products.find(p => p.id === presetProduct.id)) {
-        data.products.push(presetProduct);
+      updatedProducts.push(presetProduct);
+    });
+    
+    // 再添加去重后的自定义商品，确保 isPreset 为 false
+    customProductsByName.forEach(customProduct => {
+      // 检查是否与预设商品重名，如果重名且预设商品已存在，跳过自定义商品（预设商品优先）
+      const hasPresetWithSameName = DEFAULT_PRODUCTS.some(
+        preset => preset.name === customProduct.name
+      );
+      
+      // 如果自定义商品与预设商品同名，且预设商品已在列表中，则不添加自定义商品
+      // 否则添加自定义商品
+      if (!hasPresetWithSameName) {
+        updatedProducts.push({
+          ...customProduct,
+          isPreset: false,
+        });
+      } else {
+        // 如果自定义商品与预设商品同名，检查是否需要更新预设商品
+        // 如果自定义商品的 minQuantity 更小，说明预设商品应该使用更小的值（但这种情况不应该发生）
+        // 默认情况下，预设商品优先
       }
     });
+
+    // 最后再次去重：确保没有重复（虽然理论上不应该有，但双重保险）
+    const finalProducts = new Map<string, Product>();
+    updatedProducts.forEach(product => {
+      const existing = finalProducts.get(product.name);
+      if (!existing) {
+        finalProducts.set(product.name, product);
+      } else {
+        const currentMinQty = product.minQuantity ?? 1;
+        const existingMinQty = existing.minQuantity ?? 1;
+        if (currentMinQty < existingMinQty) {
+          finalProducts.set(product.name, product);
+        }
+      }
+    });
+
+    data.products = Array.from(finalProducts.values());
 
     // 保存更新后的数据
     this.saveAppData(data);
