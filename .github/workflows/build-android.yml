@@ -1,7 +1,7 @@
 name: Build Android APK
 
 on:
-  workflow_dispatch:  # 手动触发
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths:
@@ -89,7 +89,6 @@ jobs:
         echo "✓ Node.js version check passed"
         echo ""
         echo "=== Running Capacitor Sync ==="
-        # 使用本地安装的 Capacitor CLI，而不是 npx
         ./node_modules/.bin/cap sync android || npx --yes @capacitor/cli@latest sync android
       
     - name: Build Debug APK
