@@ -99,14 +99,21 @@ jobs:
         keytool -genkeypair -v -keystore keystore/study-reward.keystore \
           -alias study-reward -keyalg RSA -keysize 2048 -validity 10000 \
           -storepass android -keypass android \
-          -dname "CN=Study Reward App, OU=Development, O=Study Reward, L=City, ST=State, C=CN" || true
-        # 确保 keystore.properties 存在
-        if [ ! -f "keystore/keystore.properties" ]; then
-          echo "storePassword=android" > keystore/keystore.properties
-          echo "keyPassword=android" >> keystore/keystore.properties
-          echo "keyAlias=study-reward" >> keystore/keystore.properties
-          echo "storeFile=keystore/study-reward.keystore" >> keystore/keystore.properties
+          -dname "CN=Study Reward App, OU=Development, O=Study Reward, L=City, ST=State, C=CN"
+        # 验证 keystore 文件已创建
+        if [ ! -f "keystore/study-reward.keystore" ]; then
+          echo "ERROR: Keystore file not created!"
+          exit 1
         fi
+        echo "Keystore file created successfully"
+        ls -lh keystore/
+        # 确保 keystore.properties 存在（相对于 android 目录）
+        echo "storePassword=android" > keystore/keystore.properties
+        echo "keyPassword=android" >> keystore/keystore.properties
+        echo "keyAlias=study-reward" >> keystore/keystore.properties
+        echo "storeFile=keystore/study-reward.keystore" >> keystore/keystore.properties
+        echo "Keystore properties:"
+        cat keystore/keystore.properties
       env:
         JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.17-9/x64
         
