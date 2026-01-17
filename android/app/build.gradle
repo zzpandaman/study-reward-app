@@ -24,16 +24,10 @@ android {
             if (keystorePropertiesFile.exists()) {
                 def keystoreProperties = new Properties()
                 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-                // storeFile 路径相对于 keystore.properties 的位置
+                // storeFile 路径相对于 rootProject（android/ 目录）
                 def storeFileStr = keystoreProperties['storeFile']
-                // 如果是相对路径，相对于 keystore.properties 所在目录
-                if (storeFileStr.startsWith('../')) {
-                    storeFile file(rootProject.file(storeFileStr.replace('../', 'keystore/')))
-                } else if (storeFileStr.startsWith('keystore/')) {
-                    storeFile file(rootProject.file(storeFileStr))
-                } else {
-                    storeFile file(rootProject.file("keystore/${storeFileStr}"))
-                }
+                // 所有路径都相对于 rootProject（android/）
+                storeFile file(rootProject.file(storeFileStr))
                 storePassword keystoreProperties['storePassword']
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
