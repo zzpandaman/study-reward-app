@@ -31,7 +31,10 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
       "artifactName": "${productName}-Setup-${version}.${ext}",
@@ -39,7 +42,9 @@
       "signAndEditExecutable": false
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "category": "public.app-category.education"
     },
     "nsis": {
@@ -59,15 +64,17 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@types/node": "^20.0.0",
+    "@types/sharp": "^0.31.1",
     "@vitejs/plugin-react": "^4.0.0",
-    "typescript": "^5.0.0",
-    "vite": "^4.3.0",
+    "concurrently": "^8.2.2",
     "electron": "^27.0.0",
     "electron-builder": "^24.6.4",
-    "concurrently": "^8.2.2",
+    "sharp": "^0.34.5",
+    "typescript": "^5.0.0",
+    "vite": "^4.3.0",
     "wait-on": "^7.2.0"
   }
 }
