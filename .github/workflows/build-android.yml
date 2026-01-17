@@ -98,25 +98,33 @@ jobs:
       env:
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         
-    - name: Build Release APK (Optional)
-      id: build_release
+    - name: Prepare Keystore for Release Build
       run: |
         cd android
-        # 检查 keystore 文件是否存在
-        if [ -f "keystore/study-reward.keystore" ]; then
-          echo "Keystore found, building release APK..."
-          ./gradlew assembleRelease
-          echo "release_built=true" >> $GITHUB_OUTPUT
-        else
-          echo "Keystore not found, skipping release build"
-          echo "To build release APK, add keystore file to android/keystore/"
-          echo "release_built=false" >> $GITHUB_OUTPUT
+        mkdir -p keystore
+        # 生成临时 keystore 用于构建（仅用于 CI）
+        keytool -genkeypair -v -keystore keystore/study-reward.keystore \
+          -alias study-reward -keyalg RSA -keysize 2048 -validity 10000 \
+          -storepass android -keypass android \
+          -dname "CN=Study Reward App, OU=Development, O=Study Reward, L=City, ST=State, C=CN" || true
+        # 确保 keystore.properties 存在
+        if [ ! -f "keystore/keystore.properties" ]; then
+          cat > keystore/keystore.properties << 'PROPEOF'
+storePassword=android
+keyPassword=android
+keyAlias=study-reward
+storeFile=keystore/study-reward.keystore
+PROPEOF
         fi
       env:
+        JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.17-9/x64
+        
+    - name: Build Release APK
+      run: |
+        cd android
+        ./gradlew assembleRelease
+      env:
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
-        SIGNING_KEY_PASSWORD: android
-        KEY_PASSWORD: android
-      continue-on-error: true
         
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
@@ -126,10 +134,8 @@ jobs:
         retention-days: 30
         
     - name: Upload Release APK
-      if: steps.build_release.outputs.release_built == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: app-release
         path: android/app/build/outputs/apk/release/app-release.apk
         retention-days: 30
-      continue-on-error: true
