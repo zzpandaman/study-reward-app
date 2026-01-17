@@ -107,11 +107,11 @@ jobs:
         fi
         echo "Keystore file created successfully"
         ls -lh keystore/
-        # 确保 keystore.properties 存在（相对于 android 目录）
+        # 确保 keystore.properties 存在（路径相对于 android/app/build.gradle）
         echo "storePassword=android" > keystore/keystore.properties
         echo "keyPassword=android" >> keystore/keystore.properties
         echo "keyAlias=study-reward" >> keystore/keystore.properties
-        echo "storeFile=keystore/study-reward.keystore" >> keystore/keystore.properties
+        echo "storeFile=../keystore/study-reward.keystore" >> keystore/keystore.properties
         echo "Keystore properties:"
         cat keystore/keystore.properties
       env:
