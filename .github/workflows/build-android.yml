@@ -102,12 +102,10 @@ jobs:
           -dname "CN=Study Reward App, OU=Development, O=Study Reward, L=City, ST=State, C=CN" || true
         # 确保 keystore.properties 存在
         if [ ! -f "keystore/keystore.properties" ]; then
-          cat > keystore/keystore.properties << 'PROPEOF'
-storePassword=android
-keyPassword=android
-keyAlias=study-reward
-storeFile=keystore/study-reward.keystore
-PROPEOF
+          echo "storePassword=android" > keystore/keystore.properties
+          echo "keyPassword=android" >> keystore/keystore.properties
+          echo "keyAlias=study-reward" >> keystore/keystore.properties
+          echo "storeFile=keystore/study-reward.keystore" >> keystore/keystore.properties
         fi
       env:
         JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.17-9/x64
