@@ -12,7 +12,11 @@
     "electron:build": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder",
     "electron:build:win": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder --win",
     "electron:build:mac": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder --mac",
-    "electron:pack": "electron-builder"
+    "electron:pack": "electron-builder",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:build": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "android:build:release": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease"
   },
   "build": {
     "appId": "com.studyreward.app",
@@ -60,6 +64,9 @@
     }
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

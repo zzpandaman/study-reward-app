@@ -1,0 +1,73 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:  # 手动触发
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'android/**'
+      - 'package.json'
+      - 'capacitor.config.ts'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build web app
+      run: npm run build
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Sync Capacitor
+      run: npx cap sync android
+      
+    - name: Build Debug APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        
+    - name: Build Release APK
+      run: |
+        cd android
+        ./gradlew assembleRelease
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        SIGNING_KEY_PASSWORD: android
+        KEY_PASSWORD: android
+        
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
