@@ -38,6 +38,18 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Verify Node.js before build
+      run: |
+        echo "Current Node.js version: $(node --version)"
+        echo "Current npm version: $(npm --version)"
+        NODE_VERSION=$(node --version | sed 's/v//')
+        REQUIRED_VERSION="22.0.0"
+        if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$NODE_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
+          echo "ERROR: Node.js version $NODE_VERSION is less than required $REQUIRED_VERSION"
+          exit 1
+        fi
+        echo "✓ Node.js version check passed"
+      
     - name: Build web app
       run: npm run build
       
@@ -50,8 +62,18 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
+    - name: Verify Node.js before Capacitor
+      run: |
+        echo "Node.js version before Capacitor sync:"
+        node --version
+        which node
+        which npx
+        
     - name: Sync Capacitor
-      run: npx cap sync android
+      run: |
+        node --version
+        npm list @capacitor/cli || echo "Capacitor CLI not installed yet"
+        npx --yes @capacitor/cli@latest sync android
       
     - name: Build Debug APK
       run: |
