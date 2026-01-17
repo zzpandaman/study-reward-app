@@ -369,18 +369,48 @@ export class LocalService {
     }
   }
 
-  static getPointRecords(type?: 'earn' | 'spend'): ApiResponse {
+  static getPointRecords(type?: 'earn' | 'spend', page: number = 1, pageSize: number = 10): ApiResponse {
     try {
       const appData = dataManager.getAppData();
-      let records = appData.userData.pointRecords;
+      let records = [...appData.userData.pointRecords];
+      
+      // 如果是"全部"类型（type === undefined），需要包含"未完成，无积分"的任务记录
+      if (!type) {
+        // 查找所有已完成但无积分的任务执行记录
+        const failedTasks = appData.taskExecutions
+          .filter((e) => e.status === 'completed' && e.actualReward === 0 && e.endTime)
+          .map((e) => ({
+            id: `task-${e.id}`,
+            type: 'earn' as const,
+            amount: 0,
+            description: `未完成，无积分: ${e.taskName}${e.actualDuration ? ` (${e.actualDuration}分钟)` : ''}`,
+            timestamp: e.endTime!,
+            relatedId: e.id,
+          }));
+        records = [...records, ...failedTasks];
+      }
+      
+      // 按类型过滤（在添加失败任务之后）
       if (type) {
         records = records.filter((r) => r.type === type);
       }
+      
+      // 按时间戳倒序排列（最新的在前）
+      records = records.sort((a, b) => b.timestamp - a.timestamp);
+      
+      // 计算分页
+      const total = records.length;
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedRecords = records.slice(startIndex, endIndex);
+      
       return {
         success: true,
         data: {
-          data: records,
-          total: records.length,
+          data: paginatedRecords,
+          total,
+          page,
+          pageSize,
         },
       };
     } catch (error) {

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { PointRecord, Product } from '../types';
+import { Product } from '../types';
 import { userDataStorage, productStorage } from '../utils/storage';
-import { UserAPI, ProductAPI } from '../api';
+import { ProductAPI, UserAPI } from '../api';
 import './Shop.css';
 
 const Shop: React.FC = () => {
   const [userPoints, setUserPoints] = useState(0);
-  const [pointRecords, setPointRecords] = useState<PointRecord[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [showAddProductDialog, setShowAddProductDialog] = useState(false);
@@ -15,23 +14,28 @@ const Shop: React.FC = () => {
   const [newProductPrice, setNewProductPrice] = useState<number>(1);
   const [newProductMinQuantity, setNewProductMinQuantity] = useState<number>(1);
   const [newProductUnit, setNewProductUnit] = useState<string>('');
-
-  useEffect(() => {
-    loadData();
-    // 定期更新积分显示
-    const interval = setInterval(loadData, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  // 分页和筛选状态
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'preset' | 'custom'>('all');
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(12); // 每页12个商品
 
   const loadData = () => {
     const userData = userDataStorage.get();
     // 积分支持小数显示（保留2位小数）
     setUserPoints(Math.round(userData.points * 100) / 100);
-    // 只显示消耗记录
-    setPointRecords(userData.pointRecords.filter((r) => r.type === 'spend'));
     // 加载商品列表
     setProducts(productStorage.get());
   };
+
+  useEffect(() => {
+    loadData();
+    // 定期更新积分显示
+    const interval = setInterval(() => {
+      loadData();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // 初始化数量为1
   useEffect(() => {
@@ -155,6 +159,43 @@ const Shop: React.FC = () => {
     }
   };
 
+  // 筛选和分页逻辑
+  const filteredProducts = products.filter((product) => {
+    // 搜索过滤
+    const matchesSearch = !searchKeyword.trim() || 
+      product.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchKeyword.toLowerCase());
+    
+    // 类型过滤
+    const matchesFilter = filterType === 'all' || 
+      (filterType === 'preset' && product.isPreset) ||
+      (filterType === 'custom' && !product.isPreset);
+    
+    return matchesSearch && matchesFilter;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / pageSize);
+  const paginatedProducts = filteredProducts.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
+  const handleFilterChange = (type: 'all' | 'preset' | 'custom') => {
+    setFilterType(type);
+    setPage(1); // 切换筛选时重置到第一页
+  };
+
+  // 当搜索关键词或筛选类型改变时，重置到第一页
+  useEffect(() => {
+    setPage(1);
+  }, [searchKeyword, filterType]);
+
   return (
     <div className="shop">
       <div className="shop-header">
@@ -174,9 +215,55 @@ const Shop: React.FC = () => {
         </div>
       </div>
 
+      {/* 搜索和筛选栏 */}
+      <div className="filter-bar">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="搜索商品名称或描述..."
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            className="search-input"
+          />
+        </div>
+        <div className="type-filter">
+          <button
+            className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('all')}
+          >
+            全部
+          </button>
+          <button
+            className={`filter-btn ${filterType === 'preset' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('preset')}
+          >
+            预设
+          </button>
+          <button
+            className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
+            onClick={() => handleFilterChange('custom')}
+          >
+            自定义
+          </button>
+        </div>
+      </div>
+
+      {/* 统计信息 */}
+      {filteredProducts.length > 0 && (
+        <div className="filter-summary">
+          共 {filteredProducts.length} 个商品，当前显示 {paginatedProducts.length} 个
+        </div>
+      )}
+
       {/* 商品列表 */}
-      <div className="exchange-section">
-      {products.map((product) => {
+      {paginatedProducts.length === 0 ? (
+        <div className="empty-products">
+          <p>没有找到符合条件的商品</p>
+        </div>
+      ) : (
+        <>
+          <div className="exchange-section">
+            {paginatedProducts.map((product) => {
         const units = quantities[product.id] || 1;
         const price = calculatePrice(product, units);
         const unit = product.unit || '';
@@ -255,28 +342,31 @@ const Shop: React.FC = () => {
             </div>
           );
         })}
-      </div>
-
-      {/* 积分消耗记录 */}
-      {pointRecords.length > 0 && (
-        <div className="purchase-history">
-          <h3>兑换记录</h3>
-          <div className="history-list">
-            {pointRecords.slice(0, 20).map((record) => (
-              <div key={record.id} className="history-item">
-                <div className="history-info">
-                  <h4>{record.description}</h4>
-                  <div className="history-meta">
-                    {new Date(record.timestamp).toLocaleString('zh-CN')}
-                  </div>
-                </div>
-                <div className="history-amount spend">
-                  -{typeof record.amount === 'number' ? record.amount.toFixed(2) : record.amount} 积分
-                </div>
-              </div>
-            ))}
           </div>
-        </div>
+
+          {/* 分页控件 */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page <= 1}
+              >
+                上一页
+              </button>
+              <span className="pagination-info">
+                第 {page} / {totalPages} 页
+              </span>
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page >= totalPages}
+              >
+                下一页
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* 添加商品对话框 */}

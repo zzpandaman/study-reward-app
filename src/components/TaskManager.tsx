@@ -23,6 +23,11 @@ const TaskManager: React.FC = () => {
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [isPageVisible, setIsPageVisible] = useState(true);
   const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
+  // 分页和筛选状态
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'preset' | 'custom'>('all');
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(12); // 每页12个任务（3x4网格）
 
   useEffect(() => {
     loadTaskTemplates();
@@ -334,12 +339,46 @@ const TaskManager: React.FC = () => {
     }
   };
 
-  const completedExecutions = executions
-    .filter((e) => e.status === 'completed')
-    .sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
 
   const actualMinutes = Math.floor(elapsedSeconds / 60);
   const estimatedReward = calculateReward(actualMinutes);
+
+  // 筛选和分页逻辑
+  const filteredTemplates = taskTemplates.filter((template) => {
+    // 搜索过滤
+    const matchesSearch = !searchKeyword.trim() || 
+      template.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchKeyword.toLowerCase());
+    
+    // 类型过滤
+    const matchesFilter = filterType === 'all' || 
+      (filterType === 'preset' && template.isPreset) ||
+      (filterType === 'custom' && !template.isPreset);
+    
+    return matchesSearch && matchesFilter;
+  });
+
+  const totalPages = Math.ceil(filteredTemplates.length / pageSize);
+  const paginatedTemplates = filteredTemplates.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
+  const handleFilterChange = (type: 'all' | 'preset' | 'custom') => {
+    setFilterType(type);
+    setPage(1); // 切换筛选时重置到第一页
+  };
+
+  // 当搜索关键词或筛选类型改变时，重置到第一页
+  useEffect(() => {
+    setPage(1);
+  }, [searchKeyword, filterType]);
 
   return (
     <div className="task-manager">
@@ -348,7 +387,7 @@ const TaskManager: React.FC = () => {
       {/* 选择任务 */}
       {!runningExecution && (
         <div className="task-selection">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
             <h3 style={{ margin: 0 }}>选择任务</h3>
             <button
               className="add-task-btn"
@@ -358,8 +397,56 @@ const TaskManager: React.FC = () => {
               ➕ 添加任务
             </button>
           </div>
-          <div className="task-templates">
-            {taskTemplates.map((template) => (
+          
+          {/* 搜索和筛选栏 */}
+          <div className="filter-bar">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="搜索任务名称或描述..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <div className="type-filter">
+              <button
+                className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
+                onClick={() => handleFilterChange('all')}
+              >
+                全部
+              </button>
+              <button
+                className={`filter-btn ${filterType === 'preset' ? 'active' : ''}`}
+                onClick={() => handleFilterChange('preset')}
+              >
+                预设
+              </button>
+              <button
+                className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
+                onClick={() => handleFilterChange('custom')}
+              >
+                自定义
+              </button>
+            </div>
+          </div>
+
+          {/* 统计信息 */}
+          {filteredTemplates.length > 0 && (
+            <div className="filter-summary">
+              共 {filteredTemplates.length} 个任务，当前显示 {paginatedTemplates.length} 个
+            </div>
+          )}
+
+          {/* 任务列表 */}
+          {paginatedTemplates.length === 0 ? (
+            <div className="empty-tasks">
+              <p>没有找到符合条件的任务</p>
+            </div>
+          ) : (
+            <>
+              <div className="task-templates">
+                {paginatedTemplates.map((template) => (
               <div
                 key={template.id}
                 className={`task-template-card ${
@@ -386,16 +473,41 @@ const TaskManager: React.FC = () => {
                   </button>
                 )}
               </div>
-            ))}
-          </div>
+                ))}
+              </div>
 
-          <button
-            className="start-task-btn"
-            onClick={startTask}
-            disabled={!selectedTemplateId}
-          >
-            开始任务
-          </button>
+              {/* 分页控件 */}
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <button
+                    className="pagination-btn"
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                  >
+                    上一页
+                  </button>
+                  <span className="pagination-info">
+                    第 {page} / {totalPages} 页
+                  </span>
+                  <button
+                    className="pagination-btn"
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                  >
+                    下一页
+                  </button>
+                </div>
+              )}
+
+              <button
+                className="start-task-btn"
+                onClick={startTask}
+                disabled={!selectedTemplateId}
+              >
+                开始任务
+              </button>
+            </>
+          )}
         </div>
       )}
 
@@ -447,35 +559,6 @@ const TaskManager: React.FC = () => {
         </div>
       )}
 
-      {/* 完成记录 */}
-      {completedExecutions.length > 0 && (
-        <div className="execution-history">
-          <h3>任务记录</h3>
-          <div className="history-list">
-            {completedExecutions.slice(0, 20).map((execution) => (
-              <div
-                key={execution.id}
-                className={`history-item ${execution.actualReward > 0 ? 'completed' : 'failed'}`}
-              >
-                <div className="history-info">
-                  <h4>{execution.taskName}</h4>
-                  <div className="history-meta">
-                    {new Date(execution.startTime).toLocaleString('zh-CN')} | 学习时长:{' '}
-                    {execution.actualDuration || 0}分钟
-                  </div>
-                </div>
-                <div className="history-reward">
-                  {execution.actualReward > 0 ? (
-                    <span className="reward-earned">+{execution.actualReward} 积分</span>
-                  ) : (
-                    <span className="reward-failed">未完成，无积分</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* 添加任务对话框 */}
       {showAddTaskDialog && (

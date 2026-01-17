@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TaskManager from './components/TaskManager';
 import Shop from './components/Shop';
 import Inventory from './components/Inventory';
+import PointRecords from './components/PointRecords';
 import StyleCustomizer from './components/StyleCustomizer';
 import { userDataStorage, exportData, importData } from './utils/storage';
 import { themeStorage, applyTheme, themes, Theme } from './utils/theme';
@@ -10,7 +11,7 @@ import { UserAPI } from './api';
 import './App.css';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'tasks' | 'shop' | 'inventory'>('tasks');
+  const [activeTab, setActiveTab] = useState<'tasks' | 'shop' | 'inventory' | 'records'>('tasks');
   const [userPoints, setUserPoints] = useState(0);
   const [currentTheme, setCurrentTheme] = useState<Theme>(themeStorage.get());
   const [showThemeMenu, setShowThemeMenu] = useState(false);
@@ -179,12 +180,19 @@ const App: React.FC = () => {
         >
           🎒 背包
         </button>
+        <button
+          className={activeTab === 'records' ? 'active' : ''}
+          onClick={() => setActiveTab('records')}
+        >
+          📊 积分记录
+        </button>
       </nav>
 
       <main className="app-main">
         {activeTab === 'tasks' && <TaskManager />}
         {activeTab === 'shop' && <Shop />}
         {activeTab === 'inventory' && <Inventory />}
+        {activeTab === 'records' && <PointRecords />}
       </main>
 
       {showStyleCustomizer && (

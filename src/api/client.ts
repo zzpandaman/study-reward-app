@@ -102,7 +102,9 @@ class LocalClient implements IApiClient {
     if (path.startsWith('/api/user/point-records')) {
       const url = new URL(path, 'http://dummy');
       const type = url.searchParams.get('type') as 'earn' | 'spend' | undefined;
-      return Promise.resolve(LocalService.getPointRecords(type)) as Promise<ApiResponse<T>>;
+      const page = parseInt(url.searchParams.get('page') || '1', 10);
+      const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
+      return Promise.resolve(LocalService.getPointRecords(type, page, pageSize)) as Promise<ApiResponse<T>>;
     }
     if (path === '/api/user/inventory') {
       return Promise.resolve(LocalService.getInventory()) as Promise<ApiResponse<T>>;

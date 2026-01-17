@@ -103,6 +103,8 @@ export interface GetPointsResponse {
 export interface GetPointRecordsResponse {
   data: PointRecord[];
   total: number;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface GetInventoryResponse {

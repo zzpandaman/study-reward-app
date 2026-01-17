@@ -39,11 +39,15 @@ export class UserAPI {
 
   /**
    * GET /api/user/point-records
-   * 获取积分记录
+   * 获取积分记录（支持分页）
    */
-  static async getPointRecords(type?: 'earn' | 'spend'): Promise<ApiResponse<GetPointRecordsResponse>> {
+  static async getPointRecords(type?: 'earn' | 'spend', page: number = 1, pageSize: number = 10): Promise<ApiResponse<GetPointRecordsResponse>> {
     const client = ApiClientFactory.getClient();
-    const path = type ? `/api/user/point-records?type=${type}` : '/api/user/point-records';
+    const params = new URLSearchParams();
+    if (type) params.append('type', type);
+    params.append('page', page.toString());
+    params.append('pageSize', pageSize.toString());
+    const path = `/api/user/point-records?${params.toString()}`;
     return client.get<GetPointRecordsResponse>(path);
   }
 
