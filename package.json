@@ -1,0 +1,73 @@
+{
+  "name": "study-reward-app",
+  "version": "1.0.0",
+  "author": "Study Reward App",
+  "description": "监督学习小程序 - 任务计时、奖励兑换系统",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:build": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder",
+    "electron:build:win": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder --win",
+    "electron:build:mac": "tsc && tsc -p tsconfig.electron.json && vite build && electron-builder --mac",
+    "electron:pack": "electron-builder"
+  },
+  "build": {
+    "appId": "com.studyreward.app",
+    "productName": "学习奖励小程序",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "publisherName": "Study Reward App",
+      "signAndEditExecutable": false
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.education"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "学习奖励小程序",
+      "menuCategory": true
+    },
+    "extraMetadata": {
+      "main": "dist-electron/main.js"
+    }
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^20.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.3.0",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  }
+}

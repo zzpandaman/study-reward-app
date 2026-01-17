@@ -1,0 +1,156 @@
+---
+description: "数据层规范和存储适配器使用规则"
+globs:
+  - "src/data/**/*.ts"
+alwaysApply: false
+---
+
+# 数据层开发规范
+
+## 存储适配器
+
+### 接口实现
+
+所有存储适配器必须实现 `IStorageAdapter` 接口：
+
+```typescript
+interface IStorageAdapter {
+  read(): AppData | null;
+  write(data: AppData): void;
+  exists(): boolean;
+  backup(): void;
+  restore(): AppData | null;
+}
+```
+
+### 当前实现
+
+- ✅ `LocalStorageAdapter`：localStorage实现
+- 🔄 未来：`MySQLStorageAdapter`：MySQL实现
+
+### 使用方式
+
+```typescript
+// 通过工厂获取适配器
+import { StorageAdapterFactory } from './storage-adapter';
+
+const adapter = StorageAdapterFactory.getAdapter();
+const data = adapter.read();
+```
+
+## 数据管理器
+
+### 核心功能
+
+1. **版本管理**：自动检测和处理数据版本
+2. **数据迁移**：从旧版本格式迁移到新格式
+3. **数据验证**：确保数据完整性
+
+### 使用规则
+
+```typescript
+// ✅ 正确：通过dataManager操作数据
+import { dataManager } from '../data/data-manager';
+
+const appData = dataManager.getAppData();
+dataManager.saveAppData(appData);
+
+// ❌ 错误：直接操作localStorage
+localStorage.setItem('key', JSON.stringify(data));
+```
+
+### 数据迁移
+
+- ✅ 迁移逻辑必须在 `data-manager.ts` 中实现
+- ✅ 支持从旧版本自动迁移
+- ✅ 迁移前自动备份
+- ✅ 迁移后保留原数据（可选清理）
+
+### 版本号管理
+
+```typescript
+const CURRENT_SCHEMA_VERSION = 2;  // 数据结构版本
+const CURRENT_VERSION = '1.1.0';   // 应用版本
+```
+
+**规则：**
+- 修改数据结构时，更新 `CURRENT_SCHEMA_VERSION`
+- 发布新版本时，更新 `CURRENT_VERSION`
+
+## 数据验证
+
+### 验证规则
+
+1. **必需字段检查**：确保所有必需字段存在
+2. **数据类型检查**：验证数组、对象等类型
+3. **数据一致性检查**：验证关联数据的一致性
+
+### 验证实现
+
+```typescript
+// 在dataManager中实现验证
+private validateData(data: AppData): void {
+  if (!data.version) {
+    throw new Error('Data version is required');
+  }
+  // ... 其他验证
+}
+```
+
+## 老用户数据迁移
+
+### 支持的旧版本键
+
+- `study_reward_user_data`
+- `study_reward_task_executions`
+- `study_reward_products`
+- `study_reward_tasks`
+
+### 迁移流程
+
+```
+1. 检测新格式数据
+   ↓ (不存在)
+2. 检测旧版本数据
+   ↓ (存在)
+3. 执行数据迁移
+   ↓
+4. 保存新格式数据
+   ↓
+5. 完成（保留旧数据）
+```
+
+### 迁移保证
+
+- ✅ 自动检测和迁移
+- ✅ 迁移前自动备份
+- ✅ 迁移失败时保留原数据
+- ✅ 支持手动恢复
+
+## 数据导出/导入
+
+### 导出格式
+
+```json
+{
+  "version": "1.1.0",
+  "exportTime": 1234567890,
+  "data": {
+    "version": {...},
+    "userData": {...},
+    "taskTemplates": [...],
+    "products": [...],
+    "taskExecutions": [...]
+  }
+}
+```
+
+### 导入验证
+
+- 验证JSON格式
+- 验证数据结构
+- 执行数据迁移（如果需要）
+
+## 参考文档
+
+- @docs/DATA_LAYER.md - 数据层详细文档

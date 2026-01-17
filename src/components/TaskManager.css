@@ -1,0 +1,384 @@
+.task-manager {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-manager h2 {
+  color: var(--primary-color, #667eea);
+  margin-bottom: 20px;
+}
+
+.task-selection {
+  margin-bottom: 24px;
+}
+
+.task-selection h3 {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.task-templates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.task-template-card {
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.task-template-card:hover {
+  border-color: var(--primary-color, #667eea);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-template-card.selected {
+  background: #e8ebff;
+  border-color: var(--primary-color, #667eea);
+}
+
+.task-template-card h4 {
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.task-template-card p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.reward-info {
+  color: var(--primary-color, #667eea);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.duration-selection {
+  background: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.duration-selection label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.duration-selection input[type="number"] {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  width: 100px;
+}
+
+.reward-preview {
+  background: #e8ebff;
+  padding: 12px;
+  border-radius: 6px;
+  color: var(--primary-color, #667eea);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.start-task-btn {
+  width: 100%;
+  padding: 12px 24px;
+  background: var(--primary-color, #667eea);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.start-task-btn:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.start-task-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.running-task {
+  background: var(--gradient, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
+  color: white;
+  padding: 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.running-task h3 {
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.timer {
+  margin: 24px 0;
+}
+
+.timer-display {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.paused-indicator {
+  font-size: 18px;
+  opacity: 0.8;
+  font-weight: normal;
+}
+
+.pause-notice {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.timer-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #48bb78;
+  transition: width 1s linear;
+}
+
+.timer-info {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.timer-warning {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.task-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pause-btn,
+.resume-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.pause-btn:hover,
+.resume-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.resume-btn {
+  background: rgba(72, 187, 120, 0.8);
+}
+
+.resume-btn:hover {
+  background: rgba(72, 187, 120, 1);
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.execution-history,
+.history-list {
+  margin-top: 24px;
+}
+
+.execution-history h3 {
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.history-item {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-item.completed {
+  background: #e6f7e6;
+  border-color: #48bb78;
+}
+
+.history-item.failed {
+  background: #ffe6e6;
+  border-color: #f56565;
+}
+
+.history-info h4 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.history-meta {
+  color: #888;
+  font-size: 12px;
+}
+
+.history-reward {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.reward-earned {
+  color: #48bb78;
+}
+
+.reward-failed {
+  color: #f56565;
+}
+
+.history-amount.spend {
+  color: #f56565;
+  font-weight: bold;
+}
+
+/* 确认对话框 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.confirm-info {
+  margin-bottom: 20px;
+}
+
+.confirm-info p {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 16px;
+}
+
+.warning-box {
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 16px;
+  color: #856404;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-actions button:first-child {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.modal-actions button:first-child:hover {
+  background: #d0d0d0;
+}
+
+.modal-actions .confirm-btn {
+  background: #667eea;
+  color: white;
+}
+
+.modal-actions .confirm-btn:hover {
+  background: #5568d3;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}

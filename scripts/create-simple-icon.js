@@ -1,0 +1,32 @@
+// 创建一个简单的SVG图标（学习主题）
+const fs = require('fs');
+const path = require('path');
+
+const iconSvg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="url(#grad1)"/>
+  <!-- 书本图标 -->
+  <path d="M 150 200 L 150 400 L 362 400 L 362 200 L 256 150 Z" fill="white" opacity="0.9"/>
+  <path d="M 150 200 L 256 150 L 362 200" stroke="rgba(102,126,234,0.3)" stroke-width="4" fill="none"/>
+  <path d="M 200 200 L 200 400 M 312 200 L 312 400" stroke="rgba(102,126,234,0.3)" stroke-width="3" fill="none"/>
+  <!-- 星星装饰 -->
+  <circle cx="120" cy="160" r="25" fill="#FFD700" opacity="0.9"/>
+  <circle cx="392" cy="160" r="25" fill="#FFD700" opacity="0.9"/>
+  <circle cx="256" cy="120" r="20" fill="#FFD700" opacity="0.9"/>
+</svg>`;
+
+const buildDir = path.join(__dirname, '../build');
+if (!fs.existsSync(buildDir)) {
+  fs.mkdirSync(buildDir, { recursive: true });
+}
+
+fs.writeFileSync(path.join(buildDir, 'icon.svg'), iconSvg);
+console.log('✓ SVG图标已创建: build/icon.svg');
+console.log('请使用在线工具转换为ICO和ICNS格式');
+console.log('https://iconverticons.com/online/');
