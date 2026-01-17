@@ -186,8 +186,8 @@ const Shop: React.FC = () => {
               <div className="exchange-header">
                 <h3>{product.name}</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div className="exchange-rate">
-                    {product.minQuantity ?? 1}{unit} = {product.price}积分
+                <div className="exchange-rate">
+                  {product.minQuantity ?? 1}{unit} = {product.price}积分
                   </div>
                   {!product.isPreset && (
                     <button

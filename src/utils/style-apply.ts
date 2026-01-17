@@ -20,11 +20,11 @@ export function applyCustomStyle(customStyle?: CustomStyle): void {
   
   // 应用边框样式
   if (customStyle) {
-    applyBorderStyle(customStyle, root);
+  applyBorderStyle(customStyle, root);
     // 应用背景样式（如果有自定义背景，会覆盖主题背景）
-    applyBackgroundStyle(customStyle, root);
-    // 应用鼠标样式
-    applyCursorStyle(customStyle, root);
+  applyBackgroundStyle(customStyle, root);
+  // 应用鼠标样式
+  applyCursorStyle(customStyle, root);
   } else {
     // 如果没有自定义样式，清除所有自定义背景，让主题背景生效
     const appElement = document.querySelector('.app') as HTMLElement;

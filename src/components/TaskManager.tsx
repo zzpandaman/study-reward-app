@@ -298,9 +298,9 @@ const TaskManager: React.FC = () => {
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
               >
                 <div style={{ flex: 1 }}>
-                  <h4>{template.name}</h4>
-                  <p>{template.description}</p>
-                  <div className="reward-info">积分: 1/分钟</div>
+                <h4>{template.name}</h4>
+                <p>{template.description}</p>
+                <div className="reward-info">积分: 1/分钟</div>
                 </div>
                 {!template.isPreset && (
                   <button
