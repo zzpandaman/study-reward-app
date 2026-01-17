@@ -74,7 +74,7 @@ export interface CursorStylePreset {
   preview: string; // 预览emoji
 }
 
-// 鼠标图标预设 - 暂时只保留基础CSS样式，图片图标需要用户上传
+// 鼠标图标预设
 export const CURSOR_STYLE_PRESETS: CursorStylePreset[] = [
   {
     id: 'default',
@@ -99,6 +99,14 @@ export const CURSOR_STYLE_PRESETS: CursorStylePreset[] = [
     type: 'css',
     cssValue: 'text',
     preview: 'I',
+  },
+  {
+    id: 'zootopia-pen',
+    name: '解读笔',
+    description: '疯狂动物城2解读笔风格',
+    type: 'image',
+    imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8IS0tIOeWr+eLguWKqOeJqeWfjjLop6Por7vnrJTpo47moLzlm77moIcgLSDljp/liJvorr7orqEgLS0+CiAgPCEtLSDok53oibLnp5HmioDmhJ/nmoTnrJTnirblm77moIcgLS0+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InBlbkdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjY7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzFlNDBhZjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0g56yU6Lqr5Li75L2TIC0tPgogIDxyZWN0IHg9IjEwIiB5PSI2IiB3aWR0aD0iMTIiIGhlaWdodD0iMjAiIHJ4PSI2IiBmaWxsPSJ1cmwoI3BlbkdyYWRpZW50KSIvPgogIDwhLS0g56yU5bCWIC0tPgogIDxwYXRoIGQ9Ik0xNiAyNiBMMTIgMzIgTDIwIDMyIFoiIGZpbGw9IiMxZTQwYWYiLz4KICA8IS0tIOeslOW4veijhemlsCAtLT4KICA8cmVjdCB4PSIxMiIgeT0iNCIgd2lkdGg9IjgiIGhlaWdodD0iMyIgcng9IjEuNSIgZmlsbD0iIzYwYTVmYSIvPgogIDwhLS0g5Lit5aSu57q/5p2h6KOF6aWwIC0tPgogIDxsaW5lIHgxPSIxNiIgeTE9IjgiIHgyPSIxNiIgeTI9IjI0IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC42Ii8+CiAgPCEtLSDlsI/lnIbngrnoo4XppbAgLS0+CiAgPGNpcmNsZSBjeD0iMTQiIGN5PSIxMiIgcj0iMS41IiBmaWxsPSIjZmZmZmZmIiBvcGFjaXR5PSIwLjgiLz4KICA8Y2lyY2xlIGN4PSIxOCIgY3k9IjE2IiByPSIxLjUiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuOCIvPgo8L3N2Zz4K',
+    preview: '🖊️',
   },
 ];
 
