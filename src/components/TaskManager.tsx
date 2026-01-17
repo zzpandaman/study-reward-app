@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { TaskTemplate, TaskExecution } from '../types';
 import { taskTemplateStorage, taskExecutionStorage, userDataStorage, calculateReward } from '../utils/storage';
+import { TaskTemplateAPI } from '../api';
 import './TaskManager.css';
 
 const TaskManager: React.FC = () => {
-  // 过滤掉无效的任务模板（name或description为空/undefined）
-  const [taskTemplates] = useState<TaskTemplate[]>(
-    taskTemplateStorage.get().filter(
-      (template) => template.name && template.name.trim() && template.description && template.description.trim()
-    )
-  );
+  const [taskTemplates, setTaskTemplates] = useState<TaskTemplate[]>([]);
   const [executions, setExecutions] = useState<TaskExecution[]>([]);
   const [runningExecution, setRunningExecution] = useState<TaskExecution | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
   const [isPaused, setIsPaused] = useState(false);
+  const [showAddTaskDialog, setShowAddTaskDialog] = useState(false);
+  const [newTaskName, setNewTaskName] = useState('');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
 
   useEffect(() => {
+    loadTaskTemplates();
     loadExecutions();
     
     // 恢复正在运行的任务
@@ -59,9 +59,43 @@ const TaskManager: React.FC = () => {
     return () => clearInterval(interval);
   }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused]);
 
+  const loadTaskTemplates = () => {
+    // 过滤掉无效的任务模板（name或description为空/undefined）
+    const templates = taskTemplateStorage.get().filter(
+      (template) => template.name && template.name.trim() && template.description && template.description.trim()
+    );
+    setTaskTemplates(templates);
+  };
+
   const loadExecutions = () => {
     const loadedExecutions = taskExecutionStorage.get();
     setExecutions(loadedExecutions);
+  };
+
+  const handleAddTask = async () => {
+    if (!newTaskName.trim() || !newTaskDescription.trim()) {
+      alert('请输入任务名称和描述');
+      return;
+    }
+
+    try {
+      const response = await TaskTemplateAPI.createTaskTemplate({
+        name: newTaskName.trim(),
+        description: newTaskDescription.trim(),
+      });
+
+      if (response.success) {
+        alert('任务添加成功！');
+        loadTaskTemplates();
+        setNewTaskName('');
+        setNewTaskDescription('');
+        setShowAddTaskDialog(false);
+      } else {
+        alert('添加失败：' + (response.error || '未知错误'));
+      }
+    } catch (error) {
+      alert('添加失败：' + (error as Error).message);
+    }
   };
 
   const formatTime = (seconds: number): string => {
@@ -225,7 +259,16 @@ const TaskManager: React.FC = () => {
       {/* 选择任务 */}
       {!runningExecution && (
         <div className="task-selection">
-          <h3>选择任务</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h3 style={{ margin: 0 }}>选择任务</h3>
+            <button
+              className="add-task-btn"
+              onClick={() => setShowAddTaskDialog(true)}
+              title="添加任务"
+            >
+              ➕ 添加任务
+            </button>
+          </div>
           <div className="task-templates">
             {taskTemplates.map((template) => (
               <div
@@ -316,6 +359,39 @@ const TaskManager: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* 添加任务对话框 */}
+      {showAddTaskDialog && (
+        <div className="modal-overlay" onClick={() => setShowAddTaskDialog(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>添加任务</h3>
+            <div className="form-group">
+              <label>任务名称：</label>
+              <input
+                type="text"
+                value={newTaskName}
+                onChange={(e) => setNewTaskName(e.target.value)}
+                placeholder="例如：阅读"
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>任务描述：</label>
+              <textarea
+                value={newTaskDescription}
+                onChange={(e) => setNewTaskDescription(e.target.value)}
+                placeholder="例如：进行阅读学习"
+                className="form-textarea"
+                rows={3}
+              />
+            </div>
+            <div className="modal-actions">
+              <button onClick={() => setShowAddTaskDialog(false)}>取消</button>
+              <button className="confirm-btn" onClick={handleAddTask}>确定</button>
+            </div>
           </div>
         </div>
       )}

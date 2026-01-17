@@ -98,6 +98,22 @@
   font-size: 16px;
 }
 
+.add-task-btn {
+  padding: 8px 16px;
+  background: #48bb78;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-task-btn:hover {
+  background: #38a169;
+}
+
 .start-task-btn {
   width: 100%;
   padding: 12px 24px;
@@ -323,6 +339,38 @@
   margin-bottom: 16px;
 }
 
+.modal-content .form-group {
+  margin-bottom: 16px;
+}
+
+.modal-content .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.modal-content .form-input,
+.modal-content .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.modal-content .form-input:focus,
+.modal-content .form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-content .form-textarea {
+  resize: vertical;
+}
+
 .confirm-info {
   margin-bottom: 20px;
 }
@@ -348,6 +396,7 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
+  margin-top: 24px;
 }
 
 .modal-actions button {

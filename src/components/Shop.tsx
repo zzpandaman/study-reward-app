@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PointRecord, Product } from '../types';
 import { userDataStorage, productStorage } from '../utils/storage';
-import { UserAPI } from '../api';
+import { UserAPI, ProductAPI } from '../api';
 import './Shop.css';
 
 const Shop: React.FC = () => {
@@ -9,6 +9,12 @@ const Shop: React.FC = () => {
   const [pointRecords, setPointRecords] = useState<PointRecord[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [showAddProductDialog, setShowAddProductDialog] = useState(false);
+  const [newProductName, setNewProductName] = useState('');
+  const [newProductDescription, setNewProductDescription] = useState('');
+  const [newProductPrice, setNewProductPrice] = useState<number>(1);
+  const [newProductMinQuantity, setNewProductMinQuantity] = useState<number>(1);
+  const [newProductUnit, setNewProductUnit] = useState<string>('');
 
   useEffect(() => {
     loadData();
@@ -60,6 +66,48 @@ const Shop: React.FC = () => {
     return `${actualQuantity}${unit}`;
   };
 
+  const handleAddProduct = async () => {
+    if (!newProductName.trim() || !newProductDescription.trim()) {
+      alert('请输入商品名称和描述');
+      return;
+    }
+
+    if (newProductPrice <= 0) {
+      alert('价格必须大于0');
+      return;
+    }
+
+    if (newProductMinQuantity <= 0) {
+      alert('最小数量必须大于0');
+      return;
+    }
+
+    try {
+      const response = await ProductAPI.createProduct({
+        name: newProductName.trim(),
+        description: newProductDescription.trim(),
+        price: newProductPrice,
+        minQuantity: newProductMinQuantity,
+        unit: newProductUnit.trim() || undefined,
+      });
+
+      if (response.success) {
+        alert('商品添加成功！');
+        loadData();
+        setNewProductName('');
+        setNewProductDescription('');
+        setNewProductPrice(1);
+        setNewProductMinQuantity(1);
+        setNewProductUnit('');
+        setShowAddProductDialog(false);
+      } else {
+        alert('添加失败：' + (response.error || '未知错误'));
+      }
+    } catch (error) {
+      alert('添加失败：' + (error as Error).message);
+    }
+  };
+
   // 兑换商品
   const exchangeProduct = async (product: Product) => {
     const units = quantities[product.id] || 1;
@@ -93,9 +141,18 @@ const Shop: React.FC = () => {
     <div className="shop">
       <div className="shop-header">
         <h2>积分商城</h2>
-        <div className="points-display">
-          <span className="points-label">当前积分:</span>
-          <span className="points-value">{userPoints.toFixed(2)}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button
+            className="add-product-btn"
+            onClick={() => setShowAddProductDialog(true)}
+            title="添加商品"
+          >
+            ➕ 添加商品
+          </button>
+          <div className="points-display">
+            <span className="points-label">当前积分:</span>
+            <span className="points-value">{userPoints.toFixed(2)}</span>
+          </div>
         </div>
       </div>
 
@@ -186,6 +243,73 @@ const Shop: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* 添加商品对话框 */}
+      {showAddProductDialog && (
+        <div className="modal-overlay" onClick={() => setShowAddProductDialog(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>添加商品</h3>
+            <div className="form-group">
+              <label>商品名称：</label>
+              <input
+                type="text"
+                value={newProductName}
+                onChange={(e) => setNewProductName(e.target.value)}
+                placeholder="例如：黄金"
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>商品描述：</label>
+              <textarea
+                value={newProductDescription}
+                onChange={(e) => setNewProductDescription(e.target.value)}
+                placeholder="例如：兑换黄金"
+                className="form-textarea"
+                rows={2}
+              />
+            </div>
+            <div className="form-group">
+              <label>单价（积分）：</label>
+              <input
+                type="number"
+                min="0.01"
+                step="0.01"
+                value={newProductPrice}
+                onChange={(e) => setNewProductPrice(parseFloat(e.target.value) || 0)}
+                className="form-input"
+              />
+              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>每minQuantity单位的价格</small>
+            </div>
+            <div className="form-group">
+              <label>最小数量单位：</label>
+              <input
+                type="number"
+                min="0.01"
+                step="0.01"
+                value={newProductMinQuantity}
+                onChange={(e) => setNewProductMinQuantity(parseFloat(e.target.value) || 0)}
+                className="form-input"
+              />
+              <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>例如：0.1（表示0.1g）</small>
+            </div>
+            <div className="form-group">
+              <label>单位（可选）：</label>
+              <input
+                type="text"
+                value={newProductUnit}
+                onChange={(e) => setNewProductUnit(e.target.value)}
+                placeholder="例如：g、分钟"
+                className="form-input"
+              />
+            </div>
+            <div className="modal-actions">
+              <button onClick={() => setShowAddProductDialog(false)}>取消</button>
+              <button className="confirm-btn" onClick={handleAddProduct}>确定</button>
+            </div>
           </div>
         </div>
       )}

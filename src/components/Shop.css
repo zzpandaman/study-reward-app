@@ -12,6 +12,24 @@
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 2px solid #f0f0f0;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.add-product-btn {
+  padding: 8px 16px;
+  background: #48bb78;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-product-btn:hover {
+  background: #38a169;
 }
 
 .shop-header h2 {
@@ -323,4 +341,103 @@
 .purchase-history .history-amount {
   font-size: 18px;
   font-weight: bold;
+}
+
+/* 对话框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+  color: var(--primary-color, #667eea);
+  margin-bottom: 16px;
+}
+
+.modal-content .form-group {
+  margin-bottom: 16px;
+}
+
+.modal-content .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.modal-content .form-group small {
+  display: block;
+  margin-top: 4px;
+}
+
+.modal-content .form-input,
+.modal-content .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.modal-content .form-input:focus,
+.modal-content .form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-content .form-textarea {
+  resize: vertical;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-actions button:first-child {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.modal-actions button:first-child:hover {
+  background: #d0d0d0;
+}
+
+.modal-actions .confirm-btn {
+  background: var(--primary-color, #667eea);
+  color: white;
+}
+
+.modal-actions .confirm-btn:hover {
+  background: #5568d3;
 }
