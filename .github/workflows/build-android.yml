@@ -121,4 +121,3 @@ jobs:
         name: app-release
         path: android/app/build/outputs/apk/release/app-release.apk
         retention-days: 30
-# Android Build Workflow
