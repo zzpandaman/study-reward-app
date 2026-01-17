@@ -19,14 +19,26 @@ android {
     // 签名配置（需要在 buildTypes 之前定义）
     signingConfigs {
         release {
-            def keystorePropertiesFile = rootProject.file("../keystore/keystore.properties")
+            // keystore.properties 在 android/keystore/ 目录
+            def keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
             if (keystorePropertiesFile.exists()) {
                 def keystoreProperties = new Properties()
                 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-                storeFile file(keystoreProperties['storeFile'])
+                // storeFile 路径相对于 keystore.properties 的位置
+                def storeFileStr = keystoreProperties['storeFile']
+                // 如果是相对路径，相对于 keystore.properties 所在目录
+                if (storeFileStr.startsWith('../')) {
+                    storeFile file(rootProject.file(storeFileStr.replace('../', 'keystore/')))
+                } else if (storeFileStr.startsWith('keystore/')) {
+                    storeFile file(rootProject.file(storeFileStr))
+                } else {
+                    storeFile file(rootProject.file("keystore/${storeFileStr}"))
+                }
                 storePassword keystoreProperties['storePassword']
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
+            } else {
+                println "WARNING: keystore.properties not found at ${keystorePropertiesFile.absolutePath}"
             }
         }
     }
