@@ -95,18 +95,26 @@ jobs:
       run: |
         cd android
         mkdir -p keystore
-        # 生成临时 keystore 用于构建（仅用于 CI）
-        keytool -genkeypair -v -keystore keystore/study-reward.keystore \
-          -alias study-reward -keyalg RSA -keysize 2048 -validity 10000 \
-          -storepass android -keypass android \
-          -dname "CN=Study Reward App, OU=Development, O=Study Reward, L=City, ST=State, C=CN"
+        # 优先从 GitHub Secret 恢复 keystore（如果存在）
+        if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+          echo "Restoring keystore from GitHub Secret..."
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore/study-reward.keystore
+          echo "Keystore restored from Secret"
+        else
+          # 如果没有 Secret，生成固定的 keystore（使用固定参数确保可重复）
+          echo "Generating keystore with fixed parameters..."
+          keytool -genkeypair -v -keystore keystore/study-reward.keystore \
+            -alias study-reward -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Study Reward App, OU=Development, O=Study Reward, L=City, ST=State, C=CN"
+        fi
         # 验证 keystore 文件已创建
         if [ ! -f "keystore/study-reward.keystore" ]; then
-          echo "ERROR: Keystore file not created!"
+          echo "ERROR: Keystore file not found!"
           exit 1
         fi
-        echo "Keystore file created successfully"
-        ls -lh keystore/
+        echo "Keystore file ready:"
+        ls -lh keystore/study-reward.keystore
         # 确保 keystore.properties 存在（storeFile 路径相对于 rootProject，即 android/）
         echo "storePassword=android" > keystore/keystore.properties
         echo "keyPassword=android" >> keystore/keystore.properties
