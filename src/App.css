@@ -49,12 +49,14 @@
 }
 
 .theme-selector,
-.data-menu {
+.data-menu,
+.style-customizer-btn {
   position: relative;
 }
 
 .theme-btn,
-.data-btn {
+.data-btn,
+.style-btn {
   background: transparent;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -65,7 +67,8 @@
 }
 
 .theme-btn:hover,
-.data-btn:hover {
+.data-btn:hover,
+.style-btn:hover {
   background: #f7f7f7;
   border-color: var(--primary-color);
 }

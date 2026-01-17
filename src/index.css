@@ -24,3 +24,45 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 边框样式类 - 只使用安全的圆角，不影响布局 */
+.border-style-rectangle .task-template-card,
+.border-style-rectangle .exchange-card,
+.border-style-rectangle .app-header {
+  border-radius: 8px;
+}
+
+.border-style-rounded .task-template-card,
+.border-style-rounded .exchange-card,
+.border-style-rounded .app-header {
+  border-radius: 20px;
+}
+
+.border-style-soft .task-template-card,
+.border-style-soft .exchange-card,
+.border-style-soft .app-header {
+  border-radius: 16px;
+}
+
+.border-style-soft .task-template-card,
+.border-style-soft .exchange-card,
+.border-style-soft .app-header {
+  border-radius: 16px;
+}
+
+/* 背景样式类 */
+body.background-style-gradient-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+body.background-style-gradient-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+/* 自定义背景图片 */
+body[style*="--background-image"] {
+  background-image: var(--background-image) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}

@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import TaskManager from './components/TaskManager';
 import Shop from './components/Shop';
 import Inventory from './components/Inventory';
+import StyleCustomizer from './components/StyleCustomizer';
 import { userDataStorage, exportData, importData } from './utils/storage';
 import { themeStorage, applyTheme, themes, Theme } from './utils/theme';
+import { applyCustomStyle } from './utils/style-apply';
+import { UserAPI } from './api';
 import './App.css';
 
 const App: React.FC = () => {
@@ -12,14 +15,28 @@ const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(themeStorage.get());
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showDataMenu, setShowDataMenu] = useState(false);
+  const [showStyleCustomizer, setShowStyleCustomizer] = useState(false);
 
   useEffect(() => {
     updatePoints();
     applyTheme(currentTheme);
+    // 加载并应用自定义样式
+    loadCustomStyle();
     // 定期更新积分显示
     const interval = setInterval(updatePoints, 1000);
     return () => clearInterval(interval);
   }, [currentTheme]);
+
+  const loadCustomStyle = async () => {
+    try {
+      const response = await UserAPI.getCustomStyle();
+      if (response.success && response.data?.data) {
+        applyCustomStyle(response.data.data);
+      }
+    } catch (error) {
+      console.error('Failed to load custom style:', error);
+    }
+  };
 
   const updatePoints = () => {
     const userData = userDataStorage.get();
@@ -115,6 +132,15 @@ const App: React.FC = () => {
                 </div>
               )}
             </div>
+            <div className="style-customizer-btn">
+              <button
+                className="style-btn"
+                onClick={() => setShowStyleCustomizer(true)}
+                title="样式定制"
+              >
+                🎭
+              </button>
+            </div>
             <div className="data-menu">
               <button
                 className="data-btn"
@@ -160,6 +186,10 @@ const App: React.FC = () => {
         {activeTab === 'shop' && <Shop />}
         {activeTab === 'inventory' && <Inventory />}
       </main>
+
+      {showStyleCustomizer && (
+        <StyleCustomizer onClose={() => setShowStyleCustomizer(false)} />
+      )}
     </div>
   );
 };
