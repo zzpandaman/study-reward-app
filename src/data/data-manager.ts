@@ -5,7 +5,7 @@
 import { AppData, TaskTemplate, TaskExecution, Product, UserData } from '../types';
 import { StorageAdapterFactory, LocalStorageAdapter } from './storage-adapter';
 
-const CURRENT_SCHEMA_VERSION = 2;
+const CURRENT_SCHEMA_VERSION = 3;
 const CURRENT_VERSION = '1.1.0';
 
 // 预设数据
@@ -16,10 +16,8 @@ export const PRESET_TASK_TEMPLATES: TaskTemplate[] = [
 ];
 
 export const DEFAULT_PRODUCTS: Product[] = [
-  { id: '1', name: '黄金1g', description: '兑换1克黄金', price: 480, unit: 'g', isPreset: true, createdAt: Date.now() },
-  { id: '2', name: '黄金0.1g', description: '兑换0.1克黄金', price: 48, unit: 'g', isPreset: true, createdAt: Date.now() },
-  { id: '3', name: '黄金0.01g', description: '兑换0.01克黄金', price: 5, unit: 'g', isPreset: true, createdAt: Date.now() },
-  { id: '4', name: '玩手机60分钟', description: '60分钟学习 = 60分钟玩手机（比例1:1）', price: 60, unit: '分钟', isPreset: true, createdAt: Date.now() },
+  { id: 'gold', name: '黄金', description: '兑换黄金', price: 48, minQuantity: 0.1, unit: 'g', isPreset: true, createdAt: Date.now() },
+  { id: 'phone', name: '玩手机', description: '兑换玩手机时长', price: 1, minQuantity: 1, unit: '分钟', isPreset: true, createdAt: Date.now() },
 ];
 
 export class DataManager {
@@ -159,8 +157,28 @@ export class DataManager {
       data.products = data.products.map((p) => ({
         ...p,
         isPreset: p.isPreset ?? DEFAULT_PRODUCTS.some((dp) => dp.id === p.id),
+        minQuantity: (p as any).minQuantity ?? 1, // 兼容旧数据，默认minQuantity为1
         createdAt: p.createdAt || Date.now(),
       }));
+    }
+
+    // Schema v2 -> v3 迁移：添加minQuantity字段
+    if (data.version.schemaVersion < 3) {
+      data.products = data.products.map((p) => {
+        // 如果已有minQuantity，保持不变；否则根据商品类型设置默认值
+        if ((p as any).minQuantity !== undefined) {
+          return p;
+        }
+        
+        // 根据商品ID或名称推断minQuantity
+        if (p.id === 'gold' || p.name.includes('黄金')) {
+          return { ...p, minQuantity: 0.1 };
+        } else if (p.id === 'phone' || p.name.includes('玩手机')) {
+          return { ...p, minQuantity: 1 };
+        } else {
+          return { ...p, minQuantity: 1 };
+        }
+      });
     }
 
     // 保存迁移后的数据
@@ -209,6 +227,13 @@ export class DataManager {
     }
     if (!Array.isArray(data.taskExecutions)) {
       throw new Error('Task executions must be an array');
+    }
+
+    // 过滤掉无效的任务模板（name或description为空）
+    if (data.taskTemplates) {
+      data.taskTemplates = data.taskTemplates.filter(
+        (template) => template.name && template.name.trim() && template.description && template.description.trim()
+      );
     }
   }
 

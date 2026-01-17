@@ -69,6 +69,7 @@ export interface CreateProductRequest {
   name: string;
   description: string;
   price: number;
+  minQuantity: number;
   unit?: string;
 }
 
@@ -80,6 +81,7 @@ export interface UpdateProductRequest {
   name?: string;
   description?: string;
   price?: number;
+  minQuantity?: number;
   unit?: string;
 }
 

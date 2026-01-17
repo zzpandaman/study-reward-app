@@ -87,7 +87,7 @@ const App: React.FC = () => {
         <h1>📚 学习奖励小程序</h1>
         <div className="header-info">
           <div className="points-badge">
-            💰 {userPoints} 积分
+            💰 {userPoints.toFixed(2)} 积分
           </div>
           <div className="header-actions">
             <div className="theme-selector">

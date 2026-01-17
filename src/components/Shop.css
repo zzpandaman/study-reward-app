@@ -50,12 +50,14 @@
   border: 2px solid #e0e0e0;
   border-radius: 12px;
   padding: 24px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .exchange-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .exchange-header {
@@ -103,6 +105,14 @@
   border-radius: 6px;
   font-size: 16px;
   width: 100%;
+  /* 隐藏数字输入框的上下按钮 */
+  -moz-appearance: textfield;
+}
+
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .form-group input[type="number"]:focus {
@@ -117,7 +127,8 @@
   margin-top: 4px;
 }
 
-.gold-preview {
+.gold-preview,
+.quantity-preview {
   background: #e8ebff;
   padding: 8px 12px;
   border-radius: 6px;

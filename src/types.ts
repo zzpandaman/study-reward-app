@@ -26,7 +26,8 @@ export interface Product {
   id: string;
   name: string;
   description: string;
-  price: number; // 所需积分
+  price: number; // 所需积分（每minQuantity单位的积分）
+  minQuantity: number; // 最小数量单位（如：0.1g、1分钟）
   unit?: string; // 单位（如：g、分钟）
   isPreset: boolean; // 是否为预设商品
   createdAt?: number; // 创建时间

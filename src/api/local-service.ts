@@ -271,6 +271,7 @@ export class LocalService {
         name: request.name,
         description: request.description,
         price: request.price,
+        minQuantity: request.minQuantity ?? 1,
         unit: request.unit,
         isPreset: false,
         createdAt: Date.now(),
@@ -384,41 +385,24 @@ export class LocalService {
     try {
       const appData = dataManager.getAppData();
       let product: Product | null = null;
-      let productName = '';
-      let productUnit = '';
 
-      if (request.productId === 'phone') {
-        product = { id: 'phone', name: '玩手机', description: '玩手机时长', price: 1, unit: '分钟', isPreset: true };
-        productName = '玩手机';
-        productUnit = '分钟';
-      } else if (request.productId === 'gold') {
-        product = { id: 'gold', name: '黄金', description: '黄金', price: 480, unit: 'g', isPreset: true };
-        productName = '黄金';
-        productUnit = 'g';
-      } else {
-        product = appData.products.find((p) => p.id === request.productId) || null;
-        if (!product) {
-          return { success: false, error: 'Product not found' };
-        }
-        productName = product.name;
-        productUnit = product.unit || '';
+      // 从商品列表查找商品
+      product = appData.products.find((p) => p.id === request.productId) || null;
+      if (!product) {
+        return { success: false, error: 'Product not found' };
       }
 
-      let quantity = request.quantity || 1;
-      let pointsSpent = 0;
-      let actualQuantity = quantity;
-
-      if (request.productId === 'phone') {
-        pointsSpent = quantity;
-        actualQuantity = quantity;
-      } else if (request.productId === 'gold') {
-        const grams = quantity * 0.01;
-        pointsSpent = Math.round(grams * 480);
-        actualQuantity = grams;
-      } else {
-        pointsSpent = product.price * quantity;
-        actualQuantity = quantity;
-      }
+      // 用户输入的整数数量（单位数）
+      const units = request.quantity || 1;
+      
+      // 计算实际数量（用户输入 * minQuantity）
+      const actualQuantity = units * (product.minQuantity ?? 1);
+      
+      // 计算所需积分（每minQuantity单位的积分 * 单位数）
+      const pointsSpent = product.price * units;
+      
+      const productName = product.name;
+      const productUnit = product.unit || '';
 
       if (appData.userData.points < pointsSpent) {
         return {
@@ -465,6 +449,7 @@ export class LocalService {
               name: productName,
               description: product.description || '',
               price: product.price,
+              minQuantity: product.minQuantity ?? 1,
               unit: productUnit,
               isPreset: product.isPreset,
             },

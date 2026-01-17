@@ -98,6 +98,7 @@ export const productStorage = {
       name: product.name,
       description: product.description,
       price: product.price,
+      minQuantity: product.minQuantity ?? 1,
       unit: product.unit,
     });
   },

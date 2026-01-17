@@ -4,7 +4,12 @@ import { taskTemplateStorage, taskExecutionStorage, userDataStorage, calculateRe
 import './TaskManager.css';
 
 const TaskManager: React.FC = () => {
-  const [taskTemplates] = useState<TaskTemplate[]>(taskTemplateStorage.get());
+  // 过滤掉无效的任务模板（name或description为空/undefined）
+  const [taskTemplates] = useState<TaskTemplate[]>(
+    taskTemplateStorage.get().filter(
+      (template) => template.name && template.name.trim() && template.description && template.description.trim()
+    )
+  );
   const [executions, setExecutions] = useState<TaskExecution[]>([]);
   const [runningExecution, setRunningExecution] = useState<TaskExecution | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -37,18 +42,22 @@ const TaskManager: React.FC = () => {
     }
 
     const interval = setInterval(() => {
-      if (runningExecution && runningExecution.status === 'running' && !isPaused) {
+      // 每次从storage获取最新数据，确保使用最新的totalPausedDuration
+      const currentExecutions = taskExecutionStorage.get();
+      const currentExecution = currentExecutions.find((e) => e.id === runningExecution.id);
+      
+      if (currentExecution && currentExecution.status === 'running' && !isPaused) {
         // 基于实际开始时间计算，而不是累加
         const now = Date.now();
-        const pausedDuration = runningExecution.totalPausedDuration * 1000;
-        const effectiveStartTime = runningExecution.startTime + pausedDuration;
+        const pausedDuration = currentExecution.totalPausedDuration * 1000;
+        const effectiveStartTime = currentExecution.startTime + pausedDuration;
         const elapsed = Math.floor((now - effectiveStartTime) / 1000);
-        setElapsedSeconds(elapsed);
+        setElapsedSeconds(Math.max(0, elapsed));
       }
     }, 1000);
     
     return () => clearInterval(interval);
-  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.totalPausedDuration, runningExecution?.status, isPaused]);
+  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused]);
 
   const loadExecutions = () => {
     const loadedExecutions = taskExecutionStorage.get();
@@ -127,6 +136,14 @@ const TaskManager: React.FC = () => {
     taskExecutionStorage.update(updatedExecution);
     setRunningExecution(updatedExecution);
     setIsPaused(false);
+    
+    // 恢复任务后重新计算已用时间
+    const now = Date.now();
+    const pausedDurationMs = totalPausedDuration * 1000;
+    const effectiveStartTime = runningExecution.startTime + pausedDurationMs;
+    const elapsed = Math.floor((now - effectiveStartTime) / 1000);
+    setElapsedSeconds(Math.max(0, elapsed));
+    
     loadExecutions();
   };
 
