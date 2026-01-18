@@ -639,12 +639,15 @@ export class DataManager {
               // 从描述中解析数量，格式："兑换商品名: 数量单位"
               const quantityMatch = record.description.match(/:\s*([\d.]+)(\w+)/);
               if (quantityMatch) {
-                const quantity = parseFloat(quantityMatch[1]);
+                const rawQuantity = parseFloat(quantityMatch[1]);
                 const key = `${foundProduct.name}_${foundProduct.unit || ''}`;
                 const existing = inventoryMap.get(key);
                 const precision = this.getPrecisionByUnit(foundProduct.unit || '');
+                // 解析时先处理精度，避免浮点数精度误差累积
+                const quantity = this.roundToPrecision(rawQuantity, precision);
                 
                 if (existing) {
+                  // 累加前，每个数量都已处理精度，避免 0.1 + 0.07 = 0.16999999999999998 的问题
                   const newQuantity = this.roundToPrecision(existing.quantity + quantity, precision);
                   inventoryMap.set(key, {
                     ...existing,
@@ -654,7 +657,7 @@ export class DataManager {
                   inventoryMap.set(key, {
                     productId: foundProduct.id,
                     productName: foundProduct.name,
-                    quantity: this.roundToPrecision(quantity, precision),
+                    quantity: quantity,
                     unit: foundProduct.unit,
                   });
                 }
@@ -667,12 +670,15 @@ export class DataManager {
         // 从描述中解析数量，格式："兑换商品名: 数量单位"
         const quantityMatch = record.description.match(/:\s*([\d.]+)(\w+)/);
         if (quantityMatch) {
-          const quantity = parseFloat(quantityMatch[1]);
+          const rawQuantity = parseFloat(quantityMatch[1]);
           const key = `${product.name}_${product.unit || ''}`;
           const existing = inventoryMap.get(key);
           const precision = this.getPrecisionByUnit(product.unit || '');
+          // 解析时先处理精度，避免浮点数精度误差累积
+          const quantity = this.roundToPrecision(rawQuantity, precision);
           
           if (existing) {
+            // 累加前，每个数量都已处理精度，避免 0.1 + 0.07 = 0.16999999999999998 的问题
             const newQuantity = this.roundToPrecision(existing.quantity + quantity, precision);
             inventoryMap.set(key, {
               ...existing,
@@ -682,7 +688,7 @@ export class DataManager {
             inventoryMap.set(key, {
               productId: product.id,
               productName: product.name,
-              quantity: this.roundToPrecision(quantity, precision),
+              quantity: quantity,
               unit: product.unit,
             });
           }
