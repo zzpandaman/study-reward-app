@@ -408,14 +408,14 @@ const TaskManager: React.FC = () => {
                   <option value="custom">自定义</option>
                 </select>
               </div>
-              <button
-                className="add-task-btn"
-                onClick={() => setShowAddTaskDialog(true)}
-                title="添加任务"
-              >
-                ➕ 添加任务
-              </button>
-            </div>
+            <button
+              className="add-task-btn"
+              onClick={() => setShowAddTaskDialog(true)}
+              title="添加任务"
+            >
+              ➕ 添加任务
+            </button>
+          </div>
           </div>
 
           {/* 统计信息和分页 */}

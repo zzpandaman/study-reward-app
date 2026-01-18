@@ -58,7 +58,13 @@ const App: React.FC = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `学习奖励数据_${new Date().toISOString().split('T')[0]}.json`;
+      
+      // 生成带日期时间的文件名：学习奖励数据备份_2024-01-17_14-30-25.srdata
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+      const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-mm-ss
+      a.download = `学习奖励数据备份_${dateStr}_${timeStr}.srdata`;
+      
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -73,19 +79,42 @@ const App: React.FC = () => {
   const handleImportData = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json';
+    // 只支持 .srdata 格式
+    input.accept = '.srdata';
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
+
+      // 验证文件扩展名
+      const fileName = file.name.toLowerCase();
+      if (!fileName.endsWith('.srdata')) {
+        alert('文件格式错误：请选择 .srdata 格式的数据备份文件。');
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = (event) => {
         try {
           const data = event.target?.result as string;
+          
+          // 验证是否为有效的JSON格式
+          try {
+            JSON.parse(data);
+          } catch (jsonError) {
+            alert('文件格式错误：不是有效的数据格式。\n\n请确保选择的是学习奖励数据备份文件（.srdata）。');
+            return;
+          }
+          
           const result = importData(data);
           if (result.success) {
-            alert(result.message);
+            let message = result.message;
+            if (result.stats) {
+              message += `\n\n详细统计：\n新增 ${result.stats.added} 项\n更新 ${result.stats.updated} 项\n合并 ${result.stats.merged} 项`;
+            }
+            alert(message);
             updatePoints();
+            // 刷新页面以更新所有组件
+            window.location.reload();
           } else {
             alert(result.message);
           }

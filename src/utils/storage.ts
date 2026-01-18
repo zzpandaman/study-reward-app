@@ -152,7 +152,7 @@ export const exportData = (): string => {
   return dataManager.exportData();
 };
 
-export const importData = (jsonData: string): { success: boolean; message: string } => {
+export const importData = (jsonData: string): { success: boolean; message: string; stats?: { added: number; updated: number; merged: number } } => {
   return dataManager.importData(jsonData);
 };
 

@@ -2,7 +2,7 @@
  * 数据管理器
  * 负责数据版本管理、迁移、验证
  */
-import { AppData, TaskTemplate, TaskExecution, Product, UserData } from '../types';
+import { AppData, TaskTemplate, TaskExecution, Product, UserData, PointRecord, InventoryItem } from '../types';
 import { StorageAdapterFactory, LocalStorageAdapter } from './storage-adapter';
 
 const CURRENT_SCHEMA_VERSION = 3;
@@ -333,9 +333,32 @@ export class DataManager {
   }
 
   /**
-   * 导入数据
+   * 检测字段差异
    */
-  importData(jsonData: string): { success: boolean; message: string } {
+  private detectFieldDifferences<T extends Record<string, any>>(
+    local: T,
+    imported: T,
+    fields: Array<keyof T>,
+    fieldNames: Record<string, string>
+  ): string[] {
+    const differences: string[] = [];
+    for (const field of fields) {
+      if (local[field] !== imported[field]) {
+        const fieldName = fieldNames[String(field)] || String(field);
+        const localValue = local[field];
+        const importedValue = imported[field];
+        differences.push(`- ${fieldName}：本地${localValue} vs 导入${importedValue}`);
+      }
+    }
+    return differences;
+  }
+
+  /**
+   * 导入数据（智能合并模式）
+   * 基于业务唯一键（name）自动判断：name相同的项目如果其他字段不同则报错
+   * @param jsonData JSON格式的导入数据
+   */
+  importData(jsonData: string): { success: boolean; message: string; stats?: { added: number; updated: number; merged: number } } {
     try {
       const imported = JSON.parse(jsonData);
 
@@ -343,21 +366,322 @@ export class DataManager {
         return { success: false, message: '数据格式不正确' };
       }
 
-      // 验证并导入数据
+      const localData = this.getAppData();
+      const stats = { added: 0, updated: 0, merged: 0 };
+      
+      // ========== 第一步：合并任务模板（使用name作为唯一键） ==========
+      const localTemplates = localData.taskTemplates.filter((t: TaskTemplate) => !t.isPreset);
+      const importedTemplates: TaskTemplate[] = imported.data.taskTemplates || [];
+      const importedCustomTemplates = importedTemplates.filter((t: TaskTemplate) => !t.isPreset);
+      
+      const templateMap = new Map<string, TaskTemplate>(); // name -> Template
+      
+      // 先添加本地自定义任务
+      localTemplates.forEach((t: TaskTemplate) => {
+        templateMap.set(t.name, t);
+      });
+      
+      // 再添加导入的自定义任务，检查冲突
+      for (const t of importedCustomTemplates) {
+        const existing = templateMap.get(t.name);
+        if (!existing) {
+          // 新任务，添加（使用导入的ID）
+          templateMap.set(t.name, t);
+          stats.added++;
+        } else {
+          // 已存在，检查所有字段差异
+          const differences = this.detectFieldDifferences(
+            existing,
+            t,
+            ['description', 'isPreset'],
+            { description: '描述', isPreset: '预设标识' }
+          );
+          if (differences.length > 0) {
+            return { 
+              success: false, 
+              message: `任务"${t.name}"存在冲突：本地和导入的字段不同。\n${differences.join('\n')}\n请先删除冲突项，再重新导出导入。` 
+            };
+          }
+          // 字段相同，比较时间戳，保留更新的
+          const existingTime = existing.createdAt || 0;
+          const importedTime = t.createdAt || 0;
+          if (importedTime > existingTime) {
+            // 使用导入的任务，但保留本地ID（确保ID稳定性）
+            const updatedTemplate = { ...t, id: existing.id };
+            templateMap.set(t.name, updatedTemplate);
+            stats.updated++;
+          } else {
+            // 保留本地任务
+            stats.merged++;
+          }
+        }
+      }
+      
+      // 添加预设任务（从本地获取最新版本）
+      const localPresetTemplates = localData.taskTemplates.filter((t: TaskTemplate) => t.isPreset);
+      localPresetTemplates.forEach((t: TaskTemplate) => {
+        templateMap.set(t.name, t);
+      });
+      
+      // ========== 第二步：合并商品（使用name作为唯一键） ==========
+      const localProducts = localData.products.filter((p: Product) => !p.isPreset);
+      const importedProducts: Product[] = imported.data.products || [];
+      const importedCustomProducts = importedProducts.filter((p: Product) => !p.isPreset);
+      
+      const productMap = new Map<string, Product>(); // name -> Product
+      
+      localProducts.forEach((p: Product) => {
+        productMap.set(p.name, p);
+      });
+      
+      for (const p of importedCustomProducts) {
+        const existing = productMap.get(p.name);
+        if (!existing) {
+          productMap.set(p.name, p);
+          stats.added++;
+        } else {
+          // 已存在，检查所有字段差异
+          const differences = this.detectFieldDifferences(
+            existing,
+            p,
+            ['description', 'price', 'minQuantity', 'unit', 'isPreset'],
+            { 
+              description: '描述', 
+              price: '价格', 
+              minQuantity: '最小数量', 
+              unit: '单位',
+              isPreset: '预设标识'
+            }
+          );
+          if (differences.length > 0) {
+            return { 
+              success: false, 
+              message: `商品"${p.name}"存在冲突：本地和导入的字段不同。\n${differences.join('\n')}\n请先删除冲突项，再重新导出导入。` 
+            };
+          }
+          // 字段相同，比较时间戳，保留更新的
+          const existingTime = existing.createdAt || 0;
+          const importedTime = p.createdAt || 0;
+          if (importedTime > existingTime) {
+            // 使用导入的商品，但保留本地ID（确保ID稳定性）
+            const updatedProduct = { ...p, id: existing.id };
+            productMap.set(p.name, updatedProduct);
+            stats.updated++;
+          } else {
+            // 保留本地商品
+            stats.merged++;
+          }
+        }
+      }
+      
+      // 添加预设商品（从本地获取最新版本）
+      const localPresetProducts = localData.products.filter((p: Product) => p.isPreset);
+      localPresetProducts.forEach((p: Product) => {
+        productMap.set(p.name, p);
+      });
+      
+      // ========== 第三步：合并积分记录（使用type + relatedId + timestamp作为唯一键，更新relatedId） ==========
+      const localPointRecords: PointRecord[] = localData.userData.pointRecords || [];
+      const importedPointRecords: PointRecord[] = imported.data.userData.pointRecords || [];
+      const pointRecordMap = new Map<string, PointRecord>();
+      
+      /**
+       * 更新积分记录的relatedId
+       * type='earn' → relatedId指向任务模板ID
+       * type='spend' → relatedId指向商品ID
+       */
+      const updateRelatedId = (record: PointRecord): PointRecord => {
+        if (!record.relatedId) {
+          return record;
+        }
+        
+        if (record.type === 'earn') {
+          // 通过ID查找任务模板
+          const task = Array.from(templateMap.values()).find(t => t.id === record.relatedId);
+          if (task) {
+            return record; // ID存在，无需更新
+          }
+          
+          // 找不到，通过name查找（从描述解析：格式"完成任务: 任务名称"）
+          const nameMatch = record.description.match(/完成任务:\s*([^(]+)/);
+          if (nameMatch) {
+            const taskName = nameMatch[1].trim();
+            const foundTask = templateMap.get(taskName);
+            if (foundTask) {
+              return { ...record, relatedId: foundTask.id };
+            }
+          }
+          
+          // 找不到对应任务，返回原记录（可能任务已删除）
+          return record;
+        } else if (record.type === 'spend') {
+          // 通过ID查找商品
+          const product = Array.from(productMap.values()).find(p => p.id === record.relatedId);
+          if (product) {
+            return record; // ID存在，无需更新
+          }
+          
+          // 找不到，通过name查找（从描述解析：格式"兑换商品名: 数量单位"）
+          const nameMatch = record.description.match(/兑换([^:]+):/);
+          if (nameMatch) {
+            const productName = nameMatch[1].trim();
+            const foundProduct = productMap.get(productName);
+            if (foundProduct) {
+              return { ...record, relatedId: foundProduct.id };
+            }
+          }
+          
+          // 找不到对应商品，返回原记录（可能商品已删除）
+          return record;
+        }
+        
+        return record;
+      };
+      
+      // 处理本地积分记录，更新relatedId
+      localPointRecords.forEach((r: PointRecord) => {
+        const updatedRecord = updateRelatedId(r);
+        const key = `${updatedRecord.type}_${updatedRecord.relatedId || 'none'}_${updatedRecord.timestamp}`;
+        pointRecordMap.set(key, updatedRecord);
+      });
+      
+      // 处理导入的积分记录，更新relatedId并合并
+      for (const r of importedPointRecords) {
+        // 先更新relatedId
+        const updatedRecord = updateRelatedId(r);
+        const key = `${updatedRecord.type}_${updatedRecord.relatedId || 'none'}_${updatedRecord.timestamp}`;
+        
+        const existing = pointRecordMap.get(key);
+        if (!existing) {
+          // 新记录，添加
+          pointRecordMap.set(key, updatedRecord);
+          stats.added++;
+        } else {
+          // 已存在，检查所有字段差异
+          const differences = this.detectFieldDifferences(
+            existing,
+            updatedRecord,
+            ['amount', 'description'],
+            { amount: '积分数量', description: '描述' }
+          );
+          if (differences.length > 0) {
+            const typeText = updatedRecord.type === 'earn' ? '获取' : '消耗';
+            return { 
+              success: false, 
+              message: `积分记录存在冲突：${typeText}记录在时间 ${new Date(updatedRecord.timestamp).toLocaleString()} 的记录，本地和导入的字段不同。\n${differences.join('\n')}\n请先删除冲突项，再重新导出导入。` 
+            };
+          }
+          // 字段相同，保留本地版本
+          stats.merged++;
+        }
+      }
+      
+      // ========== 第四步：从积分记录计算背包和总积分 ==========
+      const spendRecords = Array.from(pointRecordMap.values()).filter(r => r.type === 'spend' && r.relatedId);
+      
+      // 从积分记录中提取商品兑换信息
+      // 描述格式通常是："兑换商品名: 数量单位" 例如："兑换黄金: 0.01g"
+      const inventoryMap = new Map<string, InventoryItem>();
+      
+      // 遍历所有消费记录，计算每个商品的数量
+      for (const record of spendRecords) {
+        if (!record.relatedId) continue;
+        
+        // 从商品列表中找到对应的商品（通过ID或名称匹配）
+        const product = Array.from(productMap.values()).find(p => 
+          p.id === record.relatedId || p.name === record.relatedId
+        );
+        if (!product) {
+          // 如果找不到商品，尝试从描述中解析商品名
+          const nameMatch = record.description.match(/兑换([^:]+):/);
+          if (nameMatch) {
+            const productName = nameMatch[1].trim();
+            const foundProduct = Array.from(productMap.values()).find(p => p.name === productName);
+            if (foundProduct) {
+              // 从描述中解析数量，格式："兑换商品名: 数量单位"
+              const quantityMatch = record.description.match(/:\s*([\d.]+)(\w+)/);
+              if (quantityMatch) {
+                const quantity = parseFloat(quantityMatch[1]);
+                const key = `${foundProduct.name}_${foundProduct.unit || ''}`;
+                const existing = inventoryMap.get(key);
+                if (existing) {
+                  inventoryMap.set(key, {
+                    ...existing,
+                    quantity: existing.quantity + quantity,
+                  });
+                } else {
+                  inventoryMap.set(key, {
+                    productId: foundProduct.id,
+                    productName: foundProduct.name,
+                    quantity: quantity,
+                    unit: foundProduct.unit,
+                  });
+                }
+              }
+            }
+          }
+          continue;
+        }
+        
+        // 从描述中解析数量，格式："兑换商品名: 数量单位"
+        const quantityMatch = record.description.match(/:\s*([\d.]+)(\w+)/);
+        if (quantityMatch) {
+          const quantity = parseFloat(quantityMatch[1]);
+          const key = `${product.name}_${product.unit || ''}`;
+          const existing = inventoryMap.get(key);
+          if (existing) {
+            inventoryMap.set(key, {
+              ...existing,
+              quantity: existing.quantity + quantity,
+            });
+          } else {
+            inventoryMap.set(key, {
+              productId: product.id,
+              productName: product.name,
+              quantity: quantity,
+              unit: product.unit,
+            });
+          }
+        }
+      }
+      
+      // 从积分记录计算总积分（不能直接取最大值，需要从记录计算）
+      const allPointRecords = Array.from(pointRecordMap.values());
+      let calculatedPoints = 0;
+      for (const record of allPointRecords) {
+        if (record.type === 'earn') {
+          calculatedPoints += record.amount;
+        } else if (record.type === 'spend') {
+          calculatedPoints -= record.amount;
+        }
+      }
+      
       const appData: AppData = {
-        ...imported.data,
+        taskTemplates: Array.from(templateMap.values()),
+        products: Array.from(productMap.values()),
+        taskExecutions: localData.taskExecutions || [], // 任务执行记录保持不变（包含运行状态等，不影响积分记录）
+        userData: {
+          ...localData.userData,
+          points: calculatedPoints, // 从积分记录计算得出
+          pointRecords: Array.from(pointRecordMap.values()),
+          inventory: Array.from(inventoryMap.values()), // 从积分记录计算得出
+          customStyle: localData.userData.customStyle || imported.data.userData.customStyle,
+        },
         version: {
           version: CURRENT_VERSION,
           schemaVersion: CURRENT_SCHEMA_VERSION,
-          createdAt: imported.data.version?.createdAt || Date.now(),
+          createdAt: localData.version.createdAt,
           updatedAt: Date.now(),
         },
       };
 
       this.validateData(appData);
-      this.saveAppData(appData);
+      // 确保预设商品使用最新配置
+      const finalData = this.updatePresetProducts(appData);
+      this.saveAppData(finalData);
 
-      return { success: true, message: '数据导入成功！' };
+      const statsText = `新增 ${stats.added} 项，更新 ${stats.updated} 项，合并 ${stats.merged} 项`;
+      return { success: true, message: `数据导入成功！${statsText}`, stats };
     } catch (error) {
       return { success: false, message: '数据导入失败：' + (error as Error).message };
     }

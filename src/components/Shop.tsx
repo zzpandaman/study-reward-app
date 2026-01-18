@@ -345,7 +345,7 @@ const Shop: React.FC = () => {
             </div>
           );
         })}
-          </div>
+      </div>
         </>
       )}
 
