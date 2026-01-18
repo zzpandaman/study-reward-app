@@ -46,37 +46,8 @@ const Inventory: React.FC = () => {
     setPage(1);
   }, [searchKeyword]);
 
-  // 统计黄金总量（以g为单位）
-  const getGoldTotal = (): number => {
-    const goldItem = inventory.find((item) => item.productName === '黄金');
-    return goldItem ? goldItem.quantity : 0;
-  };
-
-  // 统计玩手机时长（以分钟为单位）
-  const getPhoneTime = (): number => {
-    const phoneItem = inventory.find((item) => item.productName.includes('玩手机'));
-    return phoneItem ? phoneItem.quantity : 0;
-  };
-
-  const goldTotal = getGoldTotal();
-  const phoneTime = getPhoneTime();
-
   return (
     <div className="inventory">
-      <h2>背包</h2>
-
-      {/* 统计总览 */}
-      <div className="inventory-summary">
-        <div className="summary-item">
-          <div className="summary-label">总黄金</div>
-          <div className="summary-value">{goldTotal.toFixed(2)} g</div>
-        </div>
-        <div className="summary-item">
-          <div className="summary-label">玩手机时长</div>
-          <div className="summary-value">{phoneTime} 分钟</div>
-        </div>
-      </div>
-
       {/* 搜索栏 */}
       {inventory.length > 0 && (
         <div className="filter-bar">
@@ -92,10 +63,30 @@ const Inventory: React.FC = () => {
         </div>
       )}
 
-      {/* 统计信息 */}
+      {/* 统计信息和分页 */}
       {filteredInventory.length > 0 && (
         <div className="filter-summary">
-          共 {filteredInventory.length} 个物品，当前显示 {paginatedInventory.length} 个
+          <span>共 {filteredInventory.length} 个物品，第 {page} / {totalPages} 页</span>
+          {totalPages > 1 && (
+            <div className="pagination-inline">
+              <button
+                className="pagination-btn-inline"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page <= 1}
+                title="上一页"
+              >
+                ‹
+              </button>
+              <button
+                className="pagination-btn-inline"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page >= totalPages}
+                title="下一页"
+              >
+                ›
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -111,7 +102,7 @@ const Inventory: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="inventory-items">
+        <div className="inventory-items">
             {paginatedInventory.map((item) => (
             <div key={item.productId} className="inventory-item">
               <div className="item-info">
@@ -125,31 +116,8 @@ const Inventory: React.FC = () => {
                 {item.unit && ` ${item.unit}`}
               </div>
             </div>
-            ))}
-          </div>
-
-          {/* 分页控件 */}
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page <= 1}
-              >
-                上一页
-              </button>
-              <span className="pagination-info">
-                第 {page} / {totalPages} 页
-              </span>
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page >= totalPages}
-              >
-                下一页
-              </button>
-            </div>
-          )}
+          ))}
+        </div>
         </>
       )}
     </div>

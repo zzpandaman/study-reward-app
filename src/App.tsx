@@ -102,7 +102,10 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>📚 学习奖励小程序</h1>
+        <h1>
+          <span className="header-icon">📚</span>
+          <span className="header-label">学习奖励小程序</span>
+        </h1>
         <div className="header-info">
           <div className="points-badge">
             💰 {userPoints.toFixed(2)} 积分
@@ -166,25 +169,29 @@ const App: React.FC = () => {
           className={activeTab === 'tasks' ? 'active' : ''}
           onClick={() => setActiveTab('tasks')}
         >
-          📝 学习任务
+          <span className="tab-icon">📝</span>
+          <span className="tab-label">学习任务</span>
         </button>
         <button
           className={activeTab === 'shop' ? 'active' : ''}
           onClick={() => setActiveTab('shop')}
         >
-          🛒 积分商城
+          <span className="tab-icon">🛒</span>
+          <span className="tab-label">积分商城</span>
         </button>
         <button
           className={activeTab === 'inventory' ? 'active' : ''}
           onClick={() => setActiveTab('inventory')}
         >
-          🎒 背包
+          <span className="tab-icon">🎒</span>
+          <span className="tab-label">我的背包</span>
         </button>
         <button
           className={activeTab === 'records' ? 'active' : ''}
           onClick={() => setActiveTab('records')}
         >
-          📊 积分记录
+          <span className="tab-icon">📊</span>
+          <span className="tab-label">积分记录</span>
         </button>
       </nav>
 

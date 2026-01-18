@@ -382,8 +382,6 @@ const TaskManager: React.FC = () => {
 
   return (
     <div className="task-manager">
-      <h2>学习任务</h2>
-
       {/* 选择任务 */}
       {!runningExecution && (
         <div className="task-selection">
@@ -445,7 +443,7 @@ const TaskManager: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="task-templates">
+          <div className="task-templates">
                 {paginatedTemplates.map((template) => (
               <div
                 key={template.id}
@@ -473,8 +471,8 @@ const TaskManager: React.FC = () => {
                   </button>
                 )}
               </div>
-                ))}
-              </div>
+            ))}
+          </div>
 
               {/* 分页控件 */}
               {totalPages > 1 && (
@@ -499,13 +497,13 @@ const TaskManager: React.FC = () => {
                 </div>
               )}
 
-              <button
-                className="start-task-btn"
-                onClick={startTask}
-                disabled={!selectedTemplateId}
-              >
-                开始任务
-              </button>
+          <button
+            className="start-task-btn"
+            onClick={startTask}
+            disabled={!selectedTemplateId}
+          >
+            开始任务
+          </button>
             </>
           )}
         </div>

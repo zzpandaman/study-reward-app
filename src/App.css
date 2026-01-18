@@ -24,6 +24,20 @@
   color: var(--primary-color);
   font-size: 24px;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.header-label {
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .header-info {
@@ -152,15 +166,29 @@
 
 .app-nav button {
   flex: 1;
-  padding: 12px 20px;
+  padding: 12px 8px;
   border: none;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
   color: var(--primary-color);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.tab-label {
+  font-size: 13px;
+  line-height: 1.2;
 }
 
 .app-nav button:hover {

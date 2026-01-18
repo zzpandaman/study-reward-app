@@ -41,7 +41,6 @@ const PointRecords: React.FC = () => {
   return (
     <div className="point-records">
       <div className="point-records-header">
-        <h2>积分记录</h2>
         <div className="type-filter">
           <button
             className={`type-btn ${recordType === 'all' ? 'active' : ''}`}

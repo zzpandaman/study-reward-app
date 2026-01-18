@@ -198,23 +198,6 @@ const Shop: React.FC = () => {
 
   return (
     <div className="shop">
-      <div className="shop-header">
-        <h2>积分商城</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button
-            className="add-product-btn"
-            onClick={() => setShowAddProductDialog(true)}
-            title="添加商品"
-          >
-            ➕ 添加商品
-          </button>
-          <div className="points-display">
-            <span className="points-label">当前积分:</span>
-            <span className="points-value">{userPoints.toFixed(2)}</span>
-          </div>
-        </div>
-      </div>
-
       {/* 搜索和筛选栏 */}
       <div className="filter-bar">
         <div className="search-box">
@@ -226,7 +209,8 @@ const Shop: React.FC = () => {
             className="search-input"
           />
         </div>
-        <div className="type-filter">
+        <div className="filter-actions">
+          <div className="type-filter">
           <button
             className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
             onClick={() => handleFilterChange('all')}
@@ -239,19 +223,47 @@ const Shop: React.FC = () => {
           >
             预设
           </button>
+            <button
+              className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
+              onClick={() => handleFilterChange('custom')}
+            >
+              自定义
+            </button>
+          </div>
           <button
-            className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('custom')}
+            className="add-product-btn"
+            onClick={() => setShowAddProductDialog(true)}
+            title="添加商品"
           >
-            自定义
+            ➕ 添加商品
           </button>
         </div>
       </div>
 
-      {/* 统计信息 */}
+      {/* 统计信息和分页 */}
       {filteredProducts.length > 0 && (
         <div className="filter-summary">
-          共 {filteredProducts.length} 个商品，当前显示 {paginatedProducts.length} 个
+          <span>共 {filteredProducts.length} 个商品，第 {page} / {totalPages} 页</span>
+          {totalPages > 1 && (
+            <div className="pagination-inline">
+              <button
+                className="pagination-btn-inline"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page <= 1}
+                title="上一页"
+              >
+                ‹
+              </button>
+              <button
+                className="pagination-btn-inline"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page >= totalPages}
+                title="下一页"
+              >
+                ›
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -262,7 +274,7 @@ const Shop: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="exchange-section">
+      <div className="exchange-section">
             {paginatedProducts.map((product) => {
         const units = quantities[product.id] || 1;
         const price = calculatePrice(product, units);
@@ -343,29 +355,6 @@ const Shop: React.FC = () => {
           );
         })}
           </div>
-
-          {/* 分页控件 */}
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page <= 1}
-              >
-                上一页
-              </button>
-              <span className="pagination-info">
-                第 {page} / {totalPages} 页
-              </span>
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page >= totalPages}
-              >
-                下一页
-              </button>
-            </div>
-          )}
         </>
       )}
 

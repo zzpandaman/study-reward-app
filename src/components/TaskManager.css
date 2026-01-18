@@ -6,11 +6,6 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.task-manager h2 {
-  color: var(--primary-color, #667eea);
-  margin-bottom: 20px;
-}
-
 .task-selection {
   margin-bottom: 24px;
 }
