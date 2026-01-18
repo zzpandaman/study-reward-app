@@ -51,24 +51,55 @@ const App: React.FC = () => {
     setShowThemeMenu(false);
   };
 
-  const handleExportData = () => {
+  const handleExportData = async () => {
     try {
       const data = exportData();
-      const blob = new Blob([data], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
       
       // 生成带日期时间的文件名：学习奖励数据备份_2024-01-17_14-30-25.srdata
       const now = new Date();
       const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
       const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-mm-ss
-      a.download = `学习奖励数据备份_${dateStr}_${timeStr}.srdata`;
+      const fileName = `学习奖励数据备份_${dateStr}_${timeStr}.srdata`;
+      
+      // 检测 Electron 环境
+      const electronAPI = window.electronAPI;
+      const isElectron = electronAPI && typeof electronAPI.saveFile === 'function';
+      
+      if (isElectron) {
+        try {
+          const result = await electronAPI.saveFile(data, fileName);
+          
+          if (result && result.success) {
+            alert('数据导出成功！');
+            setShowDataMenu(false);
+            return;
+          } else {
+            // 继续执行下面的 Blob 下载作为备选
+          }
+        } catch (electronError) {
+          // 继续执行下面的 Blob 下载作为备选
+        }
+      }
+      
+      // 最后的备选方案：使用 Blob 下载（在浏览器中）
+      const blob = new Blob([data], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.style.display = 'none';
       
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      
+      // 延迟删除，确保下载开始
+      setTimeout(() => {
+        if (document.body.contains(a)) {
+          document.body.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
+      }, 200);
+      
       alert('数据导出成功！');
       setShowDataMenu(false);
     } catch (error) {
@@ -128,6 +159,26 @@ const App: React.FC = () => {
     input.click();
   };
 
+  // 点击外部关闭菜单
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.data-menu')) {
+        setShowDataMenu(false);
+      }
+      if (!target.closest('.theme-selector')) {
+        setShowThemeMenu(false);
+      }
+    };
+
+    if (showDataMenu || showThemeMenu) {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [showDataMenu, showThemeMenu]);
+
   return (
     <div className="app">
       <header className="app-header">
@@ -177,15 +228,27 @@ const App: React.FC = () => {
             <div className="data-menu">
               <button
                 className="data-btn"
-                onClick={() => setShowDataMenu(!showDataMenu)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDataMenu(!showDataMenu);
+                }}
                 title="数据管理"
               >
                 ⚙️
               </button>
               {showDataMenu && (
-                <div className="data-menu-dropdown">
-                  <button onClick={handleExportData}>导出数据</button>
-                  <button onClick={handleImportData}>导入数据</button>
+                <div 
+                  className="data-menu-dropdown"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button onClick={(e) => {
+                    e.stopPropagation();
+                    handleExportData();
+                  }}>导出数据</button>
+                  <button onClick={(e) => {
+                    e.stopPropagation();
+                    handleImportData();
+                  }}>导入数据</button>
                 </div>
               )}
             </div>
