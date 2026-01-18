@@ -112,7 +112,17 @@ const Inventory: React.FC = () => {
                 </div>
               </div>
               <div className="item-quantity">
-                数量: {item.quantity}
+                数量: {(() => {
+                  // 格式化数量显示：g/克 保留2位小数，其他保留1位小数或整数
+                  if (item.unit === 'g' || item.unit === '克') {
+                    return item.quantity.toFixed(2);
+                  }
+                  // 如果是整数，不显示小数
+                  if (item.quantity % 1 === 0) {
+                    return item.quantity.toFixed(0);
+                  }
+                  return item.quantity.toFixed(1);
+                })()}
                 {item.unit && ` ${item.unit}`}
               </div>
             </div>
