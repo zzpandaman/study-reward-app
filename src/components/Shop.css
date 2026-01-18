@@ -513,30 +513,25 @@
 }
 
 .type-filter {
-  display: flex;
-  gap: 8px;
   flex: 1;
 }
 
-.filter-btn {
-  padding: 8px 16px;
-  background: #f0f0f0;
-  color: #666;
-  border: none;
+.filter-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
-  font-weight: 500;
+  background: white;
+  color: #333;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s;
 }
 
-.filter-btn:hover {
-  background: #e0e0e0;
-}
-
-.filter-btn.active {
-  background: var(--primary-color, #667eea);
-  color: white;
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .filter-summary {

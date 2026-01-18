@@ -211,24 +211,15 @@ const Shop: React.FC = () => {
         </div>
         <div className="filter-actions">
           <div className="type-filter">
-          <button
-            className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('all')}
-          >
-            全部
-          </button>
-          <button
-            className={`filter-btn ${filterType === 'preset' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('preset')}
-          >
-            预设
-          </button>
-            <button
-              className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
-              onClick={() => handleFilterChange('custom')}
+            <select
+              className="filter-select"
+              value={filterType}
+              onChange={(e) => handleFilterChange(e.target.value as 'all' | 'preset' | 'custom')}
             >
-              自定义
-            </button>
+              <option value="all">全部</option>
+              <option value="preset">预设</option>
+              <option value="custom">自定义</option>
+            </select>
           </div>
           <button
             className="add-product-btn"

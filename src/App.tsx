@@ -104,7 +104,7 @@ const App: React.FC = () => {
       <header className="app-header">
         <h1>
           <span className="header-icon">📚</span>
-          <span className="header-label">学习奖励小程序</span>
+          <span className="header-label">学习奖励</span>
         </h1>
         <div className="header-info">
           <div className="points-badge">

@@ -31,13 +31,14 @@
 }
 
 .header-icon {
-  font-size: 32px;
+  font-size: 36px;
   line-height: 1;
 }
 
 .header-label {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .header-info {

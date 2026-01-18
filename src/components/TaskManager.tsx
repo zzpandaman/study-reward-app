@@ -385,17 +385,6 @@ const TaskManager: React.FC = () => {
       {/* 选择任务 */}
       {!runningExecution && (
         <div className="task-selection">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
-            <h3 style={{ margin: 0 }}>选择任务</h3>
-            <button
-              className="add-task-btn"
-              onClick={() => setShowAddTaskDialog(true)}
-              title="添加任务"
-            >
-              ➕ 添加任务
-            </button>
-          </div>
-          
           {/* 搜索和筛选栏 */}
           <div className="filter-bar">
             <div className="search-box">
@@ -407,32 +396,52 @@ const TaskManager: React.FC = () => {
                 className="search-input"
               />
             </div>
-            <div className="type-filter">
+            <div className="filter-actions">
+              <div className="type-filter">
+                <select
+                  className="filter-select"
+                  value={filterType}
+                  onChange={(e) => handleFilterChange(e.target.value as 'all' | 'preset' | 'custom')}
+                >
+                  <option value="all">全部</option>
+                  <option value="preset">预设</option>
+                  <option value="custom">自定义</option>
+                </select>
+              </div>
               <button
-                className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
-                onClick={() => handleFilterChange('all')}
+                className="add-task-btn"
+                onClick={() => setShowAddTaskDialog(true)}
+                title="添加任务"
               >
-                全部
-              </button>
-              <button
-                className={`filter-btn ${filterType === 'preset' ? 'active' : ''}`}
-                onClick={() => handleFilterChange('preset')}
-              >
-                预设
-              </button>
-              <button
-                className={`filter-btn ${filterType === 'custom' ? 'active' : ''}`}
-                onClick={() => handleFilterChange('custom')}
-              >
-                自定义
+                ➕ 添加任务
               </button>
             </div>
           </div>
 
-          {/* 统计信息 */}
+          {/* 统计信息和分页 */}
           {filteredTemplates.length > 0 && (
             <div className="filter-summary">
-              共 {filteredTemplates.length} 个任务，当前显示 {paginatedTemplates.length} 个
+              <span>共 {filteredTemplates.length} 个任务，第 {page} / {totalPages} 页</span>
+              {totalPages > 1 && (
+                <div className="pagination-inline">
+                  <button
+                    className="pagination-btn-inline"
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                    title="上一页"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="pagination-btn-inline"
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= totalPages}
+                    title="下一页"
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
