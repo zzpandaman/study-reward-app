@@ -22,6 +22,7 @@ const TaskManager: React.FC = () => {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [isPageVisible, setIsPageVisible] = useState(true);
+  const [enableBackgroundCheck, setEnableBackgroundCheck] = useState(false); // 是否启用后台检测
   const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
   // 分页和筛选状态
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -32,6 +33,10 @@ const TaskManager: React.FC = () => {
   useEffect(() => {
     loadTaskTemplates();
     loadExecutions();
+    
+    // 加载后台检测设置
+    const userData = userDataStorage.get();
+    setEnableBackgroundCheck(userData.enableBackgroundCheck ?? false);
     
     // 恢复正在运行的任务
     const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
@@ -49,15 +54,21 @@ const TaskManager: React.FC = () => {
     }
   }, [executions.length]);
 
-  // 页面可见性检测：防止后台运行
+  // 页面可见性检测：仅在启用后台检测时执行
   useEffect(() => {
+    // 如果未启用后台检测，不执行任何检测逻辑（允许后台计时）
+    if (!enableBackgroundCheck) {
+      setIsPageVisible(true);
+      return;
+    }
+
+    // 启用后台检测：使用页面可见性API检测
     const handleVisibilityChange = () => {
       const visible = !document.hidden;
       setIsPageVisible(visible);
       
-      // 如果页面隐藏且任务正在运行，自动暂停
+      // 如果页面隐藏且启用后台检测，暂停计时
       if (!visible && runningExecution && runningExecution.status === 'running' && !isPaused) {
-        // 直接执行暂停逻辑，避免循环依赖
         const updatedExecution: TaskExecution = {
           ...runningExecution,
           status: 'paused',
@@ -77,10 +88,20 @@ const TaskManager: React.FC = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [runningExecution, isPaused]);
+  }, [runningExecution, isPaused, enableBackgroundCheck]);
 
-  // Wake Lock API：防止锁屏（移动端）
+  // Wake Lock API：防止锁屏（仅在启用后台检测时使用）
   useEffect(() => {
+    // 如果未启用后台检测，不使用 Wake Lock（允许锁屏）
+    if (!enableBackgroundCheck) {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        setWakeLock(null);
+      }
+      return;
+    }
+
+    // 启用后台检测时，强制使用 Wake Lock 防止锁屏
     if (!runningExecution || runningExecution.status !== 'running' || isPaused) {
       // 释放 Wake Lock
       if (wakeLock) {
@@ -99,7 +120,7 @@ const TaskManager: React.FC = () => {
         });
       }).catch(() => {
         // Wake Lock 请求失败（可能用户拒绝或浏览器不支持）
-        console.log('Wake Lock 不可用');
+        console.log('Wake Lock 不可用，可能无法防止自动锁屏');
       });
     }
 
@@ -109,11 +130,15 @@ const TaskManager: React.FC = () => {
         setWakeLock(null);
       }
     };
-  }, [runningExecution?.id, runningExecution?.status, isPaused]);
+  }, [runningExecution?.id, runningExecution?.status, isPaused, enableBackgroundCheck]);
 
   useEffect(() => {
-    // 计时器：只在任务运行且未暂停时计时
-    if (!runningExecution || runningExecution.status !== 'running' || isPaused || !isPageVisible) {
+    // 计时器逻辑：
+    // - 如果禁用后台检测：只要任务运行且未手动暂停就一直计时（不检查isPageVisible）
+    // - 如果启用后台检测：只在任务运行且未暂停且页面可见时计时
+    const shouldCount = enableBackgroundCheck ? isPageVisible : true;
+
+    if (!runningExecution || runningExecution.status !== 'running' || isPaused || !shouldCount) {
       return;
     }
 
@@ -122,7 +147,9 @@ const TaskManager: React.FC = () => {
       const currentExecutions = taskExecutionStorage.get();
       const currentExecution = currentExecutions.find((e) => e.id === runningExecution.id);
       
-      if (currentExecution && currentExecution.status === 'running' && !isPaused && isPageVisible) {
+      const shouldCountNow = enableBackgroundCheck ? isPageVisible : true;
+      
+      if (currentExecution && currentExecution.status === 'running' && !isPaused && shouldCountNow) {
         // 基于实际开始时间计算，而不是累加
         const now = Date.now();
         const pausedDuration = currentExecution.totalPausedDuration * 1000;
@@ -133,7 +160,7 @@ const TaskManager: React.FC = () => {
     }, 1000);
     
     return () => clearInterval(interval);
-  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused, isPageVisible]);
+  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused, isPageVisible, enableBackgroundCheck]);
 
   const loadTaskTemplates = () => {
     // 过滤掉无效的任务模板（name或description为空/undefined）
@@ -518,15 +545,37 @@ const TaskManager: React.FC = () => {
         </div>
       )}
 
+      {/* 后台检测设置 */}
+      <div className="running-task" style={{ marginBottom: '16px', padding: '16px' }}>
+        <h3 style={{ marginBottom: '12px', fontSize: '16px' }}>⚙️ 计时设置</h3>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={enableBackgroundCheck}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setEnableBackgroundCheck(checked);
+              const userData = userDataStorage.get();
+              userData.enableBackgroundCheck = checked;
+              userDataStorage.save(userData);
+            }}
+            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+          />
+          <span style={{ fontSize: '14px' }}>
+            启用后台检测（切换应用或黑屏时自动暂停）
+          </span>
+        </label>
+        <div style={{ marginTop: '8px', fontSize: '12px', opacity: 0.8 }}>
+          {enableBackgroundCheck 
+            ? '✓ 已启用：切换到后台会自动暂停计时，并使用Wake Lock防止自动锁屏'
+            : '✓ 未启用：只要不手动暂停，应用在任何状态（后台、黑屏等）都会继续计时'}
+        </div>
+      </div>
+
       {/* 正在执行的任务 */}
       {runningExecution && (
         <div className="running-task">
           <h3>正在执行: {runningExecution.taskName}</h3>
-          {!isPageVisible && (
-            <div className="timer-warning" style={{ background: 'rgba(255, 193, 7, 0.3)', marginBottom: '12px' }}>
-              ⚠️ 页面已切换到后台，请保持页面在前台以确保计时准确
-            </div>
-          )}
           <div className="timer">
             <div className="timer-display">
               {formatTime(elapsedSeconds)}
@@ -538,11 +587,6 @@ const TaskManager: React.FC = () => {
             {isPaused && (
               <div className="pause-notice">
                 ⏸️ 任务已暂停，暂停时间不计入学习时间
-              </div>
-            )}
-            {!isPageVisible && !isPaused && (
-              <div className="pause-notice" style={{ background: 'rgba(255, 193, 7, 0.2)' }}>
-                ⚠️ 请保持页面在前台，切换到后台会自动暂停计时
               </div>
             )}
           </div>

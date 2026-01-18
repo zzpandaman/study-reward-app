@@ -67,6 +67,7 @@ export interface UserData {
   pointRecords: PointRecord[]; // 积分记录
   inventory: InventoryItem[]; // 背包物品
   customStyle?: CustomStyle; // 自定义样式
+  enableBackgroundCheck?: boolean; // 是否启用后台检测（默认false：不检测，一直计时）
 }
 
 // 数据版本信息
