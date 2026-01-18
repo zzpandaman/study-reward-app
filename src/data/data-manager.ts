@@ -21,7 +21,29 @@ export const DEFAULT_PRODUCTS: Product[] = [
 ];
 
 export class DataManager {
-  private adapter = StorageAdapterFactory.getAdapter();
+  private adapter = StorageAdapterFactory.getAdapter()
+  
+  /**
+   * 浮点数精度处理：四舍五入到指定小数位
+   * @param num 要处理的数字
+   * @param decimals 保留的小数位数
+   */
+  private roundToPrecision(num: number, decimals: number = 2): number {
+    return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+  }
+  
+  /**
+   * 根据商品单位确定精度位数
+   * @param unit 商品单位
+   */
+  private getPrecisionByUnit(unit: string): number {
+    // 黄金等以 g 为单位的商品，最小单位是 0.01g，需要保留 2 位小数
+    if (unit === 'g' || unit === '克') {
+      return 2;
+    }
+    // 其他商品通常保留整数或 1 位小数
+    return 1;
+  };
 
   /**
    * 获取应用数据（带自动迁移）
@@ -604,16 +626,19 @@ export class DataManager {
                 const quantity = parseFloat(quantityMatch[1]);
                 const key = `${foundProduct.name}_${foundProduct.unit || ''}`;
                 const existing = inventoryMap.get(key);
+                const precision = this.getPrecisionByUnit(foundProduct.unit || '');
+                
                 if (existing) {
+                  const newQuantity = this.roundToPrecision(existing.quantity + quantity, precision);
                   inventoryMap.set(key, {
                     ...existing,
-                    quantity: existing.quantity + quantity,
+                    quantity: newQuantity,
                   });
                 } else {
                   inventoryMap.set(key, {
                     productId: foundProduct.id,
                     productName: foundProduct.name,
-                    quantity: quantity,
+                    quantity: this.roundToPrecision(quantity, precision),
                     unit: foundProduct.unit,
                   });
                 }
@@ -629,16 +654,19 @@ export class DataManager {
           const quantity = parseFloat(quantityMatch[1]);
           const key = `${product.name}_${product.unit || ''}`;
           const existing = inventoryMap.get(key);
+          const precision = this.getPrecisionByUnit(product.unit || '');
+          
           if (existing) {
+            const newQuantity = this.roundToPrecision(existing.quantity + quantity, precision);
             inventoryMap.set(key, {
               ...existing,
-              quantity: existing.quantity + quantity,
+              quantity: newQuantity,
             });
           } else {
             inventoryMap.set(key, {
               productId: product.id,
               productName: product.name,
-              quantity: quantity,
+              quantity: this.roundToPrecision(quantity, precision),
               unit: product.unit,
             });
           }

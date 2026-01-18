@@ -474,14 +474,28 @@ export class LocalService {
       };
       appData.userData.pointRecords.unshift(record);
 
+      // 精度处理函数
+      const roundToPrecision = (num: number, decimals: number = 2): number => {
+        return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+      };
+      
+      // 根据商品单位确定精度位数
+      const getPrecisionByUnit = (unit: string): number => {
+        if (unit === 'g' || unit === '克') {
+          return 2;
+        }
+        return 1;
+      };
+      
+      const precision = getPrecisionByUnit(productUnit);
       const existingItem = appData.userData.inventory.find((item) => item.productId === request.productId);
       if (existingItem) {
-        existingItem.quantity += actualQuantity;
+        existingItem.quantity = roundToPrecision(existingItem.quantity + actualQuantity, precision);
       } else {
         appData.userData.inventory.push({
           productId: request.productId,
           productName,
-          quantity: actualQuantity,
+          quantity: roundToPrecision(actualQuantity, precision),
           unit: productUnit,
         });
       }

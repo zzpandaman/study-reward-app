@@ -131,13 +131,32 @@ export const userDataStorage = {
     dataManager.saveAppData(appData);
   },
   addInventoryItem(productId: string, productName: string, quantity: number, unit?: string): void {
+    // 精度处理函数
+    const roundToPrecision = (num: number, decimals: number = 2): number => {
+      return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    };
+    
+    // 根据商品单位确定精度位数
+    const getPrecisionByUnit = (unit: string | undefined): number => {
+      if (unit === 'g' || unit === '克') {
+        return 2;
+      }
+      return 1;
+    };
+    
     const appData = dataManager.getAppData();
     const userData = appData.userData;
+    const precision = getPrecisionByUnit(unit);
     const existingItem = userData.inventory.find((item) => item.productId === productId);
     if (existingItem) {
-      existingItem.quantity += quantity;
+      existingItem.quantity = roundToPrecision(existingItem.quantity + quantity, precision);
     } else {
-      userData.inventory.push({ productId, productName, quantity, unit });
+      userData.inventory.push({ 
+        productId, 
+        productName, 
+        quantity: roundToPrecision(quantity, precision), 
+        unit 
+      });
     }
     appData.userData = userData;
     dataManager.saveAppData(appData);
