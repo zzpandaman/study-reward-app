@@ -262,10 +262,17 @@ const TaskManager: React.FC = () => {
   const pauseTask = () => {
     if (!runningExecution || runningExecution.status !== 'running') return;
 
+    // 暂停时，确保 elapsedSeconds 固定为暂停时的值
+    const now = Date.now();
+    const pausedDuration = runningExecution.totalPausedDuration * 1000;
+    const effectiveStartTime = runningExecution.startTime + pausedDuration;
+    const currentElapsed = Math.floor((now - effectiveStartTime) / 1000);
+    setElapsedSeconds(Math.max(0, currentElapsed));
+
     const updatedExecution: TaskExecution = {
       ...runningExecution,
       status: 'paused',
-      pausedTime: Date.now(),
+      pausedTime: now,
     };
 
     taskExecutionStorage.update(updatedExecution);
@@ -278,7 +285,8 @@ const TaskManager: React.FC = () => {
     if (!runningExecution || runningExecution.status !== 'paused') return;
 
     // 计算暂停时长
-    const pausedDuration = (Date.now() - runningExecution.pausedTime!) / 1000;
+    const now = Date.now();
+    const pausedDuration = (now - runningExecution.pausedTime!) / 1000;
     const totalPausedDuration = runningExecution.totalPausedDuration + pausedDuration;
 
     const updatedExecution: TaskExecution = {
@@ -292,10 +300,9 @@ const TaskManager: React.FC = () => {
     setRunningExecution(updatedExecution);
     setIsPaused(false);
     
-    // 恢复任务后重新计算已用时间
-    const now = Date.now();
+    // 恢复任务后重新计算已用时间（使用更新后的totalPausedDuration）
     const pausedDurationMs = totalPausedDuration * 1000;
-    const effectiveStartTime = runningExecution.startTime + pausedDurationMs;
+    const effectiveStartTime = updatedExecution.startTime + pausedDurationMs;
     const elapsed = Math.floor((now - effectiveStartTime) / 1000);
     setElapsedSeconds(Math.max(0, elapsed));
     
