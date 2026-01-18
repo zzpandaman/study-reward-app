@@ -43,6 +43,20 @@ export class DataManager {
     }
     // 其他商品通常保留整数或 1 位小数
     return 1;
+  }
+  
+  /**
+   * 修复库存数量的精度问题
+   * @param inventory 库存列表
+   */
+  private fixInventoryPrecision(inventory: InventoryItem[]): InventoryItem[] {
+    return inventory.map(item => {
+      const precision = this.getPrecisionByUnit(item.unit || '');
+      return {
+        ...item,
+        quantity: this.roundToPrecision(item.quantity, precision),
+      };
+    });
   };
 
   /**
@@ -57,6 +71,8 @@ export class DataManager {
       if (existingData.version.schemaVersion < CURRENT_SCHEMA_VERSION) {
         data = this.migrateToCurrentVersion(existingData);
       }
+      // 修复库存数量的精度问题
+      data.userData.inventory = this.fixInventoryPrecision(data.userData.inventory);
       // 确保预设商品使用最新配置（不影响用户数据）
       return this.updatePresetProducts(data);
     }
@@ -684,6 +700,9 @@ export class DataManager {
         }
       }
       
+      // 修复库存数量的精度问题
+      const finalInventory = this.fixInventoryPrecision(Array.from(inventoryMap.values()));
+      
       const appData: AppData = {
         taskTemplates: Array.from(templateMap.values()),
         products: Array.from(productMap.values()),
@@ -692,7 +711,7 @@ export class DataManager {
           ...localData.userData,
           points: calculatedPoints, // 从积分记录计算得出
           pointRecords: Array.from(pointRecordMap.values()),
-          inventory: Array.from(inventoryMap.values()), // 从积分记录计算得出
+          inventory: finalInventory, // 从积分记录计算得出，并修复精度
           customStyle: localData.userData.customStyle || imported.data.userData.customStyle,
         },
         version: {
