@@ -152,7 +152,7 @@ async function getServerData(): Promise<{
   const templatesRes = await TaskTemplateAPI.getTaskTemplates();
   if (templatesRes.success && templatesRes.data?.data) {
     templatesRes.data.data.forEach(t => {
-      templates.set(t.name, t.id?.toString() || t.templateNo);
+      templates.set(t.name, t.id);
     });
   }
 
@@ -160,7 +160,7 @@ async function getServerData(): Promise<{
   const productsRes = await ProductAPI.getProducts();
   if (productsRes.success && productsRes.data?.data) {
     productsRes.data.data.forEach(p => {
-      products.set(p.name, p.id?.toString() || p.productNo);
+      products.set(p.name, p.id);
     });
   }
 
@@ -226,11 +226,11 @@ async function migrateTemplate(
         description: template.description,
       });
 
-      if (res.success && res.data) {
+      if (res.success && res.data?.data) {
         return {
           ...item,
           status: 'success',
-          serverId: res.data.id?.toString() || res.data.templateNo,
+          serverId: res.data.data.id,
           retryCount: retry,
         };
       }
@@ -279,11 +279,11 @@ async function migrateProduct(
         unit: product.unit,
       });
 
-      if (res.success && res.data) {
+      if (res.success && res.data?.data) {
         return {
           ...item,
           status: 'success',
-          serverId: res.data.id?.toString() || res.data.productNo,
+          serverId: res.data.data.id,
           retryCount: retry,
         };
       }

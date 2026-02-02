@@ -9,37 +9,82 @@ alwaysApply: true
 
 部署脚本位于 `/Users/cdmac14013/docker/star-deploy/`
 
-## 后端服务管理
+## 操作命令
+
+### 前端服务管理
+
+```bash
+cd /Users/cdmac14013/docker/star-deploy/frontend
+
+# 构建并部署（npm build + 同步到 nginx + 重载）
+./deploy-frontend.sh deploy
+
+# 仅同步（已构建过，跳过 npm build）
+./deploy-frontend.sh sync
+
+# 清理部署目录
+./deploy-frontend.sh clean
+```
+
+### 后端服务管理
 
 修改后端代码后需重启服务：
 
 ```bash
 cd /Users/cdmac14013/docker/star-deploy/backend
 
-./deploy-backend.sh restart local  # 重启服务（代码未改动）
-./deploy-backend.sh deploy local   # 重新构建并部署（代码有改动）
-./deploy-backend.sh logs star-reward  # 查看 reward 日志
-./deploy-backend.sh logs star-sso     # 查看 sso 日志
-./deploy-backend.sh status         # 查看服务状态
-./deploy-backend.sh stop           # 停止所有服务
+# 一键构建部署（代码有改动）
+./deploy-backend.sh deploy local
+
+# 仅重启（代码未改动）
+./deploy-backend.sh restart local
+
+# 停止所有后端服务
+./deploy-backend.sh stop
+
+# 查看日志
+./deploy-backend.sh logs star-reward
+./deploy-backend.sh logs star-sso
+
+# 查看状态
+./deploy-backend.sh status
 ```
 
-## 联动测试
-
-启动后端服务后验证 API 连通性：
+### Nginx 管理
 
 ```bash
-# 健康检查
-curl http://localhost/health
+cd /Users/cdmac14013/docker/star-deploy
 
-# SSO 登录获取 Token
-curl -X POST http://localhost/api/sso/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"test","password":"test"}'
+# 启动 nginx
+docker-compose --env-file .env.local up -d
 
-# Reward API（需 Token）
-curl http://localhost/api/reward/task-templates \
-  -H "Authorization: Bearer <token>"
+# 停止 nginx
+docker-compose down
+
+# 重载配置（不停服）
+docker exec star-nginx nginx -s reload
+
+# 查看日志
+docker logs -f star-nginx
+```
+
+### 一键全部部署
+
+```bash
+cd /Users/cdmac14013/docker/star-deploy
+./deploy-all.sh local
+```
+
+## 健康检查
+
+```bash
+# 各服务健康检查
+curl http://localhost/api/sso/health     # SSO 服务
+curl http://localhost/api/reward/health  # Reward 服务
+curl http://localhost/health             # Nginx 本身
+
+# 前端页面
+curl -I http://localhost/star/
 ```
 
 ## 本地开发
@@ -76,40 +121,73 @@ npm run build
 
 构建产物位于 `dist/` 目录
 
-## 服务器部署
+---
 
-### 1. 构建生产版本
+## 服务器一键部署
+
+### 一、环境准备
 
 ```bash
+# 安装 Node.js（服务器端构建需要，或可在本地构建后上传）
+curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+yum install -y nodejs
+```
+
+### 二、目录规划
+
+```bash
+DEPLOY_DIR=/opt/star-deploy           # 部署目录
+NGINX_HTML=/opt/star-deploy/nginx/html/star  # 前端静态文件
+```
+
+### 三、代码同步
+
+```bash
+# 方式一：Git clone 后在服务器构建
+cd /data/code
+git clone <repo>/study-reward-app.git
+cd study-reward-app
+npm install && npm run build
+
+# 方式二：本地构建后上传（推荐）
+# 本地执行
 npm run build
+scp -r dist/* user@server:/opt/star-deploy/nginx/html/star/
 ```
 
-### 2. 部署到 nginx
-
-将 `dist/` 目录内容复制到 nginx 静态目录：
+### 四、执行部署
 
 ```bash
-scp -r dist/* user@server:/opt/star-deploy/frontend/dist/
+# 服务器上
+cd /opt/star-deploy/frontend
+./deploy-frontend.sh deploy
+
+# 或仅同步（如已上传 dist）
+./deploy-frontend.sh sync
 ```
 
-### 3. 配置 nginx
+### 五、验证
 
-编辑 `nginx/conf.d/frontend.conf`：
+```bash
+# 检查前端页面
+curl -I http://localhost/star/
 
-```nginx
-server {
-    listen 80;
-    server_name app.example.com;
+# 检查 API 连通性
+curl http://localhost/api/sso/health
+curl http://localhost/api/reward/health
+```
 
-    root /usr/share/nginx/html/star-reward-app;
-    index index.html;
+### 六、运维
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+```bash
+# 更新前端
+cd /opt/star-deploy/frontend
+./deploy-frontend.sh deploy
 
-    location /api/ {
-        proxy_pass http://localhost;
-    }
-}
+# 清理并重新部署
+./deploy-frontend.sh clean
+./deploy-frontend.sh deploy
+
+# 重载 nginx（前端更新后自动执行，一般无需手动）
+docker exec star-nginx nginx -s reload
 ```
