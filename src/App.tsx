@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TaskManager from './components/TaskManager';
 import Shop from './components/Shop';
 import Inventory from './components/Inventory';
@@ -7,7 +7,13 @@ import StyleCustomizer from './components/StyleCustomizer';
 import { userDataStorage, exportData, importData } from './utils/storage';
 import { themeStorage, applyTheme, themes, Theme } from './utils/theme';
 import { applyCustomStyle } from './utils/style-apply';
-import { UserAPI } from './api';
+import {
+  UserAPI,
+  checkMigrationNeeded,
+  getLocalDataToMigrate,
+  migrateLocalDataToServer,
+  MigrationProgress,
+} from './api';
 import './App.css';
 
 const App: React.FC = () => {
@@ -17,16 +23,35 @@ const App: React.FC = () => {
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showDataMenu, setShowDataMenu] = useState(false);
   const [showStyleCustomizer, setShowStyleCustomizer] = useState(false);
+  
+  // 数据迁移相关状态
+  const [showMigrationDialog, setShowMigrationDialog] = useState(false);
+  const [migrationProgress, setMigrationProgress] = useState<MigrationProgress | null>(null);
+  const [isMigrating, setIsMigrating] = useState(false);
+  const [migrationResult, setMigrationResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // 检查数据迁移
+  const checkAndShowMigration = useCallback(() => {
+    if (checkMigrationNeeded()) {
+      const localData = getLocalDataToMigrate();
+      const total = localData.templates.length + localData.products.length;
+      if (total > 0) {
+        setShowMigrationDialog(true);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     updatePoints();
     applyTheme(currentTheme);
     // 加载并应用自定义样式
     loadCustomStyle();
+    // 检查数据迁移
+    checkAndShowMigration();
     // 定期更新积分显示
     const interval = setInterval(updatePoints, 1000);
     return () => clearInterval(interval);
-  }, [currentTheme]);
+  }, [currentTheme, checkAndShowMigration]);
 
   const loadCustomStyle = async () => {
     try {
@@ -36,6 +61,46 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to load custom style:', error);
+    }
+  };
+
+  // 执行数据迁移
+  const handleMigration = async () => {
+    setIsMigrating(true);
+    setMigrationResult(null);
+    
+    try {
+      const result = await migrateLocalDataToServer((progress) => {
+        setMigrationProgress(progress);
+      });
+      
+      setMigrationResult({
+        success: result.success,
+        message: result.message,
+      });
+      
+      if (result.success) {
+        // 迁移成功后刷新页面
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error) {
+      setMigrationResult({
+        success: false,
+        message: '迁移失败：' + (error as Error).message,
+      });
+    } finally {
+      setIsMigrating(false);
+    }
+  };
+
+  // 关闭迁移对话框
+  const closeMigrationDialog = () => {
+    if (!isMigrating) {
+      setShowMigrationDialog(false);
+      setMigrationProgress(null);
+      setMigrationResult(null);
     }
   };
 
@@ -296,6 +361,70 @@ const App: React.FC = () => {
 
       {showStyleCustomizer && (
         <StyleCustomizer onClose={() => setShowStyleCustomizer(false)} />
+      )}
+
+      {/* 数据迁移对话框 */}
+      {showMigrationDialog && (
+        <div className="migration-overlay">
+          <div className="migration-dialog">
+            <h3>📦 数据迁移</h3>
+            
+            {!migrationResult && !isMigrating && (
+              <>
+                <p>检测到本地有未同步的数据，是否迁移到服务器？</p>
+                <p className="migration-info">
+                  {(() => {
+                    const data = getLocalDataToMigrate();
+                    return `待迁移：${data.templates.length} 个任务模板，${data.products.length} 个商品`;
+                  })()}
+                </p>
+                <div className="migration-actions">
+                  <button className="btn-primary" onClick={handleMigration}>
+                    立即迁移
+                  </button>
+                  <button className="btn-secondary" onClick={closeMigrationDialog}>
+                    稍后再说
+                  </button>
+                </div>
+              </>
+            )}
+
+            {isMigrating && migrationProgress && (
+              <div className="migration-progress">
+                <p>正在迁移数据...</p>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill"
+                    style={{ 
+                      width: `${((migrationProgress.completed + migrationProgress.skipped) / migrationProgress.total) * 100}%` 
+                    }}
+                  />
+                </div>
+                <p className="progress-text">
+                  {migrationProgress.completed + migrationProgress.skipped} / {migrationProgress.total}
+                  {migrationProgress.skipped > 0 && ` (跳过 ${migrationProgress.skipped})`}
+                </p>
+              </div>
+            )}
+
+            {migrationResult && (
+              <div className={`migration-result ${migrationResult.success ? 'success' : 'error'}`}>
+                <p>{migrationResult.message}</p>
+                {migrationResult.success && <p className="reload-hint">页面即将刷新...</p>}
+                {!migrationResult.success && (
+                  <div className="migration-actions">
+                    <button className="btn-primary" onClick={handleMigration}>
+                      重试
+                    </button>
+                    <button className="btn-secondary" onClick={closeMigrationDialog}>
+                      关闭
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

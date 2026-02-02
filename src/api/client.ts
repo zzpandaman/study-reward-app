@@ -8,6 +8,33 @@ import { ApiResponse } from './types';
 export interface ApiClientConfig {
   baseURL?: string; // HTTP请求的基础URL，如果为空则使用本地模式
   timeout?: number; // 请求超时时间（毫秒）
+  token?: string;   // JWT Token（HTTP模式需要）
+}
+
+// Token 存储 key
+const TOKEN_STORAGE_KEY = 'star_sso_token';
+
+/**
+ * 获取 JWT Token
+ * 优先从配置获取，其次从 localStorage 获取
+ */
+function getToken(configToken?: string): string | null {
+  if (configToken) return configToken;
+  return localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+/**
+ * 设置 JWT Token
+ */
+export function setToken(token: string): void {
+  localStorage.setItem(TOKEN_STORAGE_KEY, token);
+}
+
+/**
+ * 清除 JWT Token
+ */
+export function clearToken(): void {
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
 }
 
 /**
@@ -31,12 +58,23 @@ class HttpClient implements IApiClient {
     path: string,
     data?: any
   ): Promise<ApiResponse<T>> {
-    const url = `${this.config.baseURL}${path}`;
+    // 去掉 /api 前缀，因为 baseURL 已经包含了完整路径
+    // LocalClient 使用 /api/xxx，HttpClient 使用 /xxx
+    const apiPath = path.replace(/^\/api/, '');
+    const url = `${this.config.baseURL}${apiPath}`;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // 添加 JWT Token
+    const token = getToken(this.config.token);
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const options: RequestInit = {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       signal: this.config.timeout
         ? AbortSignal.timeout(this.config.timeout)
         : undefined,
@@ -48,7 +86,29 @@ class HttpClient implements IApiClient {
 
     try {
       const response = await fetch(url, options);
+      
+      // 处理 401 未授权
+      if (response.status === 401) {
+        clearToken();
+        return {
+          success: false,
+          error: '登录已过期，请重新登录',
+        };
+      }
+
       const result = await response.json();
+      
+      // 转换后端响应格式为 ApiResponse
+      // 后端返回 { code, message, data }，前端期望 { success, data, error }
+      if (result.code !== undefined) {
+        return {
+          success: result.code === 200,
+          data: result.data,
+          message: result.message,
+          error: result.code !== 200 ? result.message : undefined,
+        };
+      }
+      
       return result;
     } catch (error) {
       return {

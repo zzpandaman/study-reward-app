@@ -6,6 +6,18 @@ export * from './types';
 export * from './task-api';
 export * from './product-api';
 export * from './user-api';
+export { configureApi, initializeApi, getApiConfig, isHttpMode, isLocalMode } from './config';
+export { setToken, clearToken } from './client';
+export {
+  checkMigrationNeeded,
+  getMigrationStatus,
+  getLocalDataToMigrate,
+  migrateLocalDataToServer,
+  resetMigrationStatus,
+  getMigrationBackup,
+  clearMigrationBackup,
+} from './migration-api';
+export type { MigrationItem, MigrationProgress, MigrationStatus, MigrationResult } from './migration-api';
 
 // 统一API入口（便于后续替换为HTTP请求）
 export const API = {

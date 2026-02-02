@@ -13,4 +13,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      // 开发环境代理 API 请求，解决 CORS 问题
+      '/api/reward': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
+    },
+  },
 })

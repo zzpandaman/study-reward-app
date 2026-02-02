@@ -17,17 +17,20 @@ alwaysApply: true
 **位置：** `src/data/`
 
 **职责：**
+
 - 数据存储抽象（适配器模式）
 - 数据版本管理和迁移
 - 数据验证
 
 **规则：**
+
 - ✅ 数据层**只能**调用数据存储适配器，不能调用API层或视图层
 - ✅ 所有数据操作通过 `dataManager` 进行
 - ✅ 数据迁移逻辑必须在 `data-manager.ts` 中实现
 - ✅ 存储适配器必须实现 `IStorageAdapter` 接口
 
 **示例：**
+
 ```typescript
 // ✅ 正确：数据层直接调用数据管理器
 import { dataManager } from '../data/data-manager';
@@ -42,17 +45,20 @@ import { TaskTemplateAPI } from '../api/task-api';
 **位置：** `src/api/`
 
 **职责：**
+
 - RESTful API抽象
 - 业务逻辑处理
 - 数据验证
 
 **规则：**
+
 - ✅ API类**必须**通过 `ApiClientFactory.getClient()` 调用客户端
 - ✅ 所有API方法必须是 `async`，返回 `Promise<ApiResponse<T>>`
 - ✅ API类不能直接调用数据层，必须通过客户端
 - ✅ 请求/响应类型必须在 `api/types.ts` 中定义
 
 **示例：**
+
 ```typescript
 // ✅ 正确：API类通过客户端调用
 import ApiClientFactory from './client';
@@ -74,15 +80,18 @@ const appData = dataManager.getAppData();
 **位置：** `src/components/`
 
 **职责：**
+
 - 用户界面渲染
 - 用户交互处理
 
 **规则：**
+
 - ✅ 视图层**只能**通过 `storage.ts` 兼容层或直接调用API层
 - ✅ 视图层不能直接调用数据层
 - ✅ 所有数据获取通过API层进行
 
 **示例：**
+
 ```typescript
 // ✅ 正确：通过storage.ts兼容层
 import { taskTemplateStorage } from '../utils/storage';
@@ -119,44 +128,88 @@ import { taskTemplateStorage } from '../utils/storage'; // 兼容层
 import { TaskTemplateAPI } from '../api'; // 或直接使用API
 ```
 
-## 客户端切换
+## 多环境配置
 
-### 本地模式（默认）
+### 环境变量
 
-```typescript
-// src/main.tsx
-import { configureApi } from './api/config';
+通过 Vite 环境变量配置 API 模式：
 
-// 不配置baseURL，默认本地模式
-configureApi({});
+- `.env.development` - 开发环境（默认本地模式）
+- `.env.production` - 生产环境（HTTP模式）
+- `.env.local` - 本地覆盖（不提交到 Git）
+
+```bash
+# 本地模式（不设置 VITE_API_BASE_URL）
+VITE_API_TIMEOUT=30000
+
+# HTTP模式
+VITE_API_BASE_URL=/api/reward
+VITE_API_TIMEOUT=30000
 ```
 
-### HTTP模式（前后端分离）
+### 客户端切换
+
+**本地模式（LocalClient）**：
+
+- 数据存储在 localStorage
+- 通过 LocalService 处理业务逻辑
+- 适用于离线使用、单机版
+
+**HTTP模式（HttpClient）**：
+
+- 数据存储在服务器（star-reward 后端）
+- 需要 JWT Token 认证
+- 适用于多设备同步、在线服务
+
+**重要：** 切换模式时，只需修改环境变量，视图层代码无需改动。
+
+## 数据迁移
+
+当用户从本地模式切换到 HTTP 模式时，需要迁移本地数据。
+
+### 迁移 API
 
 ```typescript
-// src/main.tsx
-import { configureApi } from './api/config';
+import { checkMigrationNeeded, migrateLocalDataToServer } from './api';
 
-// 配置baseURL切换为HTTP模式
-configureApi({ baseURL: 'http://localhost:8080' });
+// 检查是否需要迁移
+if (checkMigrationNeeded()) {
+  const result = await migrateLocalDataToServer();
+}
 ```
 
-**重要：** 切换模式时，只需修改配置，视图层代码无需改动。
+### 迁移原则
+
+- **不丢**：所有本地数据都迁移到服务器
+- **不多**：使用 name 作为幂等键，已存在的跳过
 
 ## 文件组织
 
 ```
 src/
-├── data/           # 数据层：存储适配器、数据管理器
-├── api/            # 接口层：API类、客户端、本地服务
+├── data/           # 数据层：存储适配器、数据管理器（本地模式）
+├── api/            # 接口层：API类、客户端、本地服务、迁移
 ├── components/     # 视图层：React组件
 └── utils/          # 工具函数：兼容层、主题等
 ```
 
-## 参考文档
+## HttpClient 响应格式
 
-详细架构说明请参考：
-- @docs/ARCHITECTURE.md - 架构总览
-- @docs/DATA_LAYER.md - 数据层文档
-- @docs/API_LAYER.md - 接口层文档
-- @docs/VIEW_LAYER.md - 视图层文档
+HttpClient 自动转换后端响应格式：
+
+```typescript
+// 后端返回
+{ code: 200, message: "操作成功", data: {...} }
+
+// 自动转换为前端 ApiResponse
+{ success: true, data: {...}, message: "操作成功" }
+```
+
+业务代码统一使用 `res.success` 判断：
+
+```typescript
+const res = await TaskTemplateAPI.getTaskTemplates();
+if (res.success && res.data) {
+  // 处理数据
+}
+```

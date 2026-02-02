@@ -9,11 +9,90 @@ alwaysApply: true
 
 部署脚本位于 `/Users/cdmac14013/docker/star-deploy/`
 
-## 前端部署（预留）
+## 后端服务管理
 
-前端项目部署配置在 `${DEPLOY_DIR}/frontend/` 目录
+修改后端代码后需重启服务：
 
-### nginx 代理配置
+```bash
+cd /Users/cdmac14013/docker/star-deploy/backend
+
+./deploy-backend.sh restart local  # 重启服务（代码未改动）
+./deploy-backend.sh deploy local   # 重新构建并部署（代码有改动）
+./deploy-backend.sh logs star-reward  # 查看 reward 日志
+./deploy-backend.sh logs star-sso     # 查看 sso 日志
+./deploy-backend.sh status         # 查看服务状态
+./deploy-backend.sh stop           # 停止所有服务
+```
+
+## 联动测试
+
+启动后端服务后验证 API 连通性：
+
+```bash
+# 健康检查
+curl http://localhost/health
+
+# SSO 登录获取 Token
+curl -X POST http://localhost/api/sso/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"test","password":"test"}'
+
+# Reward API（需 Token）
+curl http://localhost/api/reward/task-templates \
+  -H "Authorization: Bearer <token>"
+```
+
+## 本地开发
+
+### API 代理配置
+
+编辑 `vite.config.ts`：
+
+```typescript
+export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost',  // nginx 代理入口
+        changeOrigin: true
+      }
+    }
+  }
+})
+```
+
+### API 地址
+
+后端 API 通过 nginx 统一代理：
+
+- SSO 服务：`/api/sso/*`
+- Reward 服务：`/api/reward/*`
+
+## 构建命令
+
+```bash
+npm run build
+```
+
+构建产物位于 `dist/` 目录
+
+## 服务器部署
+
+### 1. 构建生产版本
+
+```bash
+npm run build
+```
+
+### 2. 部署到 nginx
+
+将 `dist/` 目录内容复制到 nginx 静态目录：
+
+```bash
+scp -r dist/* user@server:/opt/star-deploy/frontend/dist/
+```
+
+### 3. 配置 nginx
 
 编辑 `nginx/conf.d/frontend.conf`：
 
@@ -22,34 +101,15 @@ server {
     listen 80;
     server_name app.example.com;
 
+    root /usr/share/nginx/html/star-reward-app;
+    index index.html;
+
     location / {
-        # 方式一：代理到前端开发服务器
-        proxy_pass http://star-reward-app:3000;
-        
-        # 方式二：静态文件服务
-        # root /usr/share/nginx/html/star-reward-app;
-        # try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost;
     }
 }
-```
-
-### 构建命令
-
-```bash
-npm run build
-```
-
-构建产物位于 `dist/` 目录
-
-## API 地址配置
-
-后端 API 通过 nginx 统一代理：
-
-- SSO 服务：`/api/sso/*`
-- Reward 服务：`/api/reward/*`
-
-生产环境 API 配置：
-```typescript
-// src/api/config.ts
-export const API_BASE_URL = '/api';
 ```
