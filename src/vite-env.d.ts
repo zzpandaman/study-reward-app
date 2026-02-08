@@ -1,8 +1,13 @@
 /// <reference types="vite/client" />
+/// <reference types="vitest/globals" />
 
 // 环境变量类型声明
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL?: string;
+  readonly VITE_SSO_BASE_URL?: string;
+  readonly VITE_REWARD_BASE_URL?: string;
+  readonly VITE_SSO_PROXY_TARGET?: string;
+  readonly VITE_REWARD_PROXY_TARGET?: string;
   readonly VITE_API_TIMEOUT?: string;
 }
 

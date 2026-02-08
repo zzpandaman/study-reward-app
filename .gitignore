@@ -6,6 +6,14 @@ dist/
 dist-electron/
 release/
 
+# Playwright E2E
+playwright-report/
+test-results/
+
+# Vitest
+coverage/
+.vitest/
+
 # Logs
 *.log
 npm-debug.log*

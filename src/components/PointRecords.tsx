@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { PointRecord } from '../types';
 import { UserAPI } from '../api';
+import RecordDetailModal from './RecordDetailModal';
 import './PointRecords.css';
+
+const formatRecordTime = (record: PointRecord): string => {
+  if (record.createTime) return new Date(record.createTime).toLocaleString('zh-CN');
+  if (record.timestamp != null) return new Date(record.timestamp * 1000).toLocaleString('zh-CN');
+  return '-';
+};
 
 const PointRecords: React.FC = () => {
   const [records, setRecords] = useState<PointRecord[]>([]);
@@ -9,6 +16,7 @@ const PointRecords: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [recordType, setRecordType] = useState<'all' | 'earn' | 'spend'>('all');
+  const [detailRecord, setDetailRecord] = useState<PointRecord | null>(null);
 
   useEffect(() => {
     loadRecords(page, recordType);
@@ -35,7 +43,12 @@ const PointRecords: React.FC = () => {
 
   const handleTypeChange = (type: 'all' | 'earn' | 'spend') => {
     setRecordType(type);
-    setPage(1); // 切换类型时重置到第一页
+    setPage(1);
+  };
+
+  const handleRecordClick = (record: PointRecord) => {
+    if (!record.relatedId?.trim()) return;
+    setDetailRecord(record);
   };
 
   return (
@@ -70,11 +83,16 @@ const PointRecords: React.FC = () => {
           </div>
           <div className="records-list">
             {records.map((record) => (
-              <div key={record.id} className={`record-item ${record.type}`}>
+              <div
+                key={record.id}
+                className={`record-item ${record.type} ${record.relatedId?.trim() ? 'clickable' : ''}`}
+                onClick={() => handleRecordClick(record)}
+                role={record.relatedId?.trim() ? 'button' : undefined}
+              >
                 <div className="record-info">
                   <h4>{record.description}</h4>
                   <div className="record-meta">
-                    {new Date(record.timestamp).toLocaleString('zh-CN')}
+                    {formatRecordTime(record)}
                   </div>
                 </div>
                 <div className={`record-amount ${record.type} ${record.amount === 0 ? 'zero' : ''}`}>
@@ -90,6 +108,12 @@ const PointRecords: React.FC = () => {
               </div>
             ))}
           </div>
+          {detailRecord && (
+            <RecordDetailModal
+              record={detailRecord}
+              onClose={() => setDetailRecord(null)}
+            />
+          )}
           {/* 分页控件 */}
           {total > pageSize && (
             <div className="pagination">

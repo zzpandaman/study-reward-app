@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
-import { userDataStorage, productStorage } from '../utils/storage';
 import { ProductAPI, UserAPI } from '../api';
 import './Shop.css';
 
-const Shop: React.FC = () => {
+interface ShopProps {
+  onPointsChange?: () => void;
+}
+
+const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
   const [userPoints, setUserPoints] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -20,21 +23,23 @@ const Shop: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(12); // 每页12个商品
 
-  const loadData = () => {
-    const userData = userDataStorage.get();
-    // 积分支持小数显示（保留2位小数）
-    setUserPoints(Math.round(userData.points * 100) / 100);
-    // 加载商品列表
-    setProducts(productStorage.get());
+  const loadData = async () => {
+    const [pointsRes, productsRes] = await Promise.all([
+      UserAPI.getPoints(),
+      ProductAPI.getProducts(),
+    ]);
+    if (pointsRes.success && pointsRes.data) {
+      const d = pointsRes.data as { points?: number; data?: { points?: number } };
+      const points = d.points ?? d.data?.points ?? 0;
+      setUserPoints(Math.round(points * 100) / 100);
+    }
+    if (productsRes.success && productsRes.data?.data) {
+      setProducts(productsRes.data.data as Product[]);
+    }
   };
 
   useEffect(() => {
     loadData();
-    // 定期更新积分显示
-    const interval = setInterval(() => {
-      loadData();
-    }, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   // 初始化数量为1
@@ -149,6 +154,8 @@ const Shop: React.FC = () => {
       if (response.success) {
         alert(`兑换成功！您获得了 ${formatQuantity(product, units)}`);
         loadData();
+        onPointsChange?.();
+        window.dispatchEvent(new CustomEvent('inventory:refresh'));
         // 重置数量为1
         setQuantities({ ...quantities, [product.id]: 1 });
       } else {

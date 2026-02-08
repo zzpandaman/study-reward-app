@@ -1,24 +1,15 @@
 /**
  * API配置
- * 通过环境变量或手动配置切换本地模式和HTTP模式
+ * 前后端分离模式，ssoBaseURL 指向 star-sso，rewardBaseURL 指向 star-reward
  */
 
+const DEFAULT_SSO_BASE_URL = '/api/sso';
+const DEFAULT_REWARD_BASE_URL = '/api/reward';
+
 export interface ApiConfig {
-  /**
-   * API基础URL
-   * - 如果不设置或为空字符串，使用本地模式（LocalClient）
-   * - 如果设置了baseURL，使用HTTP模式（HttpClient）
-   */
-  baseURL?: string;
-
-  /**
-   * 请求超时时间（毫秒）
-   */
+  ssoBaseURL: string;
+  rewardBaseURL: string;
   timeout?: number;
-
-  /**
-   * JWT Token（HTTP模式需要）
-   */
   token?: string;
 }
 
@@ -26,45 +17,26 @@ export interface ApiConfig {
  * 从环境变量获取默认配置
  */
 function getEnvConfig(): ApiConfig {
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
+  const ssoBaseURL = import.meta.env.VITE_SSO_BASE_URL;
+  const rewardBaseURL = import.meta.env.VITE_REWARD_BASE_URL;
   const timeout = import.meta.env.VITE_API_TIMEOUT;
-  
   return {
-    baseURL: baseURL || undefined,
+    ssoBaseURL: ssoBaseURL || DEFAULT_SSO_BASE_URL,
+    rewardBaseURL: rewardBaseURL || import.meta.env.VITE_API_BASE_URL || DEFAULT_REWARD_BASE_URL,
     timeout: timeout ? parseInt(timeout, 10) : 30000,
   };
 }
 
-/**
- * API配置实例
- * 默认从环境变量读取
- */
 let apiConfig: ApiConfig = getEnvConfig();
 
 /**
  * 配置API
- * 
- * @param config 配置对象（会与环境变量配置合并）
- * 
- * @example
- * // 使用环境变量配置（默认）
- * configureApi({});
- * 
- * @example
- * // 覆盖环境变量，使用本地模式
- * configureApi({ baseURL: undefined });
- * 
- * @example
- * // 覆盖环境变量，连接指定后端
- * configureApi({ baseURL: 'http://localhost:8080/api/reward' });
  */
 export function configureApi(config: Partial<ApiConfig> = {}): void {
   apiConfig = { ...getEnvConfig(), ...config };
-  
-  // 同步更新client配置
   import('./client').then(({ default: ApiClientFactory }) => {
     ApiClientFactory.configure({
-      baseURL: apiConfig.baseURL,
+      baseURL: apiConfig.rewardBaseURL,
       timeout: apiConfig.timeout,
       token: apiConfig.token,
     });
@@ -86,15 +58,8 @@ export function getApiConfig(): ApiConfig {
 }
 
 /**
- * 判断是否使用HTTP模式
+ * 判断是否使用HTTP模式（前后端分离模式下始终为 true）
  */
 export function isHttpMode(): boolean {
-  return !!apiConfig.baseURL;
-}
-
-/**
- * 判断是否使用本地模式
- */
-export function isLocalMode(): boolean {
-  return !apiConfig.baseURL;
+  return true;
 }

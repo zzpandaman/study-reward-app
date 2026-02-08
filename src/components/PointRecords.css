@@ -69,9 +69,22 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.record-item:hover {
+.record-item.clickable {
+  cursor: pointer;
+}
+
+.record-item:not(.clickable) {
+  cursor: default;
+}
+
+.record-item.clickable:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.record-item:not(.clickable):hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .record-item.earn {

@@ -6,18 +6,10 @@ export * from './types';
 export * from './task-api';
 export * from './product-api';
 export * from './user-api';
-export { configureApi, initializeApi, getApiConfig, isHttpMode, isLocalMode } from './config';
+export { configureApi, initializeApi, getApiConfig, isHttpMode } from './config';
 export { setToken, clearToken } from './client';
-export {
-  checkMigrationNeeded,
-  getMigrationStatus,
-  getLocalDataToMigrate,
-  migrateLocalDataToServer,
-  resetMigrationStatus,
-  getMigrationBackup,
-  clearMigrationBackup,
-} from './migration-api';
-export type { MigrationItem, MigrationProgress, MigrationStatus, MigrationResult } from './migration-api';
+export { login, register, logout, getCurrentUser, hasToken } from './auth-api';
+export type { LoginRequest, LoginResponse, RegisterRequest } from './auth-api';
 
 // 统一API入口（便于后续替换为HTTP请求）
 export const API = {
@@ -30,10 +22,10 @@ export const API = {
   taskExecution: {
     get: () => import('./task-api').then((m) => m.TaskExecutionAPI.getTaskExecutions()),
     start: (request: any) => import('./task-api').then((m) => m.TaskExecutionAPI.startTask(request)),
-    pause: (id: string) => import('./task-api').then((m) => m.TaskExecutionAPI.pauseTask(id)),
-    resume: (id: string) => import('./task-api').then((m) => m.TaskExecutionAPI.resumeTask(id)),
-    complete: (id: string) => import('./task-api').then((m) => m.TaskExecutionAPI.completeTask(id)),
-    cancel: (id: string) => import('./task-api').then((m) => m.TaskExecutionAPI.cancelTask(id)),
+    pause: (id: string, clientTime: number) => import('./task-api').then((m) => m.TaskExecutionAPI.pauseTask(id, clientTime)),
+    resume: (id: string, clientTime: number) => import('./task-api').then((m) => m.TaskExecutionAPI.resumeTask(id, clientTime)),
+    complete: (id: string, clientTime: number) => import('./task-api').then((m) => m.TaskExecutionAPI.completeTask(id, clientTime)),
+    cancel: (id: string, clientTime: number) => import('./task-api').then((m) => m.TaskExecutionAPI.cancelTask(id, clientTime)),
   },
   product: {
     get: () => import('./product-api').then((m) => m.ProductAPI.getProducts()),
@@ -47,7 +39,5 @@ export const API = {
     getPointRecords: (type?: 'earn' | 'spend') => import('./user-api').then((m) => m.UserAPI.getPointRecords(type)),
     getInventory: () => import('./user-api').then((m) => m.UserAPI.getInventory()),
     exchange: (request: any) => import('./user-api').then((m) => m.UserAPI.exchange(request)),
-    updateCustomStyle: (request: any) => import('./user-api').then((m) => m.UserAPI.updateCustomStyle(request)),
-    getCustomStyle: () => import('./user-api').then((m) => m.UserAPI.getCustomStyle()),
   },
 };

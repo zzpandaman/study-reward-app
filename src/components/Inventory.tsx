@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InventoryItem } from '../types';
-import { userDataStorage } from '../utils/storage';
+import { UserAPI } from '../api';
 import './Inventory.css';
 
 const Inventory: React.FC = () => {
@@ -10,17 +10,25 @@ const Inventory: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(12); // 每页12个物品
 
+  const loadInventory = async () => {
+    const res = await UserAPI.getInventory();
+    if (res.success && res.data?.data) {
+      const items = res.data.data as { id?: number; inventoryNo?: string; name?: string; productId?: string; productName?: string; quantity?: number; unit?: string }[];
+      setInventory(items.map((i) => ({
+        productId: String(i.id ?? i.inventoryNo ?? i.productId ?? ''),
+        productName: i.name ?? i.productName ?? '',
+        quantity: i.quantity ?? 0,
+        unit: i.unit,
+      })));
+    }
+  };
+
   useEffect(() => {
     loadInventory();
-    // 定期更新背包显示
-    const interval = setInterval(loadInventory, 1000);
-    return () => clearInterval(interval);
+    const handler = () => loadInventory();
+    window.addEventListener('inventory:refresh', handler);
+    return () => window.removeEventListener('inventory:refresh', handler);
   }, []);
-
-  const loadInventory = () => {
-    const userData = userDataStorage.get();
-    setInventory(userData.inventory);
-  };
 
   // 筛选和分页逻辑
   const filteredInventory = inventory.filter((item) => {

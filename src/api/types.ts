@@ -34,8 +34,18 @@ export interface GetTaskExecutionsResponse {
   total: number;
 }
 
+export interface GetTaskExecutionByNoResponse {
+  data: TaskExecution;
+}
+
 export interface StartTaskRequest {
   taskTemplateId: string;
+  clientTime: number; // 前端操作时间（秒级时间戳），必传
+}
+
+export interface TaskOperationRequest {
+  id: number;
+  clientTime: number; // 前端操作时间（秒级时间戳），必传
 }
 
 export interface StartTaskResponse {
@@ -105,6 +115,30 @@ export interface GetPointRecordsResponse {
   total: number;
   page?: number;
   pageSize?: number;
+}
+
+// 购买记录详情（兑换消费）
+export interface PurchaseRecordResponse {
+  id: number;
+  purchaseNo: string;
+  productNo: string;
+  name: string;
+  description?: string;
+  price: number;
+  minQuantity: number;
+  minUnit?: string;
+  purchaseQuantity: number;
+  createTime?: string;
+}
+
+// 任务执行积分明细项
+export interface PointsDetailItem {
+  intervalType?: string;
+  startTime?: string;
+  endTime?: string;
+  durationMinutes?: number;
+  multiplier?: number;
+  points?: number;
 }
 
 export interface GetInventoryResponse {

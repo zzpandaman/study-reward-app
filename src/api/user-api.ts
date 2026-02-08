@@ -9,8 +9,7 @@ import {
   GetInventoryResponse,
   ExchangeRequest,
   ExchangeResponse,
-  UpdateCustomStyleRequest,
-  UpdateCustomStyleResponse,
+  PurchaseRecordResponse,
   ApiResponse,
 } from './types';
 import ApiClientFactory from './client';
@@ -29,61 +28,51 @@ export class UserAPI {
   }
 
   /**
-   * GET /api/user/points
-   * 获取用户积分
+   * POST /api/user/points
+   * 获取用户积分（body: {}）
    */
   static async getPoints(): Promise<ApiResponse<GetPointsResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.get<GetPointsResponse>('/api/user/points');
+    return client.post<GetPointsResponse>('/api/user/points', {});
   }
 
   /**
-   * GET /api/user/point-records
+   * POST /api/reward/point-records/query
    * 获取积分记录（支持分页）
    */
   static async getPointRecords(type?: 'earn' | 'spend', page: number = 1, pageSize: number = 10): Promise<ApiResponse<GetPointRecordsResponse>> {
     const client = ApiClientFactory.getClient();
-    const params = new URLSearchParams();
-    if (type) params.append('type', type);
-    params.append('page', page.toString());
-    params.append('pageSize', pageSize.toString());
-    const path = `/api/user/point-records?${params.toString()}`;
-    return client.get<GetPointRecordsResponse>(path);
+    return client.post<GetPointRecordsResponse>('/api/point-records/query', {
+      type,
+      page,
+      pageSize,
+    });
   }
 
   /**
-   * GET /api/user/inventory
-   * 获取背包物品
+   * POST /api/user/inventory
+   * 获取背包物品（body: {}）
    */
   static async getInventory(): Promise<ApiResponse<GetInventoryResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.get<GetInventoryResponse>('/api/user/inventory');
+    return client.post<GetInventoryResponse>('/api/user/inventory', {});
   }
 
   /**
-   * POST /api/user/exchange
+   * GET /api/reward/purchase-record/by-no/{purchaseNo}
+   * 根据购买编号获取购买记录详情
+   */
+  static async getPurchaseRecordByNo(purchaseNo: string): Promise<ApiResponse<PurchaseRecordResponse>> {
+    const client = ApiClientFactory.getClient();
+    return client.get<PurchaseRecordResponse>(`/api/purchase-record/by-no/${purchaseNo}`);
+  }
+
+  /**
+   * POST /api/reward/purchase-record/exchange
    * 兑换商品
    */
   static async exchange(request: ExchangeRequest): Promise<ApiResponse<ExchangeResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.post<ExchangeResponse>('/api/user/exchange', request);
-  }
-
-  /**
-   * PUT /api/user/custom-style
-   * 更新自定义样式
-   */
-  static async updateCustomStyle(request: UpdateCustomStyleRequest): Promise<ApiResponse<UpdateCustomStyleResponse>> {
-    const client = ApiClientFactory.getClient();
-    return client.put<UpdateCustomStyleResponse>('/api/user/custom-style', request);
-  }
-
-  /**
-   * GET /api/user/custom-style
-   * 获取自定义样式
-   */
-  static async getCustomStyle(): Promise<ApiResponse<UpdateCustomStyleResponse>> {
-    const client = ApiClientFactory.getClient();
-    return client.get<UpdateCustomStyleResponse>('/api/user/custom-style');
+    return client.post<ExchangeResponse>('/api/purchase-record/exchange', request);
   }
 }

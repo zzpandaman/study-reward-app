@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TaskTemplate, TaskExecution } from '../types';
-import { taskTemplateStorage, taskExecutionStorage, userDataStorage, calculateReward } from '../utils/storage';
-import { TaskTemplateAPI } from '../api';
+import { calculateReward } from '../utils/reward';
+import { TaskTemplateAPI, TaskExecutionAPI } from '../api';
 import './TaskManager.css';
 
 // Wake Lock API 类型定义
@@ -11,7 +11,12 @@ interface WakeLockSentinel extends EventTarget {
   release(): Promise<void>;
 }
 
-const TaskManager: React.FC = () => {
+interface TaskManagerProps {
+  onPointsChange?: () => void;
+  onRunningTaskChange?: (task: TaskExecution | null) => void;
+}
+
+const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTaskChange }) => {
   const [taskTemplates, setTaskTemplates] = useState<TaskTemplate[]>([]);
   const [executions, setExecutions] = useState<TaskExecution[]>([]);
   const [runningExecution, setRunningExecution] = useState<TaskExecution | null>(null);
@@ -30,29 +35,75 @@ const TaskManager: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(12); // 每页12个任务（3x4网格）
 
+  const ENABLE_BG_KEY = 'study_reward_enable_background_check';
+  const pauseRequestedRef = useRef(false); // 解决暂停时 interval 读到旧闭包的问题
+  const elapsedSecondsRef = useRef(0);
+
+  // 后端返回秒级时间戳，转为 ms 与 Date.now() 配合
+  const toMs = (sec: number | undefined) => (sec ?? 0) * 1000;
+
+  // Effect A: 挂载时加载数据
   useEffect(() => {
     loadTaskTemplates();
     loadExecutions();
-    
-    // 加载后台检测设置
-    const userData = userDataStorage.get();
-    setEnableBackgroundCheck(userData.enableBackgroundCheck ?? false);
-    
-    // 恢复正在运行的任务
+    setEnableBackgroundCheck(localStorage.getItem(ENABLE_BG_KEY) === 'true');
+  }, []);
+
+  // 从 execution 计算 elapsed（总执行秒数）
+  const computeElapsed = (exec: TaskExecution): number => {
+    const elapsed =
+      exec.totalExecutionDuration ?? exec.accumulatedExecutionSeconds ?? (() => {
+        const now = Date.now();
+        const pausedDurationMs = (exec.totalPausedDuration ?? 0) * 1000;
+        const effectiveStartTime = toMs(exec.startTime) + pausedDurationMs;
+        return exec.status === 'paused' && exec.pausedTime
+          ? Math.floor((toMs(exec.pausedTime) - effectiveStartTime) / 1000)
+          : Math.floor((now - effectiveStartTime) / 1000);
+      })();
+    return Math.max(0, elapsed);
+  };
+
+  // Effect B: 当 executions 更新后恢复进行中任务
+  // 同一会话内不覆盖 elapsed（前端为数据源，避免 loadExecutions 覆盖本地计时）
+  useEffect(() => {
     const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
     if (running) {
       setRunningExecution(running);
       setIsPaused(running.status === 'paused');
-      // 计算已用时间（不包括暂停时间）
-      const now = Date.now();
-      const pausedDuration = running.totalPausedDuration * 1000;
-      const effectiveStartTime = running.startTime + pausedDuration;
-      const elapsed = running.status === 'paused' 
-        ? Math.floor((running.pausedTime! - effectiveStartTime) / 1000)
-        : Math.floor((now - effectiveStartTime) / 1000);
-      setElapsedSeconds(Math.max(0, elapsed));
+      const isSameSession = runningExecution && String(runningExecution.id) === String(running.id);
+      if (!isSameSession) {
+        const needByNo =
+          running.executionNo &&
+          running.totalExecutionDuration == null &&
+          running.accumulatedExecutionSeconds == null;
+        if (needByNo && running.executionNo) {
+          TaskExecutionAPI.getExecutionByNo(running.executionNo).then((res) => {
+            const raw = (res.data as { data?: TaskExecution })?.data ?? res.data;
+            const full = raw ? { ...raw, id: String((raw as TaskExecution).id) } as TaskExecution : running;
+            setRunningExecution(full);
+            setIsPaused(full.status === 'paused');
+            setElapsedSeconds(computeElapsed(full));
+          }).catch(() => {
+            setElapsedSeconds(computeElapsed(running));
+          });
+        } else {
+          setElapsedSeconds(computeElapsed(running));
+        }
+      }
+    } else {
+      setRunningExecution(null);
+      setElapsedSeconds(0);
     }
-  }, [executions.length]);
+  }, [executions, runningExecution]);
+
+  useEffect(() => {
+    elapsedSecondsRef.current = elapsedSeconds;
+  }, [elapsedSeconds]);
+
+  // 向 App 上报进行中任务状态
+  useEffect(() => {
+    onRunningTaskChange?.(runningExecution);
+  }, [runningExecution, onRunningTaskChange]);
 
   // 页面可见性检测：仅在启用后台检测时执行
   useEffect(() => {
@@ -69,15 +120,24 @@ const TaskManager: React.FC = () => {
       
       // 如果页面隐藏且启用后台检测，暂停计时
       if (!visible && runningExecution && runningExecution.status === 'running' && !isPaused) {
-        const updatedExecution: TaskExecution = {
-          ...runningExecution,
-          status: 'paused',
-          pausedTime: Date.now(),
-        };
-        taskExecutionStorage.update(updatedExecution);
-        setRunningExecution(updatedExecution);
+        const clientTime =
+          (runningExecution.startTime ?? 0) +
+          (runningExecution.totalPausedDuration ?? 0) +
+          elapsedSecondsRef.current;
         setIsPaused(true);
-        loadExecutions();
+        setRunningExecution((e) => (e ? { ...e, status: 'paused' as const } : null));
+        TaskExecutionAPI.pauseTask(String(runningExecution.id), clientTime).then((res) => {
+          const pauseData = (res.data as { data?: TaskExecution })?.data ?? res.data;
+          if (res.success && pauseData) {
+            const data = pauseData as TaskExecution;
+            setRunningExecution({ ...data, id: String(data.id) } as TaskExecution);
+            // 以前端时间为准：不更新 elapsed
+          } else {
+            setIsPaused(false);
+            setRunningExecution((e) => (e ? { ...e, status: 'running' as const } : null));
+          }
+          loadExecutions();
+        });
         alert('⚠️ 检测到页面已切换到后台，任务已自动暂停。请保持页面在前台以确保计时准确。');
       }
     };
@@ -143,36 +203,34 @@ const TaskManager: React.FC = () => {
     }
 
     const interval = setInterval(() => {
-      // 每次从storage获取最新数据，确保使用最新的totalPausedDuration
-      const currentExecutions = taskExecutionStorage.get();
-      const currentExecution = currentExecutions.find((e) => e.id === runningExecution.id);
-      
+      if (pauseRequestedRef.current) return;
       const shouldCountNow = enableBackgroundCheck ? isPageVisible : true;
-      
-      if (currentExecution && currentExecution.status === 'running' && !isPaused && shouldCountNow) {
-        // 基于实际开始时间计算，而不是累加
-        const now = Date.now();
-        const pausedDuration = currentExecution.totalPausedDuration * 1000;
-        const effectiveStartTime = currentExecution.startTime + pausedDuration;
-        const elapsed = Math.floor((now - effectiveStartTime) / 1000);
-        setElapsedSeconds(Math.max(0, elapsed));
+      if (runningExecution?.status === 'running' && !isPaused && shouldCountNow) {
+        // 以前端时间为准：纯递增，计时器只会向前跑
+        setElapsedSeconds((s) => s + 1);
       }
     }, 1000);
     
     return () => clearInterval(interval);
-  }, [runningExecution?.id, runningExecution?.startTime, runningExecution?.status, isPaused, isPageVisible, enableBackgroundCheck]);
+  }, [runningExecution?.id, runningExecution?.status, isPaused, isPageVisible, enableBackgroundCheck]);
 
-  const loadTaskTemplates = () => {
-    // 过滤掉无效的任务模板（name或description为空/undefined）
-    const templates = taskTemplateStorage.get().filter(
-      (template) => template.name && template.name.trim() && template.description && template.description.trim()
-    );
-    setTaskTemplates(templates);
+  const loadTaskTemplates = async () => {
+    const res = await TaskTemplateAPI.getTaskTemplates();
+    if (res.success && res.data?.data) {
+      const templates = (res.data.data as TaskTemplate[]).filter(
+        (t) => t.name?.trim() && t.description?.trim()
+      );
+      setTaskTemplates(templates);
+    }
   };
 
-  const loadExecutions = () => {
-    const loadedExecutions = taskExecutionStorage.get();
-    setExecutions(loadedExecutions);
+  const loadExecutions = async () => {
+    const res = await TaskExecutionAPI.getTaskExecutions();
+    if (!res.success || !res.data) return;
+    const raw = (res.data as { data?: TaskExecution[] })?.data ?? res.data;
+    if (Array.isArray(raw)) {
+      setExecutions(raw.map((e) => ({ ...e, id: String(e.id) })));
+    }
   };
 
   const handleAddTask = async () => {
@@ -225,13 +283,12 @@ const TaskManager: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const startTask = () => {
+  const startTask = async () => {
     if (!selectedTemplateId) {
       alert('请选择任务');
       return;
     }
 
-    // 检查是否已有正在运行的任务
     const hasRunning = executions.some((e) => e.status === 'running' || e.status === 'paused');
     if (hasRunning) {
       alert('一次只能执行一个任务！请先完成当前任务。');
@@ -241,131 +298,89 @@ const TaskManager: React.FC = () => {
     const template = taskTemplates.find((t) => t.id === selectedTemplateId);
     if (!template) return;
 
-    const execution: TaskExecution = {
-      id: Date.now().toString(),
-      taskTemplateId: template.id,
-      taskName: template.name,
-      startTime: Date.now(),
-      totalPausedDuration: 0,
-      actualReward: 0,
-      status: 'running',
-    };
-
-    taskExecutionStorage.add(execution);
-    loadExecutions();
-    setRunningExecution(execution);
-    setElapsedSeconds(0);
-    setIsPaused(false);
-    setSelectedTemplateId('');
-  };
-
-  const pauseTask = () => {
-    if (!runningExecution || runningExecution.status !== 'running') return;
-
-    // 暂停时，确保 elapsedSeconds 固定为暂停时的值
-    const now = Date.now();
-    const pausedDuration = runningExecution.totalPausedDuration * 1000;
-    const effectiveStartTime = runningExecution.startTime + pausedDuration;
-    const currentElapsed = Math.floor((now - effectiveStartTime) / 1000);
-    setElapsedSeconds(Math.max(0, currentElapsed));
-
-    const updatedExecution: TaskExecution = {
-      ...runningExecution,
-      status: 'paused',
-      pausedTime: now,
-    };
-
-    taskExecutionStorage.update(updatedExecution);
-    setRunningExecution(updatedExecution);
-    setIsPaused(true);
-    loadExecutions();
-  };
-
-  const resumeTask = () => {
-    if (!runningExecution || runningExecution.status !== 'paused') return;
-
-    // 计算暂停时长
-    const now = Date.now();
-    const pausedDuration = (now - runningExecution.pausedTime!) / 1000;
-    const totalPausedDuration = runningExecution.totalPausedDuration + pausedDuration;
-
-    const updatedExecution: TaskExecution = {
-      ...runningExecution,
-      status: 'running',
-      totalPausedDuration,
-      pausedTime: undefined,
-    };
-
-    taskExecutionStorage.update(updatedExecution);
-    setRunningExecution(updatedExecution);
-    setIsPaused(false);
-    
-    // 恢复任务后重新计算已用时间（使用更新后的totalPausedDuration）
-    const pausedDurationMs = totalPausedDuration * 1000;
-    const effectiveStartTime = updatedExecution.startTime + pausedDurationMs;
-    const elapsed = Math.floor((now - effectiveStartTime) / 1000);
-    setElapsedSeconds(Math.max(0, elapsed));
-    
-    loadExecutions();
-  };
-
-  const completeTask = () => {
-    if (!runningExecution) return;
-
-    const execution = executions.find((e) => e.id === runningExecution.id);
-    if (!execution) return;
-
-    // 计算纯学习时间（不包括暂停时间）
-    const now = Date.now();
-    const pausedDuration = execution.totalPausedDuration * 1000;
-    const effectiveStartTime = execution.startTime + pausedDuration;
-    const actualSeconds = Math.floor((now - effectiveStartTime) / 1000);
-    const actualMinutes = Math.floor(actualSeconds / 60);
-    const actualReward = calculateReward(actualMinutes);
-
-    const updatedExecution: TaskExecution = {
-      ...execution,
-      endTime: now,
-      actualDuration: actualMinutes,
-      actualReward,
-      status: 'completed',
-      pausedTime: undefined,
-    };
-
-    const allExecutions = taskExecutionStorage.get();
-    const updatedExecutions = allExecutions.map((e) =>
-      e.id === execution.id ? updatedExecution : e
-    );
-    taskExecutionStorage.save(updatedExecutions);
-
-    // 添加积分记录
-    if (actualReward > 0) {
-      userDataStorage.addPointRecord({
-        id: Date.now().toString(),
-        type: 'earn',
-        amount: actualReward,
-        description: `完成任务: ${execution.taskName} (${actualMinutes}分钟)`,
-        timestamp: Date.now(),
-        relatedId: execution.id,
-      });
-      alert(`任务完成！获得 ${actualReward} 积分！`);
+    const res = await TaskExecutionAPI.startTask({
+      taskTemplateId: String(template.id),
+      clientTime: Math.floor(Date.now() / 1000),
+    });
+    const execData = (res.data as { data?: TaskExecution })?.data ?? res.data;
+    if (res.success && execData) {
+      const data = execData as TaskExecution;
+      const execution = { ...data, id: String(data.id) } as TaskExecution;
+      await loadExecutions();
+      setRunningExecution(execution);
+      setElapsedSeconds(0);
+      setIsPaused(false);
+      setSelectedTemplateId('');
     }
-
-    setRunningExecution(null);
-    setElapsedSeconds(0);
-    setIsPaused(false);
-    loadExecutions();
   };
 
-  const cancelTask = () => {
+  const pauseTask = async () => {
+    if (!runningExecution || runningExecution.status !== 'running') return;
+    const clientTime =
+      (runningExecution.startTime ?? 0) + (runningExecution.totalPausedDuration ?? 0) + elapsedSeconds;
+
+    const prevExecution = runningExecution;
+    pauseRequestedRef.current = true; // 同步设置，避免 interval 继续累加
+    setIsPaused(true);
+    setRunningExecution((e) => (e ? { ...e, status: 'paused' as const } : null));
+
+    const res = await TaskExecutionAPI.pauseTask(String(prevExecution.id), clientTime);
+    pauseRequestedRef.current = false;
+    const pauseData = (res.data as { data?: TaskExecution })?.data ?? res.data;
+    if (res.success && pauseData) {
+      const data = pauseData as TaskExecution;
+      const updated = { ...data, id: String(data.id) } as TaskExecution;
+      setRunningExecution(updated);
+      // 以前端时间为准：不更新 elapsed，计时器停瞬间的值即最终值
+      loadExecutions();
+    } else {
+      setIsPaused(false);
+      setRunningExecution(prevExecution);
+    }
+  };
+
+  const resumeTask = async () => {
+    if (!runningExecution || runningExecution.status !== 'paused') return;
+    const clientTime = Math.floor(Date.now() / 1000);
+
+    const res = await TaskExecutionAPI.resumeTask(String(runningExecution.id), clientTime);
+    const resumeData = (res.data as { data?: TaskExecution })?.data ?? res.data;
+    if (res.success && resumeData) {
+      const data = resumeData as TaskExecution;
+      const updated = { ...data, id: String(data.id) } as TaskExecution;
+      setRunningExecution(updated);
+      setIsPaused(false);
+      // 不依赖 API 返回的 elapsed（resume 瞬间为 0），由 interval 基于 totalPausedDuration 正确计算
+      loadExecutions();
+    }
+  };
+
+  const completeTask = async () => {
+    if (!runningExecution) return;
+    const clientTime =
+      (runningExecution.startTime ?? 0) + (runningExecution.totalPausedDuration ?? 0) + elapsedSeconds;
+
+    const res = await TaskExecutionAPI.completeTask(String(runningExecution.id), clientTime);
+    if (res.success) {
+      const reward = (res.data as { reward?: number })?.reward ?? 0;
+      if (reward > 0) alert(`任务完成！获得 ${reward} 积分！`);
+      setRunningExecution(null);
+      setElapsedSeconds(0);
+      setIsPaused(false);
+      loadExecutions();
+      onPointsChange?.();
+    }
+  };
+
+  const cancelTask = async () => {
     if (!runningExecution) return;
 
-    if (confirm('确定要取消当前任务吗？未完成的任务不会获得积分。')) {
-      const allExecutions = taskExecutionStorage.get();
-      const updatedExecutions = allExecutions.map((e) =>
-        e.id === runningExecution.id ? { ...e, status: 'completed' as const, endTime: Date.now(), actualReward: 0 } : e
-      );
-      taskExecutionStorage.save(updatedExecutions);
+    if (!confirm('确定要取消当前任务吗？未完成的任务不会获得积分。')) return;
+    const clientTime =
+      (runningExecution.startTime ?? 0) + (runningExecution.totalPausedDuration ?? 0) + elapsedSeconds;
+
+    const res = await TaskExecutionAPI.cancelTask(String(runningExecution.id), clientTime);
+    if (res.success) {
       setRunningExecution(null);
       setElapsedSeconds(0);
       setIsPaused(false);
@@ -419,6 +434,34 @@ const TaskManager: React.FC = () => {
       {/* 选择任务 */}
       {!runningExecution && (
         <div className="task-selection">
+          {/* 进行中任务入口 banner */}
+          {(() => {
+            const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
+            if (!running) return null;
+            return (
+              <button
+                type="button"
+                className="running-task-banner"
+                onClick={() => {
+                  setRunningExecution(running);
+                  setIsPaused(running.status === 'paused');
+                  const elapsed =
+                    running.totalExecutionDuration ?? running.accumulatedExecutionSeconds ??
+                    (() => {
+                      const now = Date.now();
+                      const pausedDurationMs = (running.totalPausedDuration ?? 0) * 1000;
+                      const effectiveStartTime = toMs(running.startTime) + pausedDurationMs;
+                      return running.status === 'paused' && running.pausedTime
+                        ? Math.floor((toMs(running.pausedTime) - effectiveStartTime) / 1000)
+                        : Math.floor((now - effectiveStartTime) / 1000);
+                    })();
+                  setElapsedSeconds(Math.max(0, elapsed));
+                }}
+              >
+                你有进行中的任务：{running.taskName}，点击进入
+              </button>
+            );
+          })()}
           {/* 搜索和筛选栏 */}
           <div className="filter-bar">
             <div className="search-box">
@@ -562,9 +605,7 @@ const TaskManager: React.FC = () => {
             onChange={(e) => {
               const checked = e.target.checked;
               setEnableBackgroundCheck(checked);
-              const userData = userDataStorage.get();
-              userData.enableBackgroundCheck = checked;
-              userDataStorage.save(userData);
+              localStorage.setItem(ENABLE_BG_KEY, String(checked));
             }}
             style={{ width: '18px', height: '18px', cursor: 'pointer' }}
           />

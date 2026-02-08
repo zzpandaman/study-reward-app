@@ -1,0 +1,92 @@
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.login-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.login-modal h3 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.login-form-group {
+  margin-bottom: 16px;
+}
+
+.login-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+.login-form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.login-form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color, #667eea);
+}
+
+.login-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.login-modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.login-modal-actions button:first-child {
+  background: white;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.login-modal-actions button:first-child:hover:not(:disabled) {
+  background: #f5f5f5;
+}
+
+.login-submit {
+  background: var(--primary-color, #667eea);
+  color: white;
+  border: none;
+}
+
+.login-submit:hover:not(:disabled) {
+  background: var(--secondary-color, #5568d3);
+}
+
+.login-modal-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

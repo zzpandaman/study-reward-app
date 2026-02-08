@@ -17,12 +17,15 @@ import ApiClientFactory from './client';
  */
 export class ProductAPI {
   /**
-   * GET /api/products
-   * 获取所有商品
+   * POST /api/products/query
+   * 获取所有商品（分页查询）
    */
   static async getProducts(): Promise<ApiResponse<GetProductsResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.get<GetProductsResponse>('/api/products');
+    return client.post<GetProductsResponse>('/api/products/query', {
+      page: 1,
+      pageSize: 1000,
+    });
   }
 
   /**
@@ -35,20 +38,25 @@ export class ProductAPI {
   }
 
   /**
-   * PUT /api/products/:id
-   * 更新商品
+   * POST /api/products/update
+   * 更新商品（body: { id, name?, ... }）
    */
   static async updateProduct(id: string, request: UpdateProductRequest): Promise<ApiResponse<UpdateProductResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.put<UpdateProductResponse>(`/api/products/${id}`, request);
+    const idVal = Number.isNaN(Number(id)) ? id : Number(id);
+    return client.post<UpdateProductResponse>('/api/products/update', {
+      id: idVal,
+      ...request,
+    });
   }
 
   /**
-   * DELETE /api/products/:id
-   * 删除商品
+   * POST /api/products/delete
+   * 删除商品（body: { id }）
    */
   static async deleteProduct(id: string): Promise<ApiResponse> {
     const client = ApiClientFactory.getClient();
-    return client.delete(`/api/products/${id}`);
+    const idVal = Number.isNaN(Number(id)) ? id : Number(id);
+    return client.post('/api/products/delete', { id: idVal });
   }
 }

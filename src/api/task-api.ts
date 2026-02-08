@@ -9,6 +9,7 @@ import {
   UpdateTaskTemplateRequest,
   UpdateTaskTemplateResponse,
   GetTaskExecutionsResponse,
+  GetTaskExecutionByNoResponse,
   StartTaskRequest,
   StartTaskResponse,
   PauseTaskResponse,
@@ -25,12 +26,15 @@ import ApiClientFactory from './client';
  */
 export class TaskTemplateAPI {
   /**
-   * GET /api/task-templates
-   * 获取所有任务模板
+   * POST /api/task-templates/query
+   * 获取所有任务模板（分页查询）
    */
   static async getTaskTemplates(): Promise<ApiResponse<GetTaskTemplatesResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.get<GetTaskTemplatesResponse>('/api/task-templates');
+    return client.post<GetTaskTemplatesResponse>('/api/task-templates/query', {
+      page: 1,
+      pageSize: 1000,
+    });
   }
 
   /**
@@ -43,21 +47,24 @@ export class TaskTemplateAPI {
   }
 
   /**
-   * PUT /api/task-templates/:id
-   * 更新任务模板
+   * POST /api/task-templates/update
+   * 更新任务模板（body: { id, name?, description? }）
    */
   static async updateTaskTemplate(id: string, request: UpdateTaskTemplateRequest): Promise<ApiResponse<UpdateTaskTemplateResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.put<UpdateTaskTemplateResponse>(`/api/task-templates/${id}`, request);
+    return client.post<UpdateTaskTemplateResponse>('/api/task-templates/update', {
+      id: Number(id),
+      ...request,
+    });
   }
 
   /**
-   * DELETE /api/task-templates/:id
-   * 删除任务模板
+   * POST /api/task-templates/delete
+   * 删除任务模板（body: { id }）
    */
   static async deleteTaskTemplate(id: string): Promise<ApiResponse> {
     const client = ApiClientFactory.getClient();
-    return client.delete(`/api/task-templates/${id}`);
+    return client.post('/api/task-templates/delete', { id: Number(id) });
   }
 }
 
@@ -67,56 +74,85 @@ export class TaskTemplateAPI {
  */
 export class TaskExecutionAPI {
   /**
-   * GET /api/task-executions
-   * 获取所有任务执行记录
+   * GET /api/task-executions/by-no/{instanceNo}
+   * 根据实例编号获取任务执行详情（HTTP 模式，list 无 totalExecutionDuration 时用于恢复 elapsed）
+   */
+  static async getExecutionByNo(instanceNo: string): Promise<ApiResponse<GetTaskExecutionByNoResponse>> {
+    const client = ApiClientFactory.getClient();
+    return client.get<GetTaskExecutionByNoResponse>(`/api/task-executions/by-no/${instanceNo}`);
+  }
+
+  /**
+   * POST /api/task-executions
+   * 获取进行中的任务执行记录（state=ongoing：running|paused）
    */
   static async getTaskExecutions(): Promise<ApiResponse<GetTaskExecutionsResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.get<GetTaskExecutionsResponse>('/api/task-executions');
+    return client.post<GetTaskExecutionsResponse>('/api/task-executions', {
+      page: 1,
+      pageSize: 100,
+      state: 'ongoing',
+    });
   }
 
   /**
    * POST /api/task-executions/start
-   * 开始任务
+   * 开始任务（clientTime 必传）
    */
   static async startTask(request: StartTaskRequest): Promise<ApiResponse<StartTaskResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.post<StartTaskResponse>('/api/task-executions/start', request);
+    const body = {
+      ...request,
+      clientTime: request.clientTime ?? Math.floor(Date.now() / 1000),
+    };
+    return client.post<StartTaskResponse>('/api/task-executions/start', body);
   }
 
   /**
-   * POST /api/task-executions/:id/pause
-   * 暂停任务
+   * POST /api/task-executions/pause
+   * 暂停任务（body: { id, clientTime }），clientTime 由调用方在操作发生时立即捕获
    */
-  static async pauseTask(id: string): Promise<ApiResponse<PauseTaskResponse>> {
+  static async pauseTask(id: string, clientTime: number): Promise<ApiResponse<PauseTaskResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.post<PauseTaskResponse>(`/api/task-executions/${id}/pause`);
+    return client.post<PauseTaskResponse>('/api/task-executions/pause', {
+      id: Number(id),
+      clientTime,
+    });
   }
 
   /**
-   * POST /api/task-executions/:id/resume
-   * 恢复任务
+   * POST /api/task-executions/resume
+   * 恢复任务（body: { id, clientTime }），clientTime 由调用方在操作发生时立即捕获
    */
-  static async resumeTask(id: string): Promise<ApiResponse<ResumeTaskResponse>> {
+  static async resumeTask(id: string, clientTime: number): Promise<ApiResponse<ResumeTaskResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.post<ResumeTaskResponse>(`/api/task-executions/${id}/resume`);
+    return client.post<ResumeTaskResponse>('/api/task-executions/resume', {
+      id: Number(id),
+      clientTime,
+    });
   }
 
   /**
-   * POST /api/task-executions/:id/complete
-   * 完成任务
+   * POST /api/task-executions/complete
+   * 完成任务（body: { id, clientTime }），clientTime 由调用方在操作发生时立即捕获
    */
-  static async completeTask(id: string): Promise<ApiResponse<CompleteTaskResponse>> {
+  static async completeTask(id: string, clientTime: number): Promise<ApiResponse<CompleteTaskResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.post<CompleteTaskResponse>(`/api/task-executions/${id}/complete`);
+    return client.post<CompleteTaskResponse>('/api/task-executions/complete', {
+      id: Number(id),
+      clientTime,
+    });
   }
 
   /**
-   * POST /api/task-executions/:id/cancel
-   * 取消任务
+   * POST /api/task-executions/cancel
+   * 取消任务（body: { id, clientTime }），clientTime 由调用方在操作发生时立即捕获
    */
-  static async cancelTask(id: string): Promise<ApiResponse<CancelTaskResponse>> {
+  static async cancelTask(id: string, clientTime: number): Promise<ApiResponse<CancelTaskResponse>> {
     const client = ApiClientFactory.getClient();
-    return client.post<CancelTaskResponse>(`/api/task-executions/${id}/cancel`);
+    return client.post<CancelTaskResponse>('/api/task-executions/cancel', {
+      id: Number(id),
+      clientTime,
+    });
   }
 }

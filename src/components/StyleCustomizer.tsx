@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { CustomStyle } from '../types';
-import { UserAPI } from '../api';
 import {
   BORDER_STYLE_PRESETS,
   BACKGROUND_STYLE_PRESETS,
@@ -14,42 +13,32 @@ interface StyleCustomizerProps {
 }
 
 const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ onClose }) => {
+  const CUSTOM_STYLE_KEY = 'study_reward_custom_style';
+
   const [customStyle, setCustomStyle] = useState<CustomStyle>({});
   const [activeTab, setActiveTab] = useState<'border' | 'background' | 'cursor'>('border');
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    loadCustomStyle();
+    try {
+      const stored = localStorage.getItem(CUSTOM_STYLE_KEY);
+      if (stored) {
+        const style = JSON.parse(stored);
+        setCustomStyle(style);
+        applyCustomStyle(style);
+      }
+    } catch {
+      // ignore
+    }
   }, []);
 
-  const loadCustomStyle = async () => {
-    try {
-      const response = await UserAPI.getCustomStyle();
-      if (response.success && response.data?.data) {
-        setCustomStyle(response.data.data);
-        applyCustomStyle(response.data.data);
-      }
-    } catch (error) {
-      console.error('Failed to load custom style:', error);
-    }
-  };
-
-  const updateCustomStyle = async (updates: Partial<CustomStyle>) => {
+  const updateCustomStyle = (updates: Partial<CustomStyle>) => {
     const newStyle = { ...customStyle, ...updates };
     setCustomStyle(newStyle);
-    
-    // 立即应用样式
     applyCustomStyle(newStyle);
-    
-    // 保存到服务器
     try {
-      setIsLoading(true);
-      await UserAPI.updateCustomStyle(updates);
-    } catch (error) {
-      console.error('Failed to update custom style:', error);
-      alert('保存失败：' + (error as Error).message);
-    } finally {
-      setIsLoading(false);
+      localStorage.setItem(CUSTOM_STYLE_KEY, JSON.stringify(newStyle));
+    } catch {
+      // ignore
     }
   };
 
@@ -65,7 +54,7 @@ const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ onClose }) => {
     updateCustomStyle({ cursorStyle: styleId, cursorImage: undefined });
   };
 
-  const handleImageUpload = async (type: 'border' | 'background' | 'cursor', file: File) => {
+  const handleImageUpload = async (type: 'border' | 'background' | 'cursor', file: File): Promise<void> => {
     try {
       const base64 = await imageToBase64(file);
       if (type === 'border') {
@@ -231,9 +220,6 @@ const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ onClose }) => {
           )}
         </div>
 
-        {isLoading && (
-          <div className="loading-indicator">保存中...</div>
-        )}
       </div>
     </div>
   );
