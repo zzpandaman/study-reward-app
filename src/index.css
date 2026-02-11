@@ -22,10 +22,25 @@ body {
   padding: 20px;
 }
 
+/* 登录视图：铺满整个页面，去掉紫色两侧留白 */
+body.login-full {
+  background: transparent !important;
+}
+
+body.login-full #root {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
   #root {
     padding: 12px;
+  }
+
+  body.login-full #root {
+    padding: 0 !important;
   }
 }
 

@@ -14,7 +14,7 @@ import { applyCustomStyle } from './utils/style-apply';
 import './App.css';
 
 const App: React.FC = () => {
-  const [, setLoginVersion] = useState(0);
+  const [loginVersion, setLoginVersion] = useState(0);
   const [activeTab, setActiveTab] = useState<'tasks' | 'shop' | 'inventory' | 'records'>('tasks');
   const [userPoints, setUserPoints] = useState(0);
   const [currentTheme, setCurrentTheme] = useState<Theme>(themeStorage.get());
@@ -49,6 +49,19 @@ const App: React.FC = () => {
     }
   };
 
+  // 登录页时让布局铺满屏幕，移除 root 的宽度和内边距限制
+  useEffect(() => {
+    const isLoggedIn = hasToken();
+    const body = document.body;
+    if (!isLoggedIn) {
+      body.classList.add('login-full');
+    } else {
+      body.classList.remove('login-full');
+    }
+    return () => {
+      body.classList.remove('login-full');
+    };
+  }, [loginVersion]);
 
   const handleThemeChange = (theme: Theme) => {
     setCurrentTheme(theme);
