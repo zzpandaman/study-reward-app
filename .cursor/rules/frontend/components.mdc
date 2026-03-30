@@ -1,174 +1,32 @@
 ---
-description: 前端 React 组件开发规范
-globs: src/components/**/*.tsx
+description: React 组件结构、数据获取与样式约定
+globs:
+  - "src/components/**/*.tsx"
 alwaysApply: false
 ---
 
-# 前端组件开发规范
+# 前端组件（src/components）
 
-## 组件结构
+## 结构
 
-### 组件位置
+- 组件放在 `src/components/`，文件 PascalCase（如 `TaskManager.tsx`）。
+- 样式同名 CSS（如 `TaskManager.css`）；类名可用 kebab-case（`.task-manager`）。
 
-- ✅ 所有React组件放在 `src/components/` 目录
-- ✅ 组件文件命名：PascalCase（如：`TaskManager.tsx`）
-- ✅ 样式文件：与组件同名（如：`TaskManager.css`）
+## 数据
 
-### 组件类型
+- 通过 API 层拉取数据（如 `TaskTemplateAPI`、`UserAPI`）；`res.success` 与数据结构见 `api/http-client.mdc`。
+- 禁止组件绕过 API 访问未约定的内部数据层。
 
-```typescript
-// ✅ 使用函数组件
-import React from 'react';
+## 样式与主题
 
-const TaskManager: React.FC = () => {
-  // 组件实现
-};
+- 独立 CSS；可用 CSS 变量做主题（`--primary-color` 等）。
+- 支持多主题与 CustomStyle（若产品已接入）。
 
-export default TaskManager;
-```
+## 状态与交互
 
-## 数据获取
+- 本地状态：`useState`；副作用：`useEffect`，注意清理定时器等。
+- 异步：`async/await`，按 `res.success` 处理结果。
 
-### 通过兼容层
+## 业务约定（示例）
 
-```typescript
-// ✅ 推荐：通过storage.ts兼容层
-import { taskTemplateStorage } from '../utils/storage';
-
-const templates = taskTemplateStorage.get();
-```
-
-### 直接调用API
-
-```typescript
-// ✅ 也可以：直接调用API层
-import { TaskTemplateAPI } from '../api';
-
-useEffect(() => {
-  const loadData = async () => {
-    const response = await TaskTemplateAPI.getTaskTemplates();
-    if (response.success) {
-      setTemplates(response.data?.data || []);
-    }
-  };
-  loadData();
-}, []);
-```
-
-### ❌ 禁止直接调用数据层
-
-```typescript
-// ❌ 错误：组件直接调用数据层
-import { dataManager } from '../data/data-manager';
-
-const appData = dataManager.getAppData(); // 不允许！
-```
-
-## 样式规范
-
-### CSS文件
-
-- ✅ 使用独立的CSS文件（如：`TaskManager.css`）
-- ✅ 使用CSS变量实现主题切换
-- ✅ 遵循BEM命名规范（可选）
-
-### 主题变量
-
-```css
-:root {
-  --primary-color: #667eea;
-  --secondary-color: #764ba2;
-  --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-```
-
-## 状态管理
-
-### 本地状态
-
-```typescript
-// ✅ 使用useState管理本地状态
-const [activeTab, setActiveTab] = useState<'tasks' | 'shop' | 'inventory'>('tasks');
-```
-
-### 副作用处理
-
-```typescript
-// ✅ 使用useEffect处理副作用
-useEffect(() => {
-  loadData();
-  const interval = setInterval(loadData, 1000);
-  return () => clearInterval(interval);
-}, []);
-```
-
-## 用户交互
-
-### 事件处理
-
-```typescript
-// ✅ 事件处理函数
-const handleClick = () => {
-  // 处理逻辑
-};
-
-return (
-  <button onClick={handleClick}>点击</button>
-);
-```
-
-### 异步操作
-
-```typescript
-// ✅ 异步操作使用async/await
-const handleSubmit = async () => {
-  const response = await TaskTemplateAPI.createTaskTemplate(request);
-  if (response.success) {
-    // 处理成功
-  }
-};
-```
-
-## 可自定义内容
-
-### 主题切换
-
-- ✅ 支持5种预设主题
-- ✅ 可通过API自定义样式（CustomStyle）
-
-### 任务模板
-
-- ✅ 支持自定义任务模板
-- ✅ 预设模板不可编辑/删除
-
-### 商品
-
-- ✅ 支持自定义商品
-- ✅ 预设商品不可编辑/删除
-
-## 组件命名
-
-### 组件文件
-
-- ✅ PascalCase：`TaskManager.tsx`
-- ✅ 与组件名一致
-
-### CSS类名
-
-- ✅ kebab-case：`task-manager`
-- ✅ 与组件名对应：`.task-manager { }`
-
-## API 调用规范
-
-```typescript
-// ✅ 判断响应成功
-const res = await TaskTemplateAPI.getTaskTemplates();
-if (res.success && res.data?.data) {
-  setTemplates(res.data.data);
-}
-
-// ✅ 处理分页数据
-// 后端返回 { data: [...], total, page, pageSize }
-const items = res.data?.data || [];
-const total = res.data?.total || 0;
-```
+- 任务模板 / 商品：自定义可编辑；预设项不可删改（以产品为准）。

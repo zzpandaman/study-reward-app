@@ -1,0 +1,51 @@
+---
+description: 前端分层（API 层 / 视图层）与 src 目录约定
+globs:
+  - "src/**/*.ts"
+  - "src/**/*.tsx"
+alwaysApply: true
+---
+
+# 架构与分层
+
+前后端分离；前端仅保留 **API 层** 与 **视图层**。鉴权、baseURL、响应包装形态见 `integration/microservices.mdc` 与 `api/http-client.mdc`。
+
+## 接口能力层
+
+**路径：** `src/api/`
+
+- API 类通过 `ApiClientFactory.getClient()` 获取 HttpClient。
+- 方法均为 `async`，返回 `Promise<ApiResponse<T>>`。
+- 请求/响应类型集中在 `api/types.ts`（或同目录类型文件）。
+
+```typescript
+import ApiClientFactory from './client';
+
+export class TaskTemplateAPI {
+  static async getTaskTemplates(): Promise<ApiResponse<GetTaskTemplatesResponse>> {
+    const client = ApiClientFactory.getClient();
+    return client.post<GetTaskTemplatesResponse>('/api/task-templates/query', { page: 1, pageSize: 1000 });
+  }
+}
+```
+
+## 视图层
+
+**路径：** `src/components/`
+
+- 数据经 API 层获取（组件侧约定见 `frontend/components.mdc`）。
+- UI 偏好（主题、customStyle）可存 localStorage。
+
+```typescript
+import { TaskTemplateAPI } from '../api';
+const response = await TaskTemplateAPI.getTaskTemplates();
+```
+
+## 目录示意
+
+```
+src/
+├── api/
+├── components/
+└── utils/
+```

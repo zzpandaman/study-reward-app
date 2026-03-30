@@ -1,0 +1,43 @@
+---
+description: HttpClient、ApiResponse 与 Token 辅助函数用法
+globs:
+  - "src/api/**/*.ts"
+alwaysApply: false
+---
+
+# API 客户端（src/api）
+
+## ApiResponse
+
+后端 `{ code, message, data }` 由 HttpClient 转为 `ApiResponse<T>`：
+
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+```
+
+业务判断统一用 `success`，不要依赖原始 `code` 字段。
+
+```typescript
+const res = await TaskTemplateAPI.getTaskTemplates();
+if (res.success && res.data) {
+  const items = res.data.data;
+}
+```
+
+## Token
+
+```typescript
+import { setToken, clearToken } from './api';
+
+setToken(response.data.token);
+clearToken();
+```
+
+## 环境
+
+与请求相关的 `VITE_API_BASE_URL`、`VITE_API_TIMEOUT` 见 `integration/microservices.mdc`。

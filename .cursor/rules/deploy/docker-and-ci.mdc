@@ -1,0 +1,82 @@
+---
+description: 本地 Docker 部署脚本、Vite 代理、GitHub Actions 与服务器运维
+globs:
+  - "vite.config.ts"
+  - ".github/**/*.yml"
+  - "electron/**/*"
+alwaysApply: false
+---
+
+# 部署与运维
+
+## 方式概览
+
+- 本地：star-deploy 脚本构建/同步。
+- 生产：`main` push 或 `workflow_dispatch` 触发 Actions，构建后 SCP 上传并重载 Nginx。
+
+## 本地脚本（路径以本机 star-deploy 为准）
+
+```bash
+cd /Users/cdmac14013/docker/star-deploy/frontend
+./deploy-frontend.sh deploy
+./deploy-frontend.sh sync
+./deploy-frontend.sh clean
+```
+
+```bash
+cd /Users/cdmac14013/docker/star-deploy/backend
+./deploy-backend.sh deploy local
+./deploy-backend.sh restart local
+./deploy-backend.sh logs star-reward
+```
+
+```bash
+cd /Users/cdmac14013/docker/star-deploy
+./deploy-all.sh local
+```
+
+## 健康检查
+
+```bash
+curl http://localhost/api/sso/health
+curl http://localhost/api/reward/health
+curl http://localhost/health
+curl -I http://localhost/star/
+```
+
+## Vite 代理
+
+```typescript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost',
+      changeOrigin: true,
+    },
+  },
+}
+```
+
+## 构建
+
+```bash
+npm run build
+```
+
+产物：`dist/`。
+
+## GitHub Actions
+
+- Workflow：`.github/workflows/deploy.yml`
+- 流程：`npm ci` → `npm run build` → SCP `dist` → 重载 Nginx。
+- Secrets：`SERVER_HOST`、`SERVER_USER`、`SERVER_SSH_KEY`。
+
+## 手动发布示例
+
+```bash
+npm run build
+scp -r dist/* user@server:/opt/star-deploy/nginx/html/star/
+ssh user@server "docker exec star-nginx nginx -s reload"
+```
+
+Portainer：`http://<服务器IP>/portainer/`。验证：`curl -I http://<服务器IP>/star/`。

@@ -1,0 +1,41 @@
+---
+description: star-sso / star-reward 联动、环境变量与认证行为
+alwaysApply: true
+---
+
+# 微服务联动（前端）
+
+## 拓扑
+
+```
+study-reward-app
+  ├─→ star-sso（登录、Token）
+  └─→ star-reward（任务、商品、积分）
+```
+
+## 环境变量
+
+```bash
+# .env.local / .env.development / .env.production
+VITE_API_BASE_URL=/api/reward
+VITE_API_TIMEOUT=30000
+```
+
+## SSO
+
+- 登录成功后 `setToken(response.data.token)` 写入 localStorage。
+- 请求头：`Authorization: Bearer <token>`。
+- `401`：`clearToken()` 并引导重新登录。
+
+接口示例：
+
+- `POST /api/sso/login`
+- `GET /api/sso/user/info`
+- `POST /api/sso/logout`
+
+## star-reward
+
+- baseURL 为 `/api/reward` 时，客户端路径如 `/task-templates` → 实际 `/api/reward/task-templates`。
+- 兑换：`POST /api/reward/purchase-record/exchange`（非 `/user/exchange`）。
+- 积分记录：`POST /api/reward/point-records/query`。
+- 业务请求需携带 JWT；未登录按 401 处理。
