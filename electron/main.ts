@@ -45,7 +45,8 @@ function createWindow() {
     
     // 尝试多个端口（Vite 可能在不同端口运行）
     const tryLoadUrl = async (port: number, maxRetries = 10) => {
-      const devUrl = `http://localhost:${port}`;
+      // 与 Vite base（如 /star/）一致，避免资源路径错位
+      const devUrl = `http://localhost:${port}/star/`;
       
       for (let i = 0; i < maxRetries; i++) {
         try {

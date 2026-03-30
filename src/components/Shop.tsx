@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 import { ProductAPI, UserAPI } from '../api';
 import './Shop.css';
 
 interface ShopProps {
   onPointsChange?: () => void;
+  /** true：「新增商品」进入 /shop/new；false：沿用弹窗 */
+  useNewProductPage?: boolean;
 }
 
-const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
+const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }) => {
+  const navigate = useNavigate();
   const [userPoints, setUserPoints] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -22,6 +26,7 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
   const [filterType, setFilterType] = useState<'all' | 'preset' | 'custom'>('all');
   const [page, setPage] = useState(1);
   const [pageSize] = useState(12); // 每页12个商品
+  const [purchaseOpenId, setPurchaseOpenId] = useState<string | null>(null);
 
   const loadData = async () => {
     const [pointsRes, productsRes] = await Promise.all([
@@ -156,8 +161,9 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
         loadData();
         onPointsChange?.();
         window.dispatchEvent(new CustomEvent('inventory:refresh'));
-        // 重置数量为1
+        window.dispatchEvent(new CustomEvent('app:points-refresh'));
         setQuantities({ ...quantities, [product.id]: 1 });
+        setPurchaseOpenId(null);
       } else {
         alert(response.error || '兑换失败');
       }
@@ -230,8 +236,9 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
           </div>
           <button
             className="add-product-btn"
-            onClick={() => setShowAddProductDialog(true)}
+            onClick={() => (useNewProductPage ? navigate('/shop/new') : setShowAddProductDialog(true))}
             title="添加商品"
+            type="button"
           >
             ➕ 添加商品
           </button>
@@ -277,9 +284,13 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
         const units = quantities[product.id] || 1;
         const price = calculatePrice(product, units);
         const unit = product.unit || '';
+        const isPurchaseOpen = purchaseOpenId === product.id;
 
           return (
-            <div key={product.id} className="exchange-card">
+            <div
+              key={product.id}
+              className={`exchange-card ${isPurchaseOpen ? 'exchange-card--purchase-open' : ''}`}
+            >
               <div className="exchange-header">
                 <h3>{product.name}</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -288,6 +299,7 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
                   </div>
                   {!product.isPreset && (
                     <button
+                      type="button"
                       className="delete-product-btn"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -300,55 +312,99 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange }) => {
                   )}
                 </div>
               </div>
+              <p className="exchange-desc">{product.description}</p>
+              {!isPurchaseOpen ? (
+                <div className="exchange-collapsed">
+                  <div className="price-info">
+                    <span className="price-label">所需积分:</span>
+                    <span className={`price-value ${userPoints < calculatePrice(product, 1) ? 'insufficient' : ''}`}>
+                      {calculatePrice(product, 1).toFixed(2)} 起
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="exchange-btn enabled"
+                    onClick={() => setPurchaseOpenId(product.id)}
+                  >
+                    立即购买
+                  </button>
+                </div>
+              ) : (
               <div className="exchange-form">
                 <div className="form-group">
-                  <label>
-                    兑换数量（单位数）:
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    value={units}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === '') {
-                        setQuantities({ ...quantities, [product.id]: 0 });
-                      } else {
-                        const num = parseInt(val, 10);
-                        if (!isNaN(num) && num >= 0) {
-                          setQuantities({ ...quantities, [product.id]: num });
+                  <label>购买份数</label>
+                  <div className="shop-stepper">
+                    <button
+                      type="button"
+                      aria-label="减少"
+                      onClick={() =>
+                        setQuantities({
+                          ...quantities,
+                          [product.id]: Math.max(1, (quantities[product.id] || 1) - 1),
+                        })
+                      }
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={units}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          setQuantities({ ...quantities, [product.id]: 0 });
+                        } else {
+                          const num = parseInt(val, 10);
+                          if (!isNaN(num) && num >= 0) {
+                            setQuantities({ ...quantities, [product.id]: num });
+                          }
                         }
+                      }}
+                      onBlur={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val) || val < 1) {
+                          setQuantities({ ...quantities, [product.id]: 1 });
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      aria-label="增加"
+                      onClick={() =>
+                        setQuantities({
+                          ...quantities,
+                          [product.id]: (quantities[product.id] || 1) + 1,
+                        })
                       }
-                    }}
-                    onBlur={(e) => {
-                      const val = parseInt(e.target.value, 10);
-                      if (isNaN(val) || val < 1) {
-                        setQuantities({ ...quantities, [product.id]: 1 });
-                      }
-                    }}
-                  />
-                  <div className="input-hint">
-                    输入{units}表示{formatQuantity(product, units)}
+                    >
+                      +
+                    </button>
                   </div>
+                  <div className="input-hint">即 {formatQuantity(product, units)}</div>
                 </div>
-                <div className="quantity-preview">
-                  实际数量: {formatQuantity(product, units)}
-                </div>
-                <div className="price-info">
-                  <span className="price-label">所需积分:</span>
+                <div className="price-info shop-total">
+                  <span className="price-label">总计</span>
                   <span className={`price-value ${userPoints < price ? 'insufficient' : ''}`}>
-                    {price.toFixed(2)}
+                    {price.toFixed(2)} 积分
                   </span>
                 </div>
-                <button
-                  className={`exchange-btn ${userPoints >= price ? 'enabled' : 'disabled'}`}
-                  onClick={() => exchangeProduct(product)}
-                  disabled={userPoints < price || units < 1}
-                >
-                  {userPoints >= price ? '立即兑换' : '积分不足'}
-                </button>
+                <div className="exchange-form-actions">
+                  <button type="button" className="shop-cancel-purchase" onClick={() => setPurchaseOpenId(null)}>
+                    取消
+                  </button>
+                  <button
+                    type="button"
+                    className={`exchange-btn ${userPoints >= price ? 'enabled' : 'disabled'}`}
+                    onClick={() => exchangeProduct(product)}
+                    disabled={userPoints < price || units < 1}
+                  >
+                    确认购买
+                  </button>
+                </div>
               </div>
+              )}
             </div>
           );
         })}

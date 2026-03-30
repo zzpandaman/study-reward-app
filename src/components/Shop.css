@@ -67,6 +67,73 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.exchange-card--purchase-open {
+  border-color: var(--primary-color, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.exchange-desc {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.exchange-collapsed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shop-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shop-stepper button {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.shop-stepper input {
+  width: 56px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.shop-total {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.exchange-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.shop-cancel-purchase {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
 .exchange-header {
   margin-bottom: 20px;
 }

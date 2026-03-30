@@ -17,9 +17,11 @@ body {
 }
 
 #root {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
 /* 登录视图：铺满整个页面，去掉紫色两侧留白 */

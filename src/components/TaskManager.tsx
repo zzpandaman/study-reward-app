@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TaskTemplate, TaskExecution } from '../types';
 import { calculateReward } from '../utils/reward';
 import { TaskTemplateAPI, TaskExecutionAPI } from '../api';
+import {
+  readBackgroundTimerCheckEnabled,
+  BACKGROUND_TIMER_PREF_EVENT,
+} from '../utils/background-timer-pref';
 import './TaskManager.css';
 
 // Wake Lock API 类型定义
@@ -14,9 +19,23 @@ interface WakeLockSentinel extends EventTarget {
 interface TaskManagerProps {
   onPointsChange?: () => void;
   onRunningTaskChange?: (task: TaskExecution | null) => void;
+  /** full：积分模版列表页；console：控制台双栏 + 专注区铺满 */
+  variant?: 'full' | 'console';
+  /** 由页面「新增模版」承担时使用 */
+  suppressAddButton?: boolean;
+  /** true：仅模版列表与管理，不展示进行中任务与计时设置（用于积分模版页；执行与计时应在控制台） */
+  hideExecutionUi?: boolean;
 }
 
-const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTaskChange }) => {
+const TaskManager: React.FC<TaskManagerProps> = ({
+  onPointsChange,
+  onRunningTaskChange,
+  variant = 'full',
+  suppressAddButton = false,
+  hideExecutionUi = false,
+}) => {
+  const navigate = useNavigate();
+  const [focusExpanded, setFocusExpanded] = useState(false);
   const [taskTemplates, setTaskTemplates] = useState<TaskTemplate[]>([]);
   const [executions, setExecutions] = useState<TaskExecution[]>([]);
   const [runningExecution, setRunningExecution] = useState<TaskExecution | null>(null);
@@ -27,7 +46,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [isPageVisible, setIsPageVisible] = useState(true);
-  const [enableBackgroundCheck, setEnableBackgroundCheck] = useState(false); // 是否启用后台检测
+  const [enableBackgroundCheck, setEnableBackgroundCheck] = useState(readBackgroundTimerCheckEnabled);
   const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
   // 分页和筛选状态
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -35,7 +54,6 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
   const [page, setPage] = useState(1);
   const [pageSize] = useState(12); // 每页12个任务（3x4网格）
 
-  const ENABLE_BG_KEY = 'study_reward_enable_background_check';
   const pauseRequestedRef = useRef(false); // 解决暂停时 interval 读到旧闭包的问题
   const elapsedSecondsRef = useRef(0);
 
@@ -46,7 +64,12 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
   useEffect(() => {
     loadTaskTemplates();
     loadExecutions();
-    setEnableBackgroundCheck(localStorage.getItem(ENABLE_BG_KEY) === 'true');
+  }, []);
+
+  useEffect(() => {
+    const sync = () => setEnableBackgroundCheck(readBackgroundTimerCheckEnabled());
+    window.addEventListener(BACKGROUND_TIMER_PREF_EVENT, sync);
+    return () => window.removeEventListener(BACKGROUND_TIMER_PREF_EVENT, sync);
   }, []);
 
   // 从 execution 计算 elapsed（总执行秒数）
@@ -369,6 +392,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
       setIsPaused(false);
       loadExecutions();
       onPointsChange?.();
+      window.dispatchEvent(new CustomEvent('app:points-refresh'));
     }
   };
 
@@ -429,39 +453,200 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
     setPage(1);
   }, [searchKeyword, filterType]);
 
-  return (
-    <div className="task-manager">
-      {/* 选择任务 */}
-      {!runningExecution && (
-        <div className="task-selection">
-          {/* 进行中任务入口 banner */}
-          {(() => {
-            const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
-            if (!running) return null;
-            return (
+  useEffect(() => {
+    if (!runningExecution) {
+      setFocusExpanded(false);
+    }
+  }, [runningExecution]);
+
+  const runningTaskSection = runningExecution ? (
+    <div className="running-task">
+      <h3>正在执行: {runningExecution.taskName}</h3>
+      <div className="timer">
+        <div className="timer-display">
+          {formatTime(elapsedSeconds)}
+          {isPaused && <span className="paused-indicator">（已暂停）</span>}
+        </div>
+        <div className="timer-info">
+          学习时间: {actualMinutes} 分钟 | 预计奖励: {estimatedReward} 积分
+        </div>
+        {isPaused && (
+          <div className="pause-notice">任务已暂停，暂停时间不计入学习时间</div>
+        )}
+      </div>
+      <div className="task-actions">
+        {isPaused ? (
+          <button type="button" className="resume-btn" onClick={resumeTask}>
+            继续任务
+          </button>
+        ) : (
+          <button type="button" className="pause-btn" onClick={pauseTask}>
+            暂停
+          </button>
+        )}
+        <button type="button" className="complete-btn" onClick={completeTask}>
+          完成任务
+        </button>
+        <button type="button" className="cancel-btn" onClick={cancelTask}>
+          取消任务
+        </button>
+      </div>
+    </div>
+  ) : null;
+
+  if (variant === 'console') {
+    return (
+      <div className={`task-manager task-manager--console ${focusExpanded ? 'task-manager--focus-expanded' : ''}`}>
+        <div className="tm-console-layout">
+          {!runningExecution ? (
+            <div className="tm-console-main">
+              <header className="tm-console-page-header">
+                <h1>积分获取控制台</h1>
+                <p className="tm-console-sub">持续专注，实时结算奖励</p>
+              </header>
+              {(() => {
+                const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
+                if (!running) return null;
+                return (
+                  <button
+                    type="button"
+                    className="running-task-banner"
+                    onClick={() => {
+                      setRunningExecution(running);
+                      setIsPaused(running.status === 'paused');
+                      const elapsed =
+                        running.totalExecutionDuration ??
+                        running.accumulatedExecutionSeconds ??
+                        (() => {
+                          const now = Date.now();
+                          const pausedDurationMs = (running.totalPausedDuration ?? 0) * 1000;
+                          const effectiveStartTime = toMs(running.startTime) + pausedDurationMs;
+                          return running.status === 'paused' && running.pausedTime
+                            ? Math.floor((toMs(running.pausedTime) - effectiveStartTime) / 1000)
+                            : Math.floor((now - effectiveStartTime) / 1000);
+                        })();
+                      setElapsedSeconds(Math.max(0, elapsed));
+                    }}
+                  >
+                    你有进行中的任务：{running.taskName}，点击进入
+                  </button>
+                );
+              })()}
+              <section className="tm-console-favorites" aria-label="我的常用">
+                <div className="tm-console-favorites-head">
+                  <h2>我的常用</h2>
+                  <button type="button" className="tm-console-link-all" onClick={() => navigate('/templates')}>
+                    查看全部
+                  </button>
+                </div>
+                <div className="tm-console-favorites-placeholder" />
+              </section>
+            </div>
+          ) : (
+            <div className="tm-console-main tm-console-main--spacer" aria-hidden />
+          )}
+          <aside className={`tm-console-focus ${focusExpanded ? 'is-expanded' : ''}`} aria-label="专注计时">
+            <div className="tm-console-focus-toolbar">
               <button
                 type="button"
-                className="running-task-banner"
-                onClick={() => {
-                  setRunningExecution(running);
-                  setIsPaused(running.status === 'paused');
-                  const elapsed =
-                    running.totalExecutionDuration ?? running.accumulatedExecutionSeconds ??
-                    (() => {
-                      const now = Date.now();
-                      const pausedDurationMs = (running.totalPausedDuration ?? 0) * 1000;
-                      const effectiveStartTime = toMs(running.startTime) + pausedDurationMs;
-                      return running.status === 'paused' && running.pausedTime
-                        ? Math.floor((toMs(running.pausedTime) - effectiveStartTime) / 1000)
-                        : Math.floor((now - effectiveStartTime) / 1000);
-                    })();
-                  setElapsedSeconds(Math.max(0, elapsed));
-                }}
+                className="tm-console-focus-expand-btn"
+                onClick={() => setFocusExpanded((v) => !v)}
               >
-                你有进行中的任务：{running.taskName}，点击进入
+                {focusExpanded ? '退出铺满' : '铺满专注区'}
               </button>
-            );
-          })()}
+            </div>
+            {runningExecution ? (
+              runningTaskSection
+            ) : (
+              <div className="tm-console-focus-placeholder">在左侧从「积分模版」开始任务后在此专注</div>
+            )}
+          </aside>
+        </div>
+        {showAddTaskDialog && (
+          <div className="modal-overlay" onClick={() => setShowAddTaskDialog(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>添加任务</h3>
+              <div className="form-group">
+                <label>任务名称：</label>
+                <input
+                  type="text"
+                  value={newTaskName}
+                  onChange={(e) => setNewTaskName(e.target.value)}
+                  placeholder="例如：阅读"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-group">
+                <label>任务描述：</label>
+                <textarea
+                  value={newTaskDescription}
+                  onChange={(e) => setNewTaskDescription(e.target.value)}
+                  placeholder="例如：进行阅读学习"
+                  className="form-textarea"
+                  rows={3}
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="button" onClick={() => setShowAddTaskDialog(false)}>
+                  取消
+                </button>
+                <button type="button" className="confirm-btn" onClick={handleAddTask}>
+                  确定
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const hasOngoingElsewhere = executions.some((e) => e.status === 'running' || e.status === 'paused');
+
+  return (
+    <div className={`task-manager ${variant === 'full' ? 'task-manager--full' : ''}`}>
+      {/* 选择任务：积分模版页在存在进行中任务时仍展示列表，但不展示进行中面板 */}
+      {(!runningExecution || hideExecutionUi) && (
+        <div className="task-selection">
+          {hideExecutionUi && hasOngoingElsewhere && (
+            <div className="templates-console-hint" role="status">
+              当前有任务进行中，请到
+              <button type="button" className="templates-console-hint-link" onClick={() => navigate('/console')}>
+                控制台
+              </button>
+              查看计时与操作。
+            </div>
+          )}
+          {/* 进行中任务入口 banner（仅非积分模版页展示） */}
+          {!hideExecutionUi &&
+            (() => {
+              const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
+              if (!running) return null;
+              return (
+                <button
+                  type="button"
+                  className="running-task-banner"
+                  onClick={() => {
+                    setRunningExecution(running);
+                    setIsPaused(running.status === 'paused');
+                    const elapsed =
+                      running.totalExecutionDuration ??
+                      running.accumulatedExecutionSeconds ??
+                      (() => {
+                        const now = Date.now();
+                        const pausedDurationMs = (running.totalPausedDuration ?? 0) * 1000;
+                        const effectiveStartTime = toMs(running.startTime) + pausedDurationMs;
+                        return running.status === 'paused' && running.pausedTime
+                          ? Math.floor((toMs(running.pausedTime) - effectiveStartTime) / 1000)
+                          : Math.floor((now - effectiveStartTime) / 1000);
+                      })();
+                    setElapsedSeconds(Math.max(0, elapsed));
+                  }}
+                >
+                  你有进行中的任务：{running.taskName}，点击进入
+                </button>
+              );
+            })()}
           {/* 搜索和筛选栏 */}
           <div className="filter-bar">
             <div className="search-box">
@@ -485,13 +670,15 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
                   <option value="custom">自定义</option>
                 </select>
               </div>
-            <button
-              className="add-task-btn"
-              onClick={() => setShowAddTaskDialog(true)}
-              title="添加任务"
-            >
-              ➕ 添加任务
-            </button>
+            {!suppressAddButton && (
+              <button
+                className="add-task-btn"
+                onClick={() => setShowAddTaskDialog(true)}
+                title="添加任务"
+              >
+                ➕ 添加任务
+              </button>
+            )}
           </div>
           </div>
 
@@ -586,7 +773,8 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
           <button
             className="start-task-btn"
             onClick={startTask}
-            disabled={!selectedTemplateId}
+            disabled={!selectedTemplateId || (hideExecutionUi && hasOngoingElsewhere)}
+            title={hideExecutionUi && hasOngoingElsewhere ? '请先在控制台完成或取消进行中的任务' : undefined}
           >
             开始任务
           </button>
@@ -595,69 +783,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ onPointsChange, onRunningTask
         </div>
       )}
 
-      {/* 后台检测设置 */}
-      <div className="running-task" style={{ marginBottom: '16px', padding: '16px' }}>
-        <h3 style={{ marginBottom: '12px', fontSize: '16px' }}>⚙️ 计时设置</h3>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-          <input
-            type="checkbox"
-            checked={enableBackgroundCheck}
-            onChange={(e) => {
-              const checked = e.target.checked;
-              setEnableBackgroundCheck(checked);
-              localStorage.setItem(ENABLE_BG_KEY, String(checked));
-            }}
-            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-          />
-          <span style={{ fontSize: '14px' }}>
-            启用后台检测（切换应用或黑屏时自动暂停）
-          </span>
-        </label>
-        <div style={{ marginTop: '8px', fontSize: '12px', opacity: 0.8 }}>
-          {enableBackgroundCheck 
-            ? '✓ 已启用：切换到后台会自动暂停计时，并使用Wake Lock防止自动锁屏'
-            : '✓ 未启用：只要不手动暂停，应用在任何状态（后台、黑屏等）都会继续计时'}
-        </div>
-      </div>
-
-      {/* 正在执行的任务 */}
-      {runningExecution && (
-        <div className="running-task">
-          <h3>正在执行: {runningExecution.taskName}</h3>
-          <div className="timer">
-            <div className="timer-display">
-              {formatTime(elapsedSeconds)}
-              {isPaused && <span className="paused-indicator">（已暂停）</span>}
-            </div>
-            <div className="timer-info">
-              学习时间: {actualMinutes} 分钟 | 预计奖励: {estimatedReward} 积分
-            </div>
-            {isPaused && (
-              <div className="pause-notice">
-                ⏸️ 任务已暂停，暂停时间不计入学习时间
-              </div>
-            )}
-          </div>
-          <div className="task-actions">
-            {isPaused ? (
-              <button className="resume-btn" onClick={resumeTask}>
-                继续任务
-              </button>
-            ) : (
-              <button className="pause-btn" onClick={pauseTask}>
-                暂停（如厕等）
-              </button>
-            )}
-            <button className="complete-btn" onClick={completeTask}>
-              完成任务
-            </button>
-            <button className="cancel-btn" onClick={cancelTask}>
-              取消任务
-            </button>
-          </div>
-        </div>
-      )}
-
+      {!hideExecutionUi && runningTaskSection}
 
       {/* 添加任务对话框 */}
       {showAddTaskDialog && (

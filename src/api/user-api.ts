@@ -12,6 +12,7 @@ import {
   PurchaseRecordResponse,
   ApiResponse,
 } from './types';
+import type { PointRecord } from '../types';
 import ApiClientFactory from './client';
 
 /**
@@ -34,6 +35,15 @@ export class UserAPI {
   static async getPoints(): Promise<ApiResponse<GetPointsResponse>> {
     const client = ApiClientFactory.getClient();
     return client.post<GetPointsResponse>('/api/user/points', {});
+  }
+
+  /**
+   * GET /api/reward/point-records/{id}
+   * 单条积分记录（详情页）
+   */
+  static async getPointRecordById(id: string | number): Promise<ApiResponse<PointRecord>> {
+    const client = ApiClientFactory.getClient();
+    return client.get<PointRecord>(`/api/point-records/${encodeURIComponent(String(id))}`);
   }
 
   /**

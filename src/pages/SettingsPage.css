@@ -1,0 +1,246 @@
+.settings-page .settings-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.settings-page .settings-card h2 {
+  font-size: 1rem;
+  margin: 0 0 14px;
+}
+
+.settings-theme-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.settings-theme-option {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  color: #fff;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.settings-theme-option.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #2563eb;
+}
+
+.settings-readonly {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.settings-readonly .label {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.settings-hint {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.settings-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+}
+
+.settings-toggle-row input {
+  width: 20px;
+  height: 20px;
+}
+
+.settings-inline-actions {
+  margin: 0 0 12px;
+}
+
+.settings-link-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--primary-color, #2563eb);
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.settings-card--danger {
+  padding-top: 12px;
+}
+
+.settings-logout-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.settings-logout-btn:hover {
+  background: #fee2e2;
+}
+
+.settings-timer-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+}
+
+.settings-timer-card h2 {
+  color: inherit;
+}
+
+.settings-timer-title {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.settings-timer-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.settings-timer-row input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: #fff;
+}
+
+.settings-timer-label {
+  flex: 1;
+}
+
+.settings-timer-hint {
+  margin: 12px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  opacity: 0.88;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.point-detail-page .point-detail-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 720px;
+}
+
+.point-detail-hero {
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.point-detail-hero.earn {
+  background: linear-gradient(180deg, #ecfdf5 0%, #fff 100%);
+}
+
+.point-detail-hero.spend {
+  background: linear-gradient(180deg, #fef2f2 0%, #fff 100%);
+}
+
+.point-detail-hero h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: #374151;
+}
+
+.point-detail-amount {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.point-detail-hero.earn .point-detail-amount {
+  color: #059669;
+}
+
+.point-detail-hero.spend .point-detail-amount {
+  color: #b91c1c;
+}
+
+.point-detail-desc-text {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.point-detail-body {
+  padding: 20px 24px 28px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.point-detail-body h3 {
+  margin: 0 0 12px;
+  font-size: 0.9375rem;
+}
+
+.point-detail-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.point-detail-meta li {
+  margin-bottom: 6px;
+}
+
+.purchase-desc-block {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.point-detail-to-inventory {
+  margin-top: 20px;
+  display: inline-block;
+}
+
+.point-detail-muted {
+  padding: 16px 24px;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.points-detail-list {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: #4b5563;
+}
+
+.points-detail-item {
+  margin-bottom: 6px;
+}

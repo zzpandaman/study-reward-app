@@ -6,6 +6,34 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* 积分模版等 full 视图：与控制台双栏样式隔离，避免侧栏/网格互相影响 */
+.task-manager.task-manager--full {
+  contain: layout;
+}
+
+.templates-console-hint {
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #1e40af;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.templates-console-hint-link {
+  margin: 0 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--primary-color, #2563eb);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .task-selection {
   margin-bottom: 24px;
 }
@@ -636,4 +664,129 @@
   text-align: center;
   color: #999;
   padding: 40px;
+}
+
+/* —— 控制台双栏（仅 .task-manager--console，避免影响积分模版 full 布局）—— */
+.task-manager.task-manager--console {
+  margin-bottom: 0;
+  /* 铺满时在本卡片内叠层，不污染全局 */
+  position: relative;
+}
+
+.task-manager.task-manager--console .tm-console-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 360px);
+  gap: 20px;
+  align-items: start;
+}
+
+.task-manager.task-manager--console.task-manager--focus-expanded .tm-console-layout {
+  display: block;
+}
+
+.task-manager.task-manager--console.task-manager--focus-expanded .tm-console-main {
+  display: none;
+}
+
+.task-manager.task-manager--console.task-manager--focus-expanded .tm-console-focus {
+  width: 100%;
+  max-width: none;
+  position: relative;
+  top: 0;
+}
+
+.task-manager.task-manager--console .tm-console-page-header h1 {
+  font-size: 1.375rem;
+  margin-bottom: 6px;
+}
+
+.task-manager.task-manager--console .tm-console-sub {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.task-manager.task-manager--console .tm-console-favorites-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 12px;
+}
+
+.task-manager.task-manager--console .tm-console-favorites-head h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.task-manager.task-manager--console .tm-console-link-all {
+  border: none;
+  background: none;
+  color: var(--primary-color, #2563eb);
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: underline;
+}
+
+/* 常用：占位留白（接口未接） */
+.task-manager.task-manager--console .tm-console-favorites-placeholder {
+  min-height: 120px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  border: 1px dashed #e5e7eb;
+  background: #fafafa;
+}
+
+.task-manager.task-manager--console .tm-console-main--spacer {
+  min-height: 1px;
+}
+
+.task-manager.task-manager--console .tm-console-focus {
+  position: sticky;
+  top: 12px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.task-manager.task-manager--console .tm-console-focus.is-expanded {
+  position: relative;
+  top: 0;
+}
+
+.task-manager.task-manager--console .tm-console-focus-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.task-manager.task-manager--console .tm-console-focus-expand-btn {
+  font-size: 0.8125rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+}
+
+.task-manager.task-manager--console .tm-console-focus-placeholder {
+  padding: 48px 16px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 900px) {
+  .task-manager.task-manager--console .tm-console-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .task-manager.task-manager--console.task-manager--focus-expanded .tm-console-main {
+    display: none;
+  }
+
+  .task-manager.task-manager--console .tm-console-focus {
+    position: relative;
+    top: 0;
+  }
 }

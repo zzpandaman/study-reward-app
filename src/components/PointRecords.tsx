@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PointRecord } from '../types';
 import { UserAPI } from '../api';
-import RecordDetailModal from './RecordDetailModal';
 import './PointRecords.css';
 
 const formatRecordTime = (record: PointRecord): string => {
@@ -10,13 +10,17 @@ const formatRecordTime = (record: PointRecord): string => {
   return '-';
 };
 
-const PointRecords: React.FC = () => {
+interface PointRecordsProps {
+  variant?: 'page' | 'embedded';
+}
+
+const PointRecords: React.FC<PointRecordsProps> = () => {
+  const navigate = useNavigate();
   const [records, setRecords] = useState<PointRecord[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [recordType, setRecordType] = useState<'all' | 'earn' | 'spend'>('all');
-  const [detailRecord, setDetailRecord] = useState<PointRecord | null>(null);
 
   useEffect(() => {
     loadRecords(page, recordType);
@@ -47,8 +51,7 @@ const PointRecords: React.FC = () => {
   };
 
   const handleRecordClick = (record: PointRecord) => {
-    if (!record.relatedId?.trim()) return;
-    setDetailRecord(record);
+    navigate(`/points/${encodeURIComponent(String(record.id))}`, { state: { record } });
   };
 
   return (
@@ -56,18 +59,21 @@ const PointRecords: React.FC = () => {
       <div className="point-records-header">
         <div className="type-filter">
           <button
+            type="button"
             className={`type-btn ${recordType === 'all' ? 'active' : ''}`}
             onClick={() => handleTypeChange('all')}
           >
             全部
           </button>
           <button
+            type="button"
             className={`type-btn ${recordType === 'earn' ? 'active' : ''}`}
             onClick={() => handleTypeChange('earn')}
           >
             获取
           </button>
           <button
+            type="button"
             className={`type-btn ${recordType === 'spend' ? 'active' : ''}`}
             onClick={() => handleTypeChange('spend')}
           >
@@ -85,15 +91,20 @@ const PointRecords: React.FC = () => {
             {records.map((record) => (
               <div
                 key={record.id}
-                className={`record-item ${record.type} ${record.relatedId?.trim() ? 'clickable' : ''}`}
+                className={`record-item ${record.type} clickable`}
                 onClick={() => handleRecordClick(record)}
-                role={record.relatedId?.trim() ? 'button' : undefined}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleRecordClick(record);
+                  }
+                }}
               >
                 <div className="record-info">
                   <h4>{record.description}</h4>
-                  <div className="record-meta">
-                    {formatRecordTime(record)}
-                  </div>
+                  <div className="record-meta">{formatRecordTime(record)}</div>
                 </div>
                 <div className={`record-amount ${record.type} ${record.amount === 0 ? 'zero' : ''}`}>
                   {record.amount === 0 ? (
@@ -108,26 +119,16 @@ const PointRecords: React.FC = () => {
               </div>
             ))}
           </div>
-          {detailRecord && (
-            <RecordDetailModal
-              record={detailRecord}
-              onClose={() => setDetailRecord(null)}
-            />
-          )}
-          {/* 分页控件 */}
           {total > pageSize && (
             <div className="pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page <= 1}
-              >
+              <button type="button" className="pagination-btn" onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
                 上一页
               </button>
               <span className="pagination-info">
                 第 {page} / {Math.ceil(total / pageSize)} 页
               </span>
               <button
+                type="button"
                 className="pagination-btn"
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page >= Math.ceil(total / pageSize)}
