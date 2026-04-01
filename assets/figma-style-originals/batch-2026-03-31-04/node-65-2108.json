@@ -1,0 +1,37 @@
+{
+  "batchId": "batch-2026-03-31-04",
+  "nodeId": "65-2108",
+  "label": "第四批-2",
+  "original": {
+    "figmaUrl": "https://www.figma.com/design/cZ7YT22rwaZKUubcVpfKJS/star-reward?node-id=1-1910&t=WQqapUomjkHi0dmD-4",
+    "figmaUrlHistory": [
+      "https://www.figma.com/design/yYx9f3mtS4xdWDHiLrzcUb/reward?node-id=65-2108&t=2Lqgot83lax07rnX-4"
+    ],
+    "figmaUrlChangeNote": "2026-04-01：按用户提供链接完成替换，保留旧链接用于追溯。"
+  },
+  "projectMapping": {
+    "route": "/points + /points/:id",
+    "component": "PointsPage + PointRecords + PointRecordDetailPage",
+    "element": "积分记录列表与积分记录详情（获取/消费）",
+    "notes": "仅登记任务，待用户 cue 后按限流规则执行实际拉取。"
+  },
+  "artifacts": {
+    "storageMode": "index-only",
+    "exportedAt": "2026-03-31",
+    "files": [
+      "PluginFigma:get_design_context 输出：/Users/cdmac14013/.cursor/projects/Users-cdmac14013-study-reward-app/agent-tools/133b048d-bf9e-4098-9f1a-ebdca861dcd4.txt"
+    ],
+    "figma": {
+      "assetUrls": {},
+      "stylePalettePreview": {},
+      "fontPreview": []
+    },
+    "lastPullAttempt": {
+      "at": "2026-04-01",
+      "tool": "get_design_context",
+      "result": "success",
+      "detail": "Plugin Figma MCP 拉取成功（fileKey=cZ7..., nodeId=1:1910）；预览为“积分获取详情”页"
+    }
+  },
+  "status": "applied"
+}

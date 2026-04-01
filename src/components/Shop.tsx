@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 import { ProductAPI, UserAPI } from '../api';
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../utils/pagination';
 import './Shop.css';
 
 interface ShopProps {
@@ -14,6 +15,7 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
   const navigate = useNavigate();
   const [userPoints, setUserPoints] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
+  const [productsTotal, setProductsTotal] = useState(0);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [showAddProductDialog, setShowAddProductDialog] = useState(false);
   const [newProductName, setNewProductName] = useState('');
@@ -25,13 +27,13 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'preset' | 'custom'>('all');
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(12); // 每页12个商品
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [purchaseOpenId, setPurchaseOpenId] = useState<string | null>(null);
 
-  const loadData = async () => {
+  const loadData = async (currentPage: number = page) => {
     const [pointsRes, productsRes] = await Promise.all([
       UserAPI.getPoints(),
-      ProductAPI.getProducts(),
+      ProductAPI.getProducts(currentPage, pageSize),
     ]);
     if (pointsRes.success && pointsRes.data) {
       const d = pointsRes.data as { points?: number; data?: { points?: number } };
@@ -40,12 +42,13 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
     }
     if (productsRes.success && productsRes.data?.data) {
       setProducts(productsRes.data.data as Product[]);
+      setProductsTotal(productsRes.data.total ?? (productsRes.data.data as Product[]).length);
     }
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    loadData(page);
+  }, [page, pageSize]);
 
   // 初始化数量为1
   useEffect(() => {
@@ -107,7 +110,7 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
 
       if (response.success) {
         alert('商品添加成功！');
-        loadData();
+        loadData(page);
         setNewProductName('');
         setNewProductDescription('');
         setNewProductPrice(1);
@@ -131,7 +134,7 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
       const response = await ProductAPI.deleteProduct(id);
       if (response.success) {
         alert('商品删除成功！');
-        loadData();
+        loadData(page);
       } else {
         alert('删除失败：' + (response.error || '未知错误'));
       }
@@ -158,7 +161,7 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
 
       if (response.success) {
         alert(`兑换成功！您获得了 ${formatQuantity(product, units)}`);
-        loadData();
+        loadData(page);
         onPointsChange?.();
         window.dispatchEvent(new CustomEvent('inventory:refresh'));
         window.dispatchEvent(new CustomEvent('app:points-refresh'));
@@ -187,11 +190,8 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
     return matchesSearch && matchesFilter;
   });
 
-  const totalPages = Math.ceil(filteredProducts.length / pageSize);
-  const paginatedProducts = filteredProducts.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
+  const totalPages = Math.max(1, Math.ceil(productsTotal / pageSize));
+  const paginatedProducts = filteredProducts;
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -202,6 +202,11 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
   const handleFilterChange = (type: 'all' | 'preset' | 'custom') => {
     setFilterType(type);
     setPage(1); // 切换筛选时重置到第一页
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
   };
 
   // 当搜索关键词或筛选类型改变时，重置到第一页
@@ -248,27 +253,43 @@ const Shop: React.FC<ShopProps> = ({ onPointsChange, useNewProductPage = false }
       {/* 统计信息和分页 */}
       {filteredProducts.length > 0 && (
         <div className="filter-summary">
-          <span>共 {filteredProducts.length} 个商品，第 {page} / {totalPages} 页</span>
-          {totalPages > 1 && (
-            <div className="pagination-inline">
-              <button
-                className="pagination-btn-inline"
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page <= 1}
-                title="上一页"
+          <span>共 {productsTotal} 个商品，第 {page} / {totalPages} 页</span>
+          <div className="pagination-controls">
+            <div className="page-size-control">
+              <span>每页</span>
+              <select
+                className="filter-select page-size-select"
+                value={pageSize}
+                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
               >
-                ‹
-              </button>
-              <button
-                className="pagination-btn-inline"
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page >= totalPages}
-                title="下一页"
-              >
-                ›
-              </button>
+                {PAGE_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
+            {totalPages > 1 && (
+              <div className="pagination-inline">
+                <button
+                  className="pagination-btn-inline"
+                  onClick={() => handlePageChange(page - 1)}
+                  disabled={page <= 1}
+                  title="上一页"
+                >
+                  ‹
+                </button>
+                <button
+                  className="pagination-btn-inline"
+                  onClick={() => handlePageChange(page + 1)}
+                  disabled={page >= totalPages}
+                  title="下一页"
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

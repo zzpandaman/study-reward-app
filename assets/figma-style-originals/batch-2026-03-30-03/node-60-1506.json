@@ -1,0 +1,45 @@
+{
+  "batchId": "batch-2026-03-30-03",
+  "nodeId": "60-1506",
+  "label": "第三组-2",
+  "original": {
+    "figmaUrl": "https://www.figma.com/design/yYx9f3mtS4xdWDHiLrzcUb/reward?node-id=60-1506&t=GUEY1xkW5dEOhdVt-4"
+  },
+  "projectMapping": {
+    "route": "/shop",
+    "component": "ShopPage + Shop",
+    "element": "积分商店列表页（返回主页、标题副标题、搜索、新增商品、分类标签、商品卡片网格、立即购买按钮）",
+    "notes": "该节点已通过 Framelink MCP get_figma_data 读取成功，可用于后续商店列表页样式对齐。"
+  },
+  "artifacts": {
+    "storageMode": "index-only",
+    "exportedAt": "2026-03-30",
+    "files": [
+      "Framelink:get_figma_data 输出：/Users/cdmac14013/.cursor/projects/Users-cdmac14013-study-reward-app/agent-tools/359ce327-fcb2-46d0-8916-f82c12f58bda.txt"
+    ],
+    "figma": {
+      "assetUrls": {},
+      "stylePalettePreview": {
+        "bg": "#f6f7f8",
+        "cardBg": "#ffffff",
+        "borderLight": "#e2e8f0",
+        "accentBlue": "#137fec",
+        "textPrimary": "#0f172a",
+        "textSecondary": "#64748b",
+        "textMuted": "#94a3b8"
+      },
+      "fontPreview": [
+        "Noto Sans SC",
+        "Material Symbols Outlined"
+      ]
+    },
+    "lastPullAttempt": {
+      "at": "2026-03-31",
+      "tool": "get_figma_data",
+      "result": "success",
+      "detail": "Framelink MCP 返回完整节点树数据"
+    }
+  },
+  "status": "applied"
+}
+

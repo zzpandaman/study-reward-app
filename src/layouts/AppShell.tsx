@@ -9,10 +9,10 @@ import './AppShell.css';
 const navItems = [
   { to: '/console', label: '控制台', icon: '▦' },
   { to: '/templates', label: '积分模版', icon: '⎇' },
-  { to: '/shop', label: '商店', icon: '🛒' },
-  { to: '/points', label: '积分', icon: '🏅' },
-  { to: '/inventory', label: '背包', icon: '🎒' },
-  { to: '/settings', label: '设置', icon: '⚙' },
+  { to: '/shop', label: '积分商店', icon: '🛒' },
+  { to: '/points', label: '积分记录', icon: '🏅' },
+  { to: '/inventory', label: '我的背包', icon: '🎒' },
+  { to: '/settings', label: '个人设置', icon: '⚙' },
 ];
 
 const AppShell: React.FC = () => {

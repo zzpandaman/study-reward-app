@@ -1,0 +1,38 @@
+{
+  "batchId": "batch-2026-03-30-02",
+  "nodeId": "44-593",
+  "label": "第二组-2",
+  "original": {
+    "figmaUrl": "https://www.figma.com/design/cZ7YT22rwaZKUubcVpfKJS/star-reward?node-id=1-801&t=WQqapUomjkHi0dmD-4",
+    "figmaUrlHistory": [
+      "https://www.figma.com/design/yYx9f3mtS4xdWDHiLrzcUb/reward?node-id=44-593&t=GUEY1xkW5dEOhdVt-4"
+    ],
+    "figmaUrlChangeNote": "2026-04-01：按用户提供链接完成替换，保留旧链接用于追溯。"
+  },
+  "projectMapping": {
+    "route": "/templates/new",
+    "component": "TemplatesNewPage",
+    "element": "新增积分模版表单区（标题+副标题、模版名称/描述输入框、底部保存/取消按钮等）",
+    "notes": "该节点的 Figma 表单包含图标选择/积分获取倍率等更多控件；当前项目 `TemplatesNewPage` 仅实现了名称与描述两项（缺口不处理）。后续落样式只对齐已有 DOM 的视觉部分，不补实现缺失控件。"
+  },
+  "artifacts": {
+    "storageMode": "index-only",
+    "exportedAt": "2026-03-30",
+    "files": [
+      "MCP:get_design_context：本次 44-593 的临时代码未写入 agent-tools 文件（直接返回于对话输出），本元数据仅落地资产 URL 与建议映射。",
+      "Framelink:get_figma_data 输出：/Users/cdmac14013/.cursor/projects/Users-cdmac14013-study-reward-app/agent-tools/e69d2b7e-987e-4519-8d16-24c3e14254ca.txt"
+    ],
+    "figma": {
+      "assetUrls": {
+        "imgImageShadow": "https://www.figma.com/api/mcp/asset/91ecc556-81dd-47c6-82e2-f66aeaef5dac"
+      }
+    },
+    "lastPullAttempt": {
+      "at": "2026-04-01",
+      "tool": "get_figma_data",
+      "result": "success",
+      "detail": "Framelink 单节点拉取成功（fileKey=cZ7..., nodeId=1:801）"
+    }
+  },
+  "status": "applied"
+}

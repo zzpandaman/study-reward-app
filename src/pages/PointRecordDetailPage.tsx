@@ -125,7 +125,7 @@ const PointRecordDetailPage: React.FC = () => {
   return (
     <div className="page-with-chrome point-detail-page">
       <button type="button" className="page-back" onClick={() => navigate('/points')}>
-        ← 返回积分记录
+        ← 返回记录列表
       </button>
 
       <div className="point-detail-card">

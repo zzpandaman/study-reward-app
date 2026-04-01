@@ -1,0 +1,49 @@
+{
+  "batchId": "batch-2026-03-30-02",
+  "nodeId": "44-354",
+  "label": "第二组-1",
+  "original": {
+    "figmaUrl": "https://www.figma.com/design/cZ7YT22rwaZKUubcVpfKJS/star-reward?node-id=1-563&t=WQqapUomjkHi0dmD-4",
+    "figmaUrlHistory": [
+      "https://www.figma.com/design/yYx9f3mtS4xdWDHiLrzcUb/reward?node-id=44-354&t=GUEY1xkW5dEOhdVt-4"
+    ],
+    "figmaUrlChangeNote": "2026-04-01：按用户提供链接完成替换，保留旧链接用于追溯。"
+  },
+  "projectMapping": {
+    "route": "/templates",
+    "component": "TemplatesPage + TaskManager(variant=full)（任务模板列表页）",
+    "element": "页面头部（返回控制台+标题+副标题）+ 搜索框 + Filter Bar（全部/专注工作等）+ “新增模版”按钮 + 列表卡容器",
+    "notes": "该节点包含“积分模版”列表页的整体骨架与筛选/搜索控件。后续落到样式时只做视觉对齐，不触碰列表数据、跳转、筛选逻辑。"
+  },
+  "artifacts": {
+    "storageMode": "index-only",
+    "exportedAt": "2026-03-30",
+    "files": [
+      "MCP:get_design_context 写入临时代码文件：/Users/cdmac14013/.cursor/projects/Users-cdmac14013-study-reward-app/agent-tools/3d880dc4-540a-4e73-9600-8e719d405f20.txt",
+      "Framelink:get_figma_data 输出：/Users/cdmac14013/.cursor/projects/Users-cdmac14013-study-reward-app/agent-tools/33445b60-d6c8-46a9-9780-7645a25da00f.txt"
+    ],
+    "figma": {
+      "assetUrls": {
+        "imgImageShadow": "https://www.figma.com/api/mcp/asset/6ee43ae0-42e6-47f6-9617-f6062c3ed9ec",
+        "imgImageBorderShadow": "https://www.figma.com/api/mcp/asset/1d56c822-9d60-426a-8393-74128594dc21",
+        "imgImageBorderShadow1": "https://www.figma.com/api/mcp/asset/4ba5912c-7699-4981-a4d0-fd46bc06e4fb"
+      },
+      "stylePalettePreview": {
+        "bg": "#f6f7f8",
+        "cardBg": "#ffffff",
+        "borderLight": "#e2e8f0",
+        "accentBlue": "#137fec",
+        "textPrimary": "#0f172a",
+        "textSecondary": "#64748b",
+        "textMuted": "#94a3b8"
+      }
+    },
+    "lastPullAttempt": {
+      "at": "2026-04-01",
+      "tool": "get_figma_data",
+      "result": "success",
+      "detail": "Framelink 单节点拉取成功（fileKey=cZ7..., nodeId=1:563）"
+    }
+  },
+  "status": "applied"
+}

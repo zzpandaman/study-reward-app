@@ -29,11 +29,11 @@ export class TaskTemplateAPI {
    * POST /api/task-templates/query
    * 获取所有任务模板（分页查询）
    */
-  static async getTaskTemplates(): Promise<ApiResponse<GetTaskTemplatesResponse>> {
+  static async getTaskTemplates(page: number = 1, pageSize: number = 1000): Promise<ApiResponse<GetTaskTemplatesResponse>> {
     const client = ApiClientFactory.getClient();
     return client.post<GetTaskTemplatesResponse>('/api/task-templates/query', {
-      page: 1,
-      pageSize: 1000,
+      page,
+      pageSize,
     });
   }
 

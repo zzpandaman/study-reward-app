@@ -1,32 +1,35 @@
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   max-width: none;
   padding-bottom: env(safe-area-inset-bottom, 0);
+  overflow: hidden;
 }
 
 .app-shell-sidebar {
-  width: 220px;
+  width: 256px;
   flex-shrink: 0;
-  background: var(--surface-elevated, rgba(255, 255, 255, 0.95));
-  border-right: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+  height: 100vh;
+  overflow: auto;
+  background: #fff;
+  border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
-  padding: 12px 10px;
-  padding-top: calc(12px + env(safe-area-inset-top, 0));
+  padding: 16px 12px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0));
 }
 
 .app-shell-brand {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
   border: none;
   background: transparent;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 14px;
   text-align: left;
   font: inherit;
   color: inherit;
@@ -42,7 +45,7 @@
 
 .app-shell-brand-text {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.0625rem;
 }
 
 .app-shell-nav {
@@ -57,10 +60,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 11px 14px;
+  border-radius: 14px;
   text-decoration: none;
-  color: var(--text-secondary, #555);
+  color: var(--text-secondary, #64748b);
   font-size: 0.9375rem;
 }
 
@@ -70,8 +73,8 @@
 }
 
 .app-shell-nav-link.active {
-  background: var(--nav-active-bg, rgba(59, 130, 246, 0.12));
-  color: var(--primary-color, #2563eb);
+  background: var(--nav-active-bg, rgba(19, 127, 236, 0.12));
+  color: var(--primary-color, #137fec);
   font-weight: 600;
 }
 
@@ -130,9 +133,11 @@
 .app-shell-main {
   flex: 1;
   min-width: 0;
+  /* 让 flex 子项可以正确收缩，避免侧栏 footer 因主区内容撑高而下移 */
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  background: var(--gradient, #f3f4f6);
+  background: #f6f7f8;
 }
 
 .app-shell-topbar {
@@ -140,10 +145,10 @@
   align-items: center;
   justify-content: flex-end;
   gap: 16px;
-  padding: 10px 16px;
-  padding-right: calc(16px + env(safe-area-inset-right, 0));
-  background: var(--surface-elevated, rgba(255, 255, 255, 0.9));
-  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+  padding: 12px 20px;
+  padding-right: calc(20px + env(safe-area-inset-right, 0));
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .app-shell-topbar-points {
@@ -163,17 +168,23 @@
 
 .app-shell-outlet {
   flex: 1;
+  min-height: 0;
   overflow: auto;
-  padding: 16px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 @media (max-width: 900px) {
   .app-shell {
+    height: auto;
+    min-height: 100vh;
     flex-direction: column;
+    overflow: visible;
   }
 
   .app-shell-sidebar {
+    height: auto;
+    overflow: visible;
     width: 100%;
     flex-direction: row;
     flex-wrap: wrap;

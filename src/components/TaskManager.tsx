@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TaskTemplate, TaskExecution } from '../types';
 import { calculateReward } from '../utils/reward';
 import { TaskTemplateAPI, TaskExecutionAPI } from '../api';
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../utils/pagination';
 import {
   readBackgroundTimerCheckEnabled,
   BACKGROUND_TIMER_PREF_EVENT,
@@ -37,6 +38,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   const navigate = useNavigate();
   const [focusExpanded, setFocusExpanded] = useState(false);
   const [taskTemplates, setTaskTemplates] = useState<TaskTemplate[]>([]);
+  const [taskTemplatesTotal, setTaskTemplatesTotal] = useState(0);
   const [executions, setExecutions] = useState<TaskExecution[]>([]);
   const [runningExecution, setRunningExecution] = useState<TaskExecution | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -52,7 +54,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'preset' | 'custom'>('all');
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(12); // 每页12个任务（3x4网格）
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
   const pauseRequestedRef = useRef(false); // 解决暂停时 interval 读到旧闭包的问题
   const elapsedSecondsRef = useRef(0);
@@ -62,9 +64,12 @@ const TaskManager: React.FC<TaskManagerProps> = ({
 
   // Effect A: 挂载时加载数据
   useEffect(() => {
-    loadTaskTemplates();
     loadExecutions();
   }, []);
+
+  useEffect(() => {
+    loadTaskTemplates(page);
+  }, [page]);
 
   useEffect(() => {
     const sync = () => setEnableBackgroundCheck(readBackgroundTimerCheckEnabled());
@@ -237,13 +242,14 @@ const TaskManager: React.FC<TaskManagerProps> = ({
     return () => clearInterval(interval);
   }, [runningExecution?.id, runningExecution?.status, isPaused, isPageVisible, enableBackgroundCheck]);
 
-  const loadTaskTemplates = async () => {
-    const res = await TaskTemplateAPI.getTaskTemplates();
+  const loadTaskTemplates = async (currentPage: number = page) => {
+    const res = await TaskTemplateAPI.getTaskTemplates(currentPage, pageSize);
     if (res.success && res.data?.data) {
       const templates = (res.data.data as TaskTemplate[]).filter(
         (t) => t.name?.trim() && t.description?.trim()
       );
       setTaskTemplates(templates);
+      setTaskTemplatesTotal(res.data.total ?? templates.length);
     }
   };
 
@@ -270,7 +276,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
 
       if (response.success) {
         alert('任务添加成功！');
-        loadTaskTemplates();
+        loadTaskTemplates(page);
         setNewTaskName('');
         setNewTaskDescription('');
         setShowAddTaskDialog(false);
@@ -291,7 +297,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
       const response = await TaskTemplateAPI.deleteTaskTemplate(id);
       if (response.success) {
         alert('任务删除成功！');
-        loadTaskTemplates();
+        loadTaskTemplates(page);
       } else {
         alert('删除失败：' + (response.error || '未知错误'));
       }
@@ -306,8 +312,9 @@ const TaskManager: React.FC<TaskManagerProps> = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const startTask = async () => {
-    if (!selectedTemplateId) {
+  const startTask = async (templateId?: string) => {
+    const startId = templateId ?? selectedTemplateId;
+    if (!startId) {
       alert('请选择任务');
       return;
     }
@@ -318,7 +325,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
       return;
     }
 
-    const template = taskTemplates.find((t) => t.id === selectedTemplateId);
+    const template = taskTemplates.find((t) => t.id === startId);
     if (!template) return;
 
     const res = await TaskExecutionAPI.startTask({
@@ -431,11 +438,8 @@ const TaskManager: React.FC<TaskManagerProps> = ({
     return matchesSearch && matchesFilter;
   });
 
-  const totalPages = Math.ceil(filteredTemplates.length / pageSize);
-  const paginatedTemplates = filteredTemplates.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
+  const totalPages = Math.max(1, Math.ceil(taskTemplatesTotal / pageSize));
+  const paginatedTemplates = filteredTemplates;
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -446,6 +450,11 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   const handleFilterChange = (type: 'all' | 'preset' | 'custom') => {
     setFilterType(type);
     setPage(1); // 切换筛选时重置到第一页
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
   };
 
   // 当搜索关键词或筛选类型改变时，重置到第一页
@@ -501,7 +510,6 @@ const TaskManager: React.FC<TaskManagerProps> = ({
           {!runningExecution ? (
             <div className="tm-console-main">
               <header className="tm-console-page-header">
-                <h1>积分获取控制台</h1>
                 <p className="tm-console-sub">持续专注，实时结算奖励</p>
               </header>
               {(() => {
@@ -652,7 +660,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
             <div className="search-box">
               <input
                 type="text"
-                placeholder="搜索任务名称或描述..."
+                placeholder={hideExecutionUi ? '搜索模版名称或描述...' : '搜索任务名称或描述...'}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className="search-input"
@@ -673,10 +681,17 @@ const TaskManager: React.FC<TaskManagerProps> = ({
             {!suppressAddButton && (
               <button
                 className="add-task-btn"
-                onClick={() => setShowAddTaskDialog(true)}
-                title="添加任务"
+                onClick={() => {
+                  // 在 /templates 列表页中，保持原有“新增模版”跳转到列表新增页面的行为
+                  if (variant === 'full' && hideExecutionUi) {
+                    navigate('/templates/new');
+                    return;
+                  }
+                  setShowAddTaskDialog(true);
+                }}
+                title="新增模版"
               >
-                ➕ 添加任务
+                ➕ 新增模版
               </button>
             )}
           </div>
@@ -685,27 +700,43 @@ const TaskManager: React.FC<TaskManagerProps> = ({
           {/* 统计信息和分页 */}
           {filteredTemplates.length > 0 && (
             <div className="filter-summary">
-              <span>共 {filteredTemplates.length} 个任务，第 {page} / {totalPages} 页</span>
-              {totalPages > 1 && (
-                <div className="pagination-inline">
-                  <button
-                    className="pagination-btn-inline"
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page <= 1}
-                    title="上一页"
+              <span>共 {taskTemplatesTotal} 个任务，第 {page} / {totalPages} 页</span>
+              <div className="pagination-controls">
+                <div className="page-size-control">
+                  <span>每页</span>
+                  <select
+                    className="filter-select page-size-select"
+                    value={pageSize}
+                    onChange={(e) => handlePageSizeChange(Number(e.target.value))}
                   >
-                    ‹
-                  </button>
-                  <button
-                    className="pagination-btn-inline"
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page >= totalPages}
-                    title="下一页"
-                  >
-                    ›
-                  </button>
+                    {PAGE_SIZE_OPTIONS.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              )}
+                {totalPages > 1 && (
+                  <div className="pagination-inline">
+                    <button
+                      className="pagination-btn-inline"
+                      onClick={() => handlePageChange(page - 1)}
+                      disabled={page <= 1}
+                      title="上一页"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      className="pagination-btn-inline"
+                      onClick={() => handlePageChange(page + 1)}
+                      disabled={page >= totalPages}
+                      title="下一页"
+                    >
+                      ›
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -724,13 +755,24 @@ const TaskManager: React.FC<TaskManagerProps> = ({
                   selectedTemplateId === template.id ? 'selected' : ''
                 }`}
                 onClick={() => setSelectedTemplateId(template.id)}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
               >
                 <div style={{ flex: 1 }}>
                 <h4>{template.name}</h4>
                 <p>{template.description}</p>
                 <div className="reward-info">积分: 1/分钟</div>
                 </div>
+                <button
+                  type="button"
+                  className="task-template-start-btn"
+                  disabled={hideExecutionUi && hasOngoingElsewhere}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startTask(template.id);
+                  }}
+                  title="开始任务"
+                >
+                  开始
+                </button>
                 {!template.isPreset && (
                   <button
                     className="delete-task-btn"
@@ -747,37 +789,16 @@ const TaskManager: React.FC<TaskManagerProps> = ({
             ))}
           </div>
 
-              {/* 分页控件 */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button
-                    className="pagination-btn"
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page <= 1}
-                  >
-                    上一页
-                  </button>
-                  <span className="pagination-info">
-                    第 {page} / {totalPages} 页
-                  </span>
-                  <button
-                    className="pagination-btn"
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    下一页
-                  </button>
-                </div>
-              )}
-
-          <button
-            className="start-task-btn"
-            onClick={startTask}
-            disabled={!selectedTemplateId || (hideExecutionUi && hasOngoingElsewhere)}
-            title={hideExecutionUi && hasOngoingElsewhere ? '请先在控制台完成或取消进行中的任务' : undefined}
-          >
-            开始任务
-          </button>
+          {!hideExecutionUi && (
+            <button
+              className="start-task-btn"
+              onClick={() => startTask()}
+              disabled={!selectedTemplateId || (hideExecutionUi && hasOngoingElsewhere)}
+              title={hideExecutionUi && hasOngoingElsewhere ? '请先在控制台完成或取消进行中的任务' : undefined}
+            >
+              开始任务
+            </button>
+          )}
             </>
           )}
         </div>

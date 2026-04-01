@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PointRecord } from '../types';
 import { UserAPI } from '../api';
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../utils/pagination';
 import './PointRecords.css';
 
 const formatRecordTime = (record: PointRecord): string => {
@@ -19,12 +20,12 @@ const PointRecords: React.FC<PointRecordsProps> = () => {
   const [records, setRecords] = useState<PointRecord[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [recordType, setRecordType] = useState<'all' | 'earn' | 'spend'>('all');
 
   useEffect(() => {
     loadRecords(page, recordType);
-  }, [page, recordType]);
+  }, [page, recordType, pageSize]);
 
   const loadRecords = async (currentPage: number = 1, type: 'all' | 'earn' | 'spend' = 'all') => {
     try {
@@ -50,6 +51,11 @@ const PointRecords: React.FC<PointRecordsProps> = () => {
     setPage(1);
   };
 
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
+  };
+
   const handleRecordClick = (record: PointRecord) => {
     navigate(`/points/${encodeURIComponent(String(record.id))}`, { state: { record } });
   };
@@ -63,21 +69,21 @@ const PointRecords: React.FC<PointRecordsProps> = () => {
             className={`type-btn ${recordType === 'all' ? 'active' : ''}`}
             onClick={() => handleTypeChange('all')}
           >
-            全部
+            全部记录
           </button>
           <button
             type="button"
             className={`type-btn ${recordType === 'earn' ? 'active' : ''}`}
             onClick={() => handleTypeChange('earn')}
           >
-            获取
+            积分获取
           </button>
           <button
             type="button"
             className={`type-btn ${recordType === 'spend' ? 'active' : ''}`}
             onClick={() => handleTypeChange('spend')}
           >
-            消耗
+            积分消耗
           </button>
         </div>
       </div>
@@ -85,7 +91,45 @@ const PointRecords: React.FC<PointRecordsProps> = () => {
       {total > 0 ? (
         <>
           <div className="records-summary">
-            共 {total} 条记录，当前显示 {records.length} 条
+            <span>共 {total} 条记录，第 {page} / {Math.ceil(total / pageSize)} 页</span>
+            <div className="pagination-controls">
+              <div className="page-size-control">
+                <span>每页</span>
+                <select
+                  className="page-size-select"
+                  value={pageSize}
+                  onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                >
+                  {PAGE_SIZE_OPTIONS.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {total > pageSize && (
+                <div className="pagination-inline">
+                  <button
+                    type="button"
+                    className="pagination-btn-inline"
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page <= 1}
+                    title="上一页"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    className="pagination-btn-inline"
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page >= Math.ceil(total / pageSize)}
+                    title="下一页"
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <div className="records-list">
             {records.map((record) => (
@@ -119,24 +163,6 @@ const PointRecords: React.FC<PointRecordsProps> = () => {
               </div>
             ))}
           </div>
-          {total > pageSize && (
-            <div className="pagination">
-              <button type="button" className="pagination-btn" onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-                上一页
-              </button>
-              <span className="pagination-info">
-                第 {page} / {Math.ceil(total / pageSize)} 页
-              </span>
-              <button
-                type="button"
-                className="pagination-btn"
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page >= Math.ceil(total / pageSize)}
-              >
-                下一页
-              </button>
-            </div>
-          )}
         </>
       ) : (
         <div className="empty-records">

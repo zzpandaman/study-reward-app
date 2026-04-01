@@ -9,6 +9,15 @@
 /* 积分模版等 full 视图：与控制台双栏样式隔离，避免侧栏/网格互相影响 */
 .task-manager.task-manager--full {
   contain: layout;
+  /* 对齐 Figma：/templates 页的主白卡（大圆角 + 浅阴影）*/
+  background: #fff;
+  border-radius: 48px;
+  padding: 1.5rem;
+  margin-bottom: 0;
+  box-shadow: 0px 25px 50px -12px rgba(19, 127, 236, 0.08);
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .templates-console-hint {
@@ -67,9 +76,16 @@
 
 .task-templates {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  /* 模版列表：一行放 3 个，卡片更窄更符合设计 */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem 1.25rem;
+  margin-bottom: 1.1rem;
+}
+
+@media (max-width: 1100px) {
+  .task-templates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .task-template-card {
@@ -79,6 +95,263 @@
   padding: 16px;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+/* 仅 /templates 列表页（variant=full）使用 Figma 风格的卡片 */
+.task-manager.task-manager--full .task-template-card {
+  /* 图片视觉改为“卡片背景覆盖”，因此卡片本体不填充纯色 */
+  background: transparent;
+  border: 1px solid #f1f5f9;
+  border-radius: 40px;
+  padding: 0;
+  box-shadow: 0px 20px 25px -5px rgba(19, 127, 236, 0.05), 0px 8px 10px -6px rgba(19, 127, 236, 0.05);
+  overflow: hidden;
+  position: relative;
+  /* 使用相对布局避免重叠：grid 分离内容列/右侧角标列 */
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  align-items: stretch;
+  min-height: auto;
+}
+
+.task-manager.task-manager--full .task-template-card:hover {
+  border-color: var(--primary-color, #137fec);
+  transform: translateY(-2px);
+  box-shadow: 0px 30px 45px -15px rgba(19, 127, 236, 0.08), 0px 10px 14px -6px rgba(19, 127, 236, 0.08);
+}
+
+.task-manager.task-manager--full .task-template-card.selected {
+  background: transparent;
+  border-color: var(--primary-color, #137fec);
+}
+
+.task-manager.task-manager--full .task-template-card h4 {
+  color: #0f172a;
+  font-size: 1.125rem;
+}
+
+.task-manager.task-manager--full .task-template-card p {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.task-manager.task-manager--full .reward-info {
+  color: var(--primary-color, #137fec);
+  font-size: 0.875rem;
+}
+
+/* 大图片块（不改 JSX：用伪元素生成） */
+.task-manager.task-manager--full .task-template-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  /* 用渐变模拟“设计稿大图背景” */
+  background: linear-gradient(
+    135deg,
+    rgba(19, 127, 236, 0.14) 0%,
+    rgba(118, 75, 178, 0.10) 100%
+  );
+}
+
+/* 为不同卡片提供“看起来像不同大图”的渐变（不引入新交互） */
+.task-manager.task-manager--full .task-template-card:nth-child(6n + 1)::before {
+  background: linear-gradient(135deg, rgba(19, 127, 236, 0.22) 0%, rgba(19, 127, 236, 0.05) 100%);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(6n + 2)::before {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.20) 0%, rgba(19, 127, 236, 0.05) 100%);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(6n + 3)::before {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.20) 0%, rgba(19, 127, 236, 0.05) 100%);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(6n + 4)::before {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.20) 0%, rgba(19, 127, 236, 0.05) 100%);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(6n + 5)::before {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.20) 0%, rgba(19, 127, 236, 0.05) 100%);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(6n + 0)::before {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.20) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+/* 左上角默认小图标（给够一页 12 个：只对首屏 12 个生效，分页切页后由 nth-child 自动对应当前页） */
+.task-manager.task-manager--full .task-template-card::after {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  /* 让图标落在文字下方，避免“重叠遮挡” */
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  background: rgba(19, 127, 236, 0.12);
+  color: rgba(19, 127, 236, 0.95);
+}
+
+.task-manager.task-manager--full .task-template-card:nth-child(1)::after {
+  content: "⏱";
+  background: rgba(19, 127, 236, 0.12);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(2)::after {
+  content: "🎨";
+  background: rgba(147, 51, 234, 0.12);
+  color: rgba(147, 51, 234, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(3)::after {
+  content: "📘";
+  background: rgba(59, 130, 246, 0.12);
+  color: rgba(59, 130, 246, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(4)::after {
+  content: "🏃";
+  background: rgba(16, 185, 129, 0.12);
+  color: rgba(16, 185, 129, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(5)::after {
+  content: "⌨️";
+  background: rgba(34, 211, 238, 0.12);
+  color: rgba(8, 145, 178, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(6)::after {
+  content: "💡";
+  background: rgba(245, 158, 11, 0.14);
+  color: rgba(217, 119, 6, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(7)::after {
+  content: "🧠";
+  background: rgba(99, 102, 241, 0.12);
+  color: rgba(79, 70, 229, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(8)::after {
+  content: "🎯";
+  background: rgba(16, 185, 129, 0.10);
+  color: rgba(5, 150, 105, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(9)::after {
+  content: "🧩";
+  background: rgba(236, 72, 153, 0.10);
+  color: rgba(219, 39, 119, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(10)::after {
+  content: "🧪";
+  background: rgba(59, 130, 246, 0.10);
+  color: rgba(37, 99, 235, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(11)::after {
+  content: "📌";
+  background: rgba(20, 184, 166, 0.10);
+  color: rgba(13, 148, 136, 0.95);
+}
+.task-manager.task-manager--full .task-template-card:nth-child(12)::after {
+  content: "🚀";
+  background: rgba(19, 127, 236, 0.12);
+  color: rgba(19, 127, 236, 0.95);
+}
+
+/* 让“模版名称和说明”成为卡片中间主体（不改 JSX，仅靠左侧容器的布局） */
+.task-manager.task-manager--full .task-template-card > div:first-child {
+  position: relative;
+  z-index: 1;
+  /* 内容占左侧列，并跨越三行，右侧角标/删除/开始按钮由 grid 控制 */
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  /* 恢复“积分”原本的垂直位置：不再通过大 padding 推移整体内容 */
+  padding: 1.1rem 1.6rem 1.05rem 1.1rem;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.task-manager.task-manager--full .task-template-card h4 {
+  /* 只把标题往下挪，让它避开左上角 ::after 小图标占用区域 */
+  margin: 2.7rem 0 0.5rem;
+}
+
+.task-manager.task-manager--full .task-template-card p {
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+}
+
+/* 模版页签积分：右上角角标 */
+.task-manager.task-manager--full .reward-info {
+  /* 与左上 ::after / 右上删除按钮使用同一 top 点位对齐 */
+  position: absolute;
+  /* 对齐圆形图标/删除按钮的视觉中心，避免只对齐 top 造成“看起来偏低/偏高” */
+  top: 1.5rem;
+  right: 3rem;
+  z-index: 2;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* 删除按钮固定到右上（仍是原按钮、仍可点击） */
+.task-manager.task-manager--full .task-template-card .delete-task-btn {
+  position: static;
+  z-index: 2;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+  margin: 1rem 1rem 0 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 9999px;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid #f1f5f9;
+  opacity: 0.7;
+}
+
+.task-manager.task-manager--full .task-template-card .delete-task-btn:hover {
+  opacity: 1;
+  transform: none;
+}
+
+/* 卡片内：开始按钮（右下角，pill 主色） */
+.task-manager.task-manager--full .task-template-card .task-template-start-btn {
+  position: static;
+  z-index: 2;
+  grid-column: 2;
+  grid-row: 3;
+  align-self: end;
+  justify-self: end;
+  margin: 0 1rem 1rem 0;
+  background: var(--primary-color, #137fec);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0.65rem 0.9rem -0.3rem rgba(19, 127, 236, 0.2), 0 0.25rem 0.4rem -0.25rem rgba(19, 127, 236, 0.2);
+  opacity: 0.98;
+}
+
+@media (max-width: 900px) {
+  .task-templates {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.task-manager.task-manager--full .task-template-card .task-template-start-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.task-manager.task-manager--full .task-template-card .task-template-start-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 .task-template-card:hover {
@@ -94,14 +367,14 @@
 
 .task-template-card h4 {
   color: #333;
-  margin-bottom: 8px;
-  font-size: 18px;
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
 }
 
 .task-template-card p {
   color: #666;
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
 }
 
 .reward-info {
@@ -176,6 +449,14 @@
   opacity: 0.9;
 }
 
+.task-manager.task-manager--full .add-task-btn {
+  border-radius: 9999px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0px 10px 15px -3px rgba(19, 127, 236, 0.2), 0px 4px 6px -4px rgba(19, 127, 236, 0.2);
+}
+
 .start-task-btn {
   width: 100%;
   padding: 12px 24px;
@@ -197,6 +478,17 @@
 .start-task-btn:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.task-manager.task-manager--full .start-task-btn {
+  border-radius: 9999px;
+  padding: 14px 24px;
+  font-weight: 700;
+  font-size: 1rem;
+  /* 保证在卡片视觉层之上可见（防止因布局变化看起来像“消失/被删除”） */
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
 }
 
 .running-task {
@@ -418,6 +710,18 @@
   border-radius: 8px;
 }
 
+/* 列表页顶部控件放在白卡内：让 filter-bar 不再额外带一层底色 */
+.task-manager.task-manager--full .filter-bar {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+}
+
+.task-manager.task-manager--full .filter-summary {
+  margin-bottom: 1rem;
+}
+
 .search-box {
   width: 100%;
 }
@@ -435,6 +739,19 @@
   outline: none;
   border-color: var(--primary-color, #667eea);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.task-manager.task-manager--full .search-input {
+  border-radius: 9999px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  padding: 14px 21px;
+  font-size: 1rem;
+}
+
+.task-manager.task-manager--full .search-input:focus {
+  border-color: var(--primary-color, #137fec);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.1);
 }
 
 .filter-actions {
@@ -468,6 +785,21 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* 用 select 做“按钮样式”的外观 */
+.task-manager.task-manager--full .filter-select {
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  padding: 14px 21px;
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.task-manager.task-manager--full .filter-select:focus {
+  border-color: var(--primary-color, #137fec);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.1);
+}
+
 .filter-summary {
   color: #666;
   font-size: 14px;
@@ -479,6 +811,21 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.filter-summary > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.pagination-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .pagination-inline {
@@ -487,12 +834,64 @@
   align-items: center;
 }
 
+.page-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.page-size-select {
+  width: 72px;
+  min-width: 72px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 9999px;
+  background: #fff;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 30px;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.25L6 6.25L11 1.25' stroke='%2364758B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 8px;
+}
+
+.page-size-select option {
+  color: #334155;
+}
+
+.page-size-select::-ms-expand {
+  display: none;
+}
+
+/* 积分模版页存在更高优先级的 .filter-select 规则，这里必须定向覆盖 */
+.task-manager.task-manager--full .page-size-select {
+  width: 72px;
+  min-width: 72px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  font-size: 14px;
+  line-height: 30px;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155;
+}
+
 .pagination-btn-inline {
   padding: 4px 12px;
-  background: var(--primary-color, #667eea);
+  background: var(--primary-color, #137fec);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 9999px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -529,6 +928,12 @@
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
+}
+
+.task-manager.task-manager--full .pagination {
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
 }
 
 .pagination-btn {
@@ -573,6 +978,14 @@
   
   .filter-btn {
     flex: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .task-manager.task-manager--full {
+    padding: 24px;
+    border-radius: 24px;
+    max-width: none;
   }
 }
 
@@ -669,6 +1082,11 @@
 /* —— 控制台双栏（仅 .task-manager--console，避免影响积分模版 full 布局）—— */
 .task-manager.task-manager--console {
   margin-bottom: 0;
+  /* 控制台在 Figma 里是“页面底色上直接渲染”的结构，这里避免外层白底卡片影响 */
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
   /* 铺满时在本卡片内叠层，不污染全局 */
   position: relative;
 }
@@ -676,8 +1094,10 @@
 .task-manager.task-manager--console .tm-console-layout {
   display: grid;
   grid-template-columns: 1fr minmax(280px, 360px);
-  gap: 20px;
+  gap: 24px;
   align-items: start;
+  /* 对齐样式稿：主内容区内边距 */
+  padding: 28px 40px 24px;
 }
 
 .task-manager.task-manager--console.task-manager--focus-expanded .tm-console-layout {
@@ -693,23 +1113,28 @@
   max-width: none;
   position: relative;
   top: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .task-manager.task-manager--console .tm-console-page-header h1 {
-  font-size: 1.375rem;
+  font-size: 1.875rem;
+  font-weight: 900;
   margin-bottom: 6px;
 }
 
 .task-manager.task-manager--console .tm-console-sub {
-  color: #666;
-  font-size: 0.875rem;
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0;
 }
 
 .task-manager.task-manager--console .tm-console-favorites-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0 12px;
+  margin: 24px 0 12px;
 }
 
 .task-manager.task-manager--console .tm-console-favorites-head h2 {
@@ -720,19 +1145,21 @@
 .task-manager.task-manager--console .tm-console-link-all {
   border: none;
   background: none;
-  color: var(--primary-color, #2563eb);
+  color: var(--primary-color, #137fec);
   cursor: pointer;
   font-size: 0.875rem;
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 700;
 }
 
 /* 常用：占位留白（接口未接） */
 .task-manager.task-manager--console .tm-console-favorites-placeholder {
-  min-height: 120px;
+  min-height: 132px;
   margin-bottom: 8px;
-  border-radius: 12px;
-  border: 1px dashed #e5e7eb;
-  background: #fafafa;
+  border-radius: 40px;
+  border: 1px dashed rgba(19, 127, 236, 0.25);
+  background: #fff;
+  box-shadow: 0px 20px 25px -5px rgba(19, 127, 236, 0.05), 0px 8px 10px -6px rgba(19, 127, 236, 0.05);
 }
 
 .task-manager.task-manager--console .tm-console-main--spacer {
@@ -743,10 +1170,10 @@
   position: sticky;
   top: 12px;
   background: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 40px;
+  padding: 14px;
+  border: 1px solid rgba(226, 232, 240, 1);
+  box-shadow: 0px 25px 50px -12px rgba(19, 127, 236, 0.08);
 }
 
 .task-manager.task-manager--console .tm-console-focus.is-expanded {
@@ -762,23 +1189,80 @@
 
 .task-manager.task-manager--console .tm-console-focus-expand-btn {
   font-size: 0.8125rem;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #fff;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(226, 232, 240, 1);
+  background: #f8fafc;
   cursor: pointer;
+  color: #475569;
+  font-weight: 600;
 }
 
 .task-manager.task-manager--console .tm-console-focus-placeholder {
   padding: 48px 16px;
   text-align: center;
-  color: #9ca3af;
+  color: #94a3b8;
   font-size: 0.9375rem;
+  background: #f8fafc;
+  border: 1px dashed rgba(19, 127, 236, 0.18);
+  border-radius: 40px;
+}
+
+/* 专注计时（运行态）视觉强化：仅影响控制台专注区，不影响其它 variant */
+.task-manager.task-manager--console .tm-console-focus .running-task {
+  margin-bottom: 0;
+  background: #fff;
+  color: #0f172a;
+  border-radius: 40px;
+  padding: 30px 24px;
+  border: 1px solid rgba(226, 232, 240, 1);
+  box-shadow: 0px 20px 25px -5px rgba(19, 127, 236, 0.05), 0px 8px 10px -6px rgba(19, 127, 236, 0.05);
+}
+
+/* 修复：控制台专注区的运行态背景变浅后，暂停/取消按钮原先的全局白字会“看起来消失” */
+.task-manager.task-manager--console .tm-console-focus .running-task .pause-btn,
+.task-manager.task-manager--console .tm-console-focus .running-task .resume-btn,
+.task-manager.task-manager--console .tm-console-focus .running-task .cancel-btn {
+  background: rgba(226, 232, 240, 0.85);
+  color: #475569;
+  opacity: 1;
+}
+
+.task-manager.task-manager--console .tm-console-focus .running-task .pause-btn:hover,
+.task-manager.task-manager--console .tm-console-focus .running-task .resume-btn:hover,
+.task-manager.task-manager--console .tm-console-focus .running-task .cancel-btn:hover {
+  background: rgba(226, 232, 240, 1);
+}
+
+.task-manager.task-manager--console .tm-console-focus .timer-display {
+  font-family: inherit;
+}
+
+/* 专注铺满时的外观（仍保持原有 DOM 结构，只做视觉布局） */
+.task-manager.task-manager--console.task-manager--focus-expanded .tm-console-focus .running-task {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 38px 28px 28px;
+}
+
+.task-manager.task-manager--console.task-manager--focus-expanded .tm-console-focus .timer-display {
+  font-size: 88px;
+  letter-spacing: -0.04em;
+  margin-bottom: 14px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.task-manager.task-manager--console.task-manager--focus-expanded .tm-console-focus .timer-info {
+  color: #64748b;
+  opacity: 1;
 }
 
 @media (max-width: 900px) {
   .task-manager.task-manager--console .tm-console-layout {
     grid-template-columns: 1fr;
+    padding: 20px 16px;
   }
 
   .task-manager.task-manager--console.task-manager--focus-expanded .tm-console-main {

@@ -10,9 +10,10 @@ export interface ThemeConfig {
 export const themes: Record<Theme, ThemeConfig> = {
   purple: {
     name: '紫色',
-    primary: '#667eea',
+    // 默认配色对齐当前 Figma 视觉（如样式稿中的 accent blue）
+    primary: '#137fec',
     secondary: '#764ba2',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    gradient: 'linear-gradient(135deg, #137fec 0%, #764ba2 100%)',
   },
   cyan: {
     name: '青色',

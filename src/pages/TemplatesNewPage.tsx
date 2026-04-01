@@ -31,15 +31,15 @@ const TemplatesNewPage: React.FC = () => {
   };
 
   return (
-    <div className="page-with-chrome">
+    <div className="page-with-chrome page-with-chrome--templates-new">
       <div className="page-chrome">
         <Link to="/templates" className="page-back">
           ← 返回积分模版列表
         </Link>
         <h1 className="page-title">新增积分模版</h1>
-        <p className="page-sub">创建一个任务模板（名称与描述将用于列表展示）。</p>
+        <p className="page-sub">创建一个全新的自动化积分获取规则。</p>
       </div>
-      <div className="page-form-card">
+      <div className="page-form-card page-form-card--templates-new">
         <label className="page-form-label">
           模版名称
           <input value={name} onChange={(e) => setName(e.target.value)} className="page-form-input" placeholder="例如：深度思考时间" />

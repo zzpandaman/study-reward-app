@@ -20,11 +20,11 @@ export class ProductAPI {
    * POST /api/products/query
    * 获取所有商品（分页查询）
    */
-  static async getProducts(): Promise<ApiResponse<GetProductsResponse>> {
+  static async getProducts(page: number = 1, pageSize: number = 1000): Promise<ApiResponse<GetProductsResponse>> {
     const client = ApiClientFactory.getClient();
     return client.post<GetProductsResponse>('/api/products/query', {
-      page: 1,
-      pageSize: 1000,
+      page,
+      pageSize,
     });
   }
 

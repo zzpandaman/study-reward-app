@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { InventoryItem } from '../types';
 import { UserAPI } from '../api';
+import { PAGE_SIZE_OPTIONS } from '../utils/pagination';
 import './Inventory.css';
 
 const Inventory: React.FC = () => {
@@ -8,7 +9,7 @@ const Inventory: React.FC = () => {
   // 分页和搜索状态
   const [searchKeyword, setSearchKeyword] = useState('');
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(12); // 每页12个物品
+  const [pageSize, setPageSize] = useState(12);
 
   const loadInventory = async () => {
     const res = await UserAPI.getInventory();
@@ -37,7 +38,7 @@ const Inventory: React.FC = () => {
       item.productName.toLowerCase().includes(searchKeyword.toLowerCase());
   });
 
-  const totalPages = Math.ceil(filteredInventory.length / pageSize);
+  const totalPages = Math.max(1, Math.ceil(filteredInventory.length / pageSize));
   const paginatedInventory = filteredInventory.slice(
     (page - 1) * pageSize,
     page * pageSize
@@ -47,6 +48,11 @@ const Inventory: React.FC = () => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
     }
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
   };
 
   // 当搜索关键词改变时，重置到第一页
@@ -75,26 +81,42 @@ const Inventory: React.FC = () => {
       {filteredInventory.length > 0 && (
         <div className="filter-summary">
           <span>共 {filteredInventory.length} 个物品，第 {page} / {totalPages} 页</span>
-          {totalPages > 1 && (
-            <div className="pagination-inline">
-              <button
-                className="pagination-btn-inline"
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page <= 1}
-                title="上一页"
+          <div className="pagination-controls">
+            <div className="page-size-control">
+              <span>每页</span>
+              <select
+                className="page-size-select"
+                value={pageSize}
+                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
               >
-                ‹
-              </button>
-              <button
-                className="pagination-btn-inline"
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page >= totalPages}
-                title="下一页"
-              >
-                ›
-              </button>
+                {PAGE_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
+            {totalPages > 1 && (
+              <div className="pagination-inline">
+                <button
+                  className="pagination-btn-inline"
+                  onClick={() => handlePageChange(page - 1)}
+                  disabled={page <= 1}
+                  title="上一页"
+                >
+                  ‹
+                </button>
+                <button
+                  className="pagination-btn-inline"
+                  onClick={() => handlePageChange(page + 1)}
+                  disabled={page >= totalPages}
+                  title="下一页"
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

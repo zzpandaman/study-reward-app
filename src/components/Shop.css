@@ -1,8 +1,8 @@
 .shop {
-  background: white;
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 48px;
   padding: 24px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 25px 50px -12px rgba(19, 127, 236, 0.08);
 }
 
 /* 移动端适配 */
@@ -13,15 +13,16 @@
 }
 
 .add-product-btn {
-  padding: 8px 16px;
-  background: var(--primary-color, #667eea);
+  padding: 14px 24px;
+  background: var(--primary-color, #137fec);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, opacity 0.2s;
+  box-shadow: 0px 10px 15px -3px rgba(19, 127, 236, 0.2), 0px 4px 6px -4px rgba(19, 127, 236, 0.2);
 }
 
 .add-product-btn:hover {
@@ -31,9 +32,10 @@
 
 .exchange-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 20px;
   margin-bottom: 32px;
+  align-items: stretch;
 }
 
 /* 移动端适配 */
@@ -46,11 +48,15 @@
 }
 
 .exchange-card {
-  background: #f9f9f9;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 24px;
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  border-radius: 40px;
+  padding: 20px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  box-shadow: 0px 20px 25px -5px rgba(19, 127, 236, 0.05), 0px 8px 10px -6px rgba(19, 127, 236, 0.05);
 }
 
 /* 移动端适配 */
@@ -62,14 +68,13 @@
 
 .exchange-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color, #667eea);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color, #137fec);
+  box-shadow: 0px 30px 45px -15px rgba(19, 127, 236, 0.08), 0px 10px 14px -6px rgba(19, 127, 236, 0.08);
 }
 
 .exchange-card--purchase-open {
-  border-color: var(--primary-color, #667eea);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color, #137fec);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.12), 0px 20px 25px -5px rgba(19, 127, 236, 0.08);
 }
 
 .exchange-desc {
@@ -87,6 +92,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
+  justify-content: space-between;
 }
 
 .shop-stepper {
@@ -128,10 +135,12 @@
 
 .shop-cancel-purchase {
   padding: 10px 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
   cursor: pointer;
+  color: #475569;
+  font-weight: 600;
 }
 
 .exchange-header {
@@ -139,14 +148,14 @@
 }
 
 .exchange-header h3 {
-  color: #333;
-  font-size: 20px;
+  color: #0f172a;
+  font-size: 1.125rem;
   margin-bottom: 8px;
 }
 
 .exchange-rate {
-  color: #666;
-  font-size: 14px;
+  color: #64748b;
+  font-size: 0.875rem;
 }
 
 .delete-product-btn {
@@ -168,6 +177,10 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  padding-right: 2px;
 }
 
 /* 移动端适配 */
@@ -238,21 +251,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  background: #fff;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
 }
 
 .price-label {
-  color: #666;
-  font-size: 14px;
+  color: #64748b;
+  font-size: 0.875rem;
 }
 
 .price-value {
-  font-size: 20px;
+  font-size: 1.125rem;
   font-weight: bold;
-  color: var(--primary-color, #667eea);
+  color: var(--primary-color, #137fec);
 }
 
 .price-value.insufficient {
@@ -263,15 +276,15 @@
   width: 100%;
   padding: 12px 20px;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .exchange-btn.enabled {
-  background: var(--primary-color, #667eea);
+  background: var(--primary-color, #137fec);
   color: white;
 }
 
@@ -546,10 +559,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 16px;
-  padding: 12px;
-  background: #f9f9f9;
-  border-radius: 8px;
+  margin-bottom: 24px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
 }
 
 .search-box {
@@ -558,17 +571,18 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 14px 21px;
+  border: 1px solid #f1f5f9;
+  border-radius: 9999px;
+  font-size: 1rem;
+  background: #f8fafc;
   transition: border-color 0.2s;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary-color, #667eea);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color, #137fec);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.1);
 }
 
 .filter-actions {
@@ -585,33 +599,48 @@
 
 .filter-select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 14px 21px;
+  border: 1px solid #f1f5f9;
+  border-radius: 9999px;
+  font-size: 0.95rem;
   background: white;
-  color: #333;
+  color: #64748b;
   cursor: pointer;
   transition: border-color 0.2s;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: var(--primary-color, #667eea);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color, #137fec);
+  box-shadow: 0 0 0 3px rgba(19, 127, 236, 0.1);
 }
 
 .filter-summary {
-  color: #666;
-  font-size: 14px;
+  color: #64748b;
+  font-size: 0.875rem;
   margin-bottom: 16px;
-  padding: 8px 12px;
-  background: #f9f9f9;
-  border-radius: 6px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-radius: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.filter-summary > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.pagination-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .pagination-inline {
@@ -620,12 +649,52 @@
   align-items: center;
 }
 
+.page-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.page-size-select {
+  width: 72px;
+  min-width: 72px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 9999px;
+  background: #fff;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 30px;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.25L6 6.25L11 1.25' stroke='%2364758B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 8px;
+}
+
+.page-size-select option {
+  color: #334155;
+}
+
+.page-size-select::-ms-expand {
+  display: none;
+}
+
 .pagination-btn-inline {
   padding: 4px 12px;
-  background: var(--primary-color, #667eea);
+  background: var(--primary-color, #137fec);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 9999px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -650,5 +719,11 @@
 .empty-products {
   text-align: center;
   padding: 40px;
-  color: #999;
+  color: #94a3b8;
+}
+
+@media (max-width: 1200px) {
+  .exchange-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

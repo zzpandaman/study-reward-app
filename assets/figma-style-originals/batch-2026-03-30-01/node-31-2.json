@@ -1,0 +1,54 @@
+{
+  "batchId": "batch-2026-03-30-01",
+  "nodeId": "31-2",
+  "label": "第一组-1",
+  "original": {
+    "figmaUrl": "https://www.figma.com/design/yYx9f3mtS4xdWDHiLrzcUb/reward?node-id=31-2&t=GUEY1xkW5dEOhdVt-4"
+  },
+  "projectMapping": {
+    "route": "/console",
+    "component": "TaskManager(variant=console) + AppShell/侧栏",
+    "element": "Console 主界面骨架：左侧导航 + L2 主区标题/常用区 + 右侧 Widget(专注前态/占位)",
+    "notes": "这是“积分获取控制台”的整体页面骨架节点（含左侧栏与主区右侧小卡/提示）。后续你确认映射到我们项目里的具体子组件/DOM 节点即可。"
+  },
+  "artifacts": {
+    "storageMode": "index-only",
+    "exportedAt": "2026-03-30",
+    "files": [
+      "MCP:get_design_context 已完成（本节点未返回临时代码文件路径，仍可按 nodeId 重新拉取任意细节）",
+      "Framelink:get_figma_data 输出：/Users/cdmac14013/.cursor/projects/Users-cdmac14013-study-reward-app/agent-tools/9f6555e4-21bb-431d-ae96-2f6466f428b0.txt"
+    ],
+    "figma": {
+      "assetUrls": {
+        "imgImage": "https://www.figma.com/api/mcp/asset/a2e8a26d-7432-4705-beb0-f0726b72af8a",
+        "imgImageBorder": "https://www.figma.com/api/mcp/asset/d9623b63-21a1-4498-8654-850230f7e727"
+      },
+      "stylePalettePreview": {
+        "bg": "#f6f7f8",
+        "cardBg": "#ffffff",
+        "borderLight": "#e2e8f0",
+        "accentBlue": "#137fec",
+        "textPrimary": "#0f172a",
+        "textSecondary": "#64748b",
+        "textMuted": "#94a3b8",
+        "successGreen": "#10b981",
+        "warningAmber": "#f59e0b",
+        "shadowTint": "rgba(19,127,236,0.05)"
+      },
+      "fontPreview": [
+        "Noto_Sans_SC(Regular/Medium/Bold/Black)",
+        "Lexend(Bold/Regular/Light)",
+        "Material_Symbols_Outlined(Thin)",
+        "Material Symbols/Icons 以文字名标识（如 rocket_launch/dashboard 等）"
+      ]
+    },
+    "lastPullAttempt": {
+      "at": "2026-03-31",
+      "tool": "get_figma_data",
+      "result": "success",
+      "detail": "Framelink MCP 返回完整节点树数据"
+    }
+  },
+  "status": "applied"
+}
+
