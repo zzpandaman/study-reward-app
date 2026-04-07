@@ -7,13 +7,13 @@ import type { AppShellOutletContext } from './shell-context';
 import './AppShell.css';
 
 const navItems = [
-  { to: '/console', label: '控制台', icon: '▦' },
-  { to: '/templates', label: '积分模版', icon: '⎇' },
-  { to: '/shop', label: '积分商店', icon: '🛒' },
-  { to: '/points', label: '积分记录', icon: '🏅' },
-  { to: '/inventory', label: '我的背包', icon: '🎒' },
-  { to: '/settings', label: '个人设置', icon: '⚙' },
-];
+  { to: '/console', label: '控制台', shortLabel: '控制台', icon: '▦' },
+  { to: '/templates', label: '积分模版', shortLabel: '模版', icon: '⎇' },
+  { to: '/shop', label: '积分商店', shortLabel: '商店', icon: '🛒' },
+  { to: '/points', label: '积分记录', shortLabel: '记录', icon: '🏅' },
+  { to: '/inventory', label: '我的背包', shortLabel: '背包', icon: '🎒' },
+  { to: '/settings', label: '个人设置', shortLabel: '设置', icon: '⚙' },
+] as const;
 
 const AppShell: React.FC = () => {
   const navigate = useNavigate();
@@ -95,6 +95,12 @@ const AppShell: React.FC = () => {
       </aside>
       <div className="app-shell-main">
         <header className="app-shell-topbar">
+          <button type="button" className="app-shell-topbar-brand" onClick={() => navigate('/console')}>
+            <span className="app-shell-topbar-brand-icon" aria-hidden>
+              🚀
+            </span>
+            <span className="app-shell-topbar-brand-text">积分大师</span>
+          </button>
           <div className="app-shell-topbar-points">
             💰 <strong>{userPoints.toFixed(2)}</strong> 积分
             <button type="button" className="app-shell-refresh" onClick={loadPoints} title="刷新积分">
@@ -105,6 +111,20 @@ const AppShell: React.FC = () => {
         <main className="app-shell-outlet">
           <Outlet context={{ userPoints, loadPoints } satisfies AppShellOutletContext} />
         </main>
+        <nav className="app-shell-tabbar" aria-label="主导航">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => `app-shell-tab-link ${isActive ? 'active' : ''}`}
+            >
+              <span className="app-shell-tab-icon" aria-hidden>
+                {item.icon}
+              </span>
+              <span className="app-shell-tab-label">{item.shortLabel}</span>
+            </NavLink>
+          ))}
+        </nav>
       </div>
     </div>
   );

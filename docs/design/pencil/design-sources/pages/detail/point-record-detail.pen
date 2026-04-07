@@ -1,0 +1,255 @@
+{
+  "version": "2.10",
+  "imports": {
+    "sr": "../../study-reward.tokens.pen"
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "2uehx",
+      "x": 0,
+      "y": 0,
+      "name": "Screen · /points/:id · earn",
+      "width": 640,
+      "fill": "$sr:color.surface",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "NT1hG",
+          "name": "bk1",
+          "fill": "$sr:color.primary",
+          "content": "← 返回记录列表",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "VqVPN",
+          "name": "c1",
+          "width": "fill_container",
+          "fill": "$sr:color.success-bg",
+          "cornerRadius": "$sr:radius.panel",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "GguT1",
+              "name": "h1",
+              "fill": "$sr:color.success-text",
+              "content": "获取积分",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "6aJdo",
+              "name": "a1",
+              "fill": "$sr:color.success-text",
+              "content": "+12.50 积分",
+              "fontFamily": "Inter",
+              "fontSize": 28,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "aSFtV",
+              "name": "d1",
+              "fill": "$sr:color.text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "完成任务：晨读英语",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rza8D",
+          "name": "body1",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            8,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Hctv2",
+              "name": "bh1",
+              "fill": "$sr:color.text",
+              "content": "任务信息",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "guWyk",
+              "name": "bn1",
+              "fill": "$sr:color.text",
+              "content": "晨读英语",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "eev9V",
+              "name": "m1",
+              "fill": "$sr:color.muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "开始：2026/4/1 08:00\n结束：2026/4/1 08:30\n实际时长：30 分钟\n积分：12.5",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "AaTUP",
+      "x": 0,
+      "y": 520,
+      "name": "Screen · /points/:id · spend",
+      "width": 640,
+      "fill": "$sr:color.surface",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "mzyb8",
+          "name": "bk2",
+          "fill": "$sr:color.primary",
+          "content": "← 返回记录列表",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "UPPYr",
+          "name": "c2",
+          "width": "fill_container",
+          "fill": "$sr:color.danger-bg",
+          "cornerRadius": "$sr:radius.panel",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "HlViA",
+              "name": "h2",
+              "fill": "$sr:color.danger-text",
+              "content": "支出积分",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "YmcKx",
+              "name": "a2",
+              "fill": "$sr:color.danger-text",
+              "content": "-20.00 积分",
+              "fontFamily": "Inter",
+              "fontSize": 28,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "GxtQ3",
+              "name": "d2",
+              "fill": "$sr:color.text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "兑换：咖啡券",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "YVhyU",
+          "name": "body2",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            8,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "IKkba",
+              "name": "bh2",
+              "fill": "$sr:color.text",
+              "content": "交易概览",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "rif03",
+              "name": "m2",
+              "fill": "$sr:color.muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "商品：咖啡券\n数量：2\n时间：2026/3/30 18:00\n单号：P20260330…",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "dvLfr",
+              "name": "btn",
+              "fill": "$sr:color.primary",
+              "cornerRadius": "$sr:radius.control",
+              "padding": [
+                12,
+                20
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "apq8M",
+                  "name": "btnT",
+                  "fill": "$sr:color.surface",
+                  "content": "前往背包查看",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

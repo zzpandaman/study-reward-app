@@ -1,0 +1,299 @@
+{
+  "version": "2.10",
+  "imports": {
+    "sr": "../../study-reward.tokens.pen"
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "8m72i",
+      "x": 820,
+      "y": 0,
+      "name": "Design kit · Inventory",
+      "width": 260,
+      "layout": "vertical",
+      "gap": 10,
+      "padding": 12,
+      "children": [
+        {
+          "type": "frame",
+          "id": "PBzbw",
+          "name": "Inventory/ItemRow",
+          "reusable": true,
+          "width": 520,
+          "fill": "$sr:color.surface",
+          "cornerRadius": "$sr:radius.control",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$sr:color.border"
+          },
+          "gap": 12,
+          "padding": [
+            14,
+            18
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "X3REf",
+              "name": "inf",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "2f7Uy",
+                  "name": "nm",
+                  "fill": "$sr:color.text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "物品名称",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "91Ves",
+                  "name": "un",
+                  "fill": "$sr:color.text-secondary",
+                  "content": "单位: 件",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "d2cTQ",
+              "name": "qty",
+              "fill": "$sr:color.primary",
+              "content": "数量: 3",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Sh81y",
+      "x": 0,
+      "y": 0,
+      "name": "Screen · /inventory",
+      "width": 760,
+      "fill": "$sr:color.surface",
+      "cornerRadius": "$sr:radius.screen",
+      "stroke": {
+        "align": "outside",
+        "thickness": 1,
+        "fill": "$sr:color.border"
+      },
+      "layout": "vertical",
+      "gap": 14,
+      "padding": 20,
+      "children": [
+        {
+          "type": "frame",
+          "id": "I8jZX",
+          "name": "fb",
+          "width": "fill_container",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "h89jc",
+              "name": "srch",
+              "width": "fill_container",
+              "height": 40,
+              "fill": "$sr:color.bg-subtle",
+              "cornerRadius": "$sr:radius.control",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "$sr:color.border"
+              },
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "mBWzy",
+                  "name": "st",
+                  "fill": "$sr:color.muted",
+                  "content": "搜索物品名称...",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "FbtzW",
+          "name": "sum",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "9ySmK",
+              "name": "sL",
+              "fill": "$sr:color.text-secondary",
+              "content": "共 5 个物品，第 1 / 1 页",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "V3oJd",
+              "name": "sR",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NVYNd",
+                  "name": "sR1",
+                  "fill": "$sr:color.text-secondary",
+                  "content": "每页",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "BfeZL",
+                  "name": "sR2",
+                  "width": 44,
+                  "height": 28,
+                  "fill": "$sr:color.surface",
+                  "cornerRadius": "$sr:radius.tight",
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$sr:color.border"
+                  },
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JTDD2",
+                      "name": "sR2t",
+                      "fill": "$sr:color.text",
+                      "content": "12",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "d0hhE",
+          "name": "lst",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "id": "wJrZV",
+              "type": "ref",
+              "ref": "PBzbw",
+              "width": "fill_container",
+              "name": "i1",
+              "x": 0,
+              "y": 0,
+              "descendants": {
+                "X3REf": {
+                  "width": "fill_container"
+                },
+                "2f7Uy": {
+                  "content": "体验卡",
+                  "width": "fill_container"
+                },
+                "91Ves": {
+                  "content": "单位: 件"
+                },
+                "d2cTQ": {
+                  "content": "数量: 2",
+                  "x": 657
+                }
+              }
+            },
+            {
+              "id": "ajQMj",
+              "type": "ref",
+              "ref": "PBzbw",
+              "width": "fill_container",
+              "name": "i2",
+              "x": 0,
+              "y": 81,
+              "descendants": {
+                "X3REf": {
+                  "width": "fill_container"
+                },
+                "2f7Uy": {
+                  "content": "云币礼包",
+                  "width": "fill_container"
+                },
+                "91Ves": {
+                  "content": "单位: 包"
+                },
+                "d2cTQ": {
+                  "content": "数量: 1",
+                  "x": 660
+                }
+              }
+            },
+            {
+              "id": "KpNVA",
+              "type": "ref",
+              "ref": "PBzbw",
+              "width": "fill_container",
+              "name": "i3",
+              "x": 0,
+              "y": 162,
+              "descendants": {
+                "X3REf": {
+                  "width": "fill_container"
+                },
+                "2f7Uy": {
+                  "content": "黄金（克）",
+                  "width": "fill_container"
+                },
+                "91Ves": {
+                  "content": "单位: g"
+                },
+                "d2cTQ": {
+                  "content": "数量: 12.50 g",
+                  "x": 616
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

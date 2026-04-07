@@ -1,0 +1,219 @@
+{
+  "version": "2.10",
+  "imports": {
+    "sr": "../../study-reward.tokens.pen"
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "0xdpk",
+      "x": 0,
+      "y": 0,
+      "name": "Screen · /templates/new",
+      "width": 640,
+      "fill": "$sr:color.surface",
+      "layout": "vertical",
+      "gap": 18,
+      "padding": [
+        32,
+        40
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "M7OUQ",
+          "name": "back",
+          "fill": "$sr:color.primary",
+          "content": "← 返回积分模版列表",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "GJgSu",
+          "name": "tit",
+          "fill": "$sr:color.text",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "新增积分模版",
+          "fontFamily": "Inter",
+          "fontSize": 26,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "GQTrp",
+          "name": "sub",
+          "fill": "$sr:color.text-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "创建一个全新的自动化积分获取规则。",
+          "fontFamily": "Inter",
+          "fontSize": 15,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "wf5lI",
+          "name": "card",
+          "width": "fill_container",
+          "fill": "$sr:color.bg-subtle",
+          "cornerRadius": "$sr:radius.panel",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$sr:color.border"
+          },
+          "layout": "vertical",
+          "gap": 18,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "0J3ZP",
+              "name": "l1",
+              "fill": "$sr:color.text",
+              "content": "模版名称",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "te4A5",
+              "name": "in1",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$sr:color.surface",
+              "cornerRadius": "$sr:radius.control",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "$sr:color.border"
+              },
+              "padding": [
+                0,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "SqKuE",
+                  "name": "in1p",
+                  "fill": "$sr:color.muted",
+                  "content": "例如：深度思考时间",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "NlteN",
+              "name": "l2",
+              "fill": "$sr:color.text",
+              "content": "模版描述",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "TNscu",
+              "name": "ta",
+              "width": "fill_container",
+              "height": 140,
+              "fill": "$sr:color.surface",
+              "cornerRadius": "$sr:radius.control",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "$sr:color.border"
+              },
+              "layout": "vertical",
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "5XsQI",
+                  "name": "tap",
+                  "fill": "$sr:color.muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "使用场景与说明…",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FeWJ9",
+              "name": "act",
+              "width": "fill_container",
+              "gap": 12,
+              "justifyContent": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "p2GmE",
+                  "name": "sec",
+                  "fill": "$sr:color.surface",
+                  "cornerRadius": "$sr:radius.control",
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$sr:color.border"
+                  },
+                  "padding": [
+                    12,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TYwYH",
+                      "name": "secT",
+                      "fill": "$sr:color.text",
+                      "content": "取消",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PQVrx",
+                  "name": "pri",
+                  "fill": "$sr:color.primary",
+                  "cornerRadius": "$sr:radius.control",
+                  "padding": [
+                    12,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Ukv3D",
+                      "name": "priT",
+                      "fill": "$sr:color.surface",
+                      "content": "保存模版",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

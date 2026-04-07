@@ -293,7 +293,7 @@
 }
 
 .login-page-form-group input::placeholder {
-  color: #6b7280;
+  color: var(--input-placeholder, #9ca3af);
 }
 
 .login-page-form-group input:focus {

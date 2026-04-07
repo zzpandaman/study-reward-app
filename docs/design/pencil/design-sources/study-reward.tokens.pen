@@ -1,0 +1,143 @@
+{
+  "version": "2.10",
+  "variables": {
+    "color.primary": {
+      "type": "color",
+      "value": "#137fec"
+    },
+    "color.text": {
+      "type": "color",
+      "value": "#0f172a"
+    },
+    "color.text-secondary": {
+      "type": "color",
+      "value": "#64748b"
+    },
+    "color.muted": {
+      "type": "color",
+      "value": "#94a3b8"
+    },
+    "color.surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "color.bg-subtle": {
+      "type": "color",
+      "value": "#f8fafc"
+    },
+    "color.border": {
+      "type": "color",
+      "value": "#e2e8f0"
+    },
+    "color.card-bg": {
+      "type": "color",
+      "value": "#f1f5f9"
+    },
+    "color.nav-active-bg": {
+      "type": "color",
+      "value": "#E8F3FE"
+    },
+    "color.hint-bg": {
+      "type": "color",
+      "value": "#EFF6FF"
+    },
+    "color.hint-text": {
+      "type": "color",
+      "value": "#1e40af"
+    },
+    "color.hint-stroke": {
+      "type": "color",
+      "value": "rgba(59,130,246,0.25)"
+    },
+    "color.tint-blue": {
+      "type": "color",
+      "value": "#e0f2fe"
+    },
+    "color.overlay": {
+      "type": "color",
+      "value": "#99000000"
+    },
+    "color.success-bg": {
+      "type": "color",
+      "value": "#ecfdf5"
+    },
+    "color.success-text": {
+      "type": "color",
+      "value": "#15803d"
+    },
+    "color.success-accent": {
+      "type": "color",
+      "value": "#16a34a"
+    },
+    "color.danger-bg": {
+      "type": "color",
+      "value": "#fef2f2"
+    },
+    "color.danger-text": {
+      "type": "color",
+      "value": "#b91c1c"
+    },
+    "color.danger-accent": {
+      "type": "color",
+      "value": "#dc2626"
+    },
+    "color.avatar-warm": {
+      "type": "color",
+      "value": "#fde68a"
+    },
+    "color.accent-blue": {
+      "type": "color",
+      "value": "#3b82f6"
+    },
+    "color.tint-blue-40": {
+      "type": "color",
+      "value": "#3b82f640"
+    },
+    "color.tint-indigo": {
+      "type": "color",
+      "value": "#eef2ff"
+    },
+    "color.tint-sky": {
+      "type": "color",
+      "value": "#f0f9ff"
+    },
+    "radius.tight": {
+      "type": "number",
+      "value": 8
+    },
+    "radius.control": {
+      "type": "number",
+      "value": 12
+    },
+    "radius.card": {
+      "type": "number",
+      "value": 16
+    },
+    "radius.panel": {
+      "type": "number",
+      "value": 20
+    },
+    "radius.screen": {
+      "type": "number",
+      "value": 24
+    },
+    "radius.pill": {
+      "type": "number",
+      "value": 999
+    }
+  },
+  "children": [
+    {
+      "type": "note",
+      "id": "token-readme",
+      "name": "Design tokens",
+      "x": 0,
+      "y": 0,
+      "width": 420,
+      "height": 200,
+      "content": "全局 token：圆角 radius.tight→screen、pill；颜色 color.*。\n各页面通过 imports.sr 引用本文件。\n运行时「样式定制」改的是 CSS 类与 --border-style 等，与 token 语义对应：边框/背景/光标预设影响 .app 与 body；稿内用 $color / $radius 与产品默认主题对齐。",
+      "fontSize": 12,
+      "fill": "$color.text-secondary"
+    }
+  ]
+}

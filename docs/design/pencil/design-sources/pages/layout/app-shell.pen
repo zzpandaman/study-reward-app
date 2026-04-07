@@ -1,0 +1,769 @@
+{
+  "version": "2.10",
+  "children": [
+    {
+      "type": "frame",
+      "id": "nNiTe",
+      "x": 0,
+      "y": 0,
+      "name": "Design kit · Shell",
+      "width": 260,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 16,
+      "children": [
+        {
+          "type": "frame",
+          "id": "SPCkX",
+          "name": "Shell/NavItem",
+          "reusable": true,
+          "width": "fill_container",
+          "cornerRadius": "$sr:radius.card",
+          "gap": 10,
+          "padding": [
+            11,
+            14
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "7kqxx",
+              "name": "niIcon",
+              "fill": "$sr:color.text-secondary",
+              "content": "⎇",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "DWKWD",
+              "name": "niLabel",
+              "fill": "$sr:color.text-secondary",
+              "content": "导航标签",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XIXNh",
+          "name": "Shell/Brand",
+          "reusable": true,
+          "width": "fill_container",
+          "cornerRadius": "$sr:radius.card",
+          "gap": 8,
+          "padding": [
+            12,
+            14
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "3ZIll",
+              "name": "brIcon",
+              "fill": "$sr:color.text",
+              "content": "🚀",
+              "fontFamily": "Inter",
+              "fontSize": 20,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "YT90S",
+              "name": "brText",
+              "fill": "$sr:color.text",
+              "content": "积分大师",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NZr5L",
+          "name": "Shell/UserCard",
+          "reusable": true,
+          "width": "fill_container",
+          "fill": "$sr:color.card-bg",
+          "cornerRadius": "$sr:radius.control",
+          "gap": 10,
+          "padding": [
+            10,
+            12
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "I46HZ",
+              "name": "avBg",
+              "width": 36,
+              "height": 36,
+              "fill": "$sr:color.primary",
+              "cornerRadius": "$sr:radius.panel",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rhqb7",
+                  "name": "avTxt",
+                  "fill": "$sr:color.surface",
+                  "content": "U",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "PInmK",
+              "name": "unTxt",
+              "fill": "$sr:color.text",
+              "content": "用户昵称",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "T9ea0",
+      "x": 280,
+      "y": 0,
+      "name": "Screen · AppShell",
+      "width": 1440,
+      "height": 900,
+      "fill": "$sr:color.surface",
+      "children": [
+        {
+          "type": "frame",
+          "id": "UYcXk",
+          "name": "sb",
+          "width": 256,
+          "height": "fill_container",
+          "fill": "$sr:color.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "right": 1
+            },
+            "fill": "$sr:color.border"
+          },
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            16,
+            12
+          ],
+          "children": [
+            {
+              "id": "Ssol2",
+              "type": "ref",
+              "ref": "XIXNh",
+              "width": "fill_container",
+              "name": "bInst",
+              "x": 12,
+              "y": 16,
+              "height": "fit_content",
+              "descendants": {
+                "3ZIll": {
+                  "x": 14,
+                  "y": 13
+                },
+                "YT90S": {
+                  "x": 48,
+                  "y": 12
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "ITSuj",
+              "name": "navSt",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "PyS4U",
+                  "type": "ref",
+                  "ref": "SPCkX",
+                  "width": "fill_container",
+                  "name": "i1",
+                  "x": 0,
+                  "y": 0,
+                  "height": "fit_content",
+                  "descendants": {
+                    "7kqxx": {
+                      "content": "▦",
+                      "y": 11,
+                      "x": 14
+                    },
+                    "DWKWD": {
+                      "content": "控制台",
+                      "x": 40,
+                      "y": 11
+                    }
+                  }
+                },
+                {
+                  "id": "aOFaF",
+                  "type": "ref",
+                  "ref": "SPCkX",
+                  "width": "fill_container",
+                  "fill": "$sr:color.nav-active-bg",
+                  "name": "i2",
+                  "x": 0,
+                  "y": 48,
+                  "height": "fit_content",
+                  "descendants": {
+                    "7kqxx": {
+                      "content": "⎇",
+                      "fill": "$sr:color.primary",
+                      "x": 14,
+                      "y": 13
+                    },
+                    "DWKWD": {
+                      "content": "积分模版",
+                      "fill": "$sr:color.primary",
+                      "fontWeight": "600",
+                      "x": 40,
+                      "y": 11
+                    }
+                  }
+                },
+                {
+                  "id": "8R5OC",
+                  "type": "ref",
+                  "ref": "SPCkX",
+                  "width": "fill_container",
+                  "name": "i3",
+                  "x": 0,
+                  "y": 96,
+                  "height": "fit_content",
+                  "descendants": {
+                    "7kqxx": {
+                      "content": "🛒",
+                      "x": 14,
+                      "y": 13
+                    },
+                    "DWKWD": {
+                      "content": "积分商店",
+                      "x": 44,
+                      "y": 11
+                    }
+                  }
+                },
+                {
+                  "id": "pmORE",
+                  "type": "ref",
+                  "ref": "SPCkX",
+                  "width": "fill_container",
+                  "name": "i4",
+                  "x": 0,
+                  "y": 144,
+                  "height": "fit_content",
+                  "descendants": {
+                    "7kqxx": {
+                      "content": "🏅",
+                      "x": 14,
+                      "y": 13
+                    },
+                    "DWKWD": {
+                      "content": "积分记录",
+                      "x": 44,
+                      "y": 11
+                    }
+                  }
+                },
+                {
+                  "id": "2kXBy",
+                  "type": "ref",
+                  "ref": "SPCkX",
+                  "width": "fill_container",
+                  "name": "i5",
+                  "x": 0,
+                  "y": 192,
+                  "height": "fit_content",
+                  "descendants": {
+                    "7kqxx": {
+                      "content": "🎒",
+                      "x": 14,
+                      "y": 13
+                    },
+                    "DWKWD": {
+                      "content": "我的背包",
+                      "x": 44,
+                      "y": 11
+                    }
+                  }
+                },
+                {
+                  "id": "NSYmI",
+                  "type": "ref",
+                  "ref": "SPCkX",
+                  "width": "fill_container",
+                  "name": "i6",
+                  "x": 0,
+                  "y": 240,
+                  "height": "fit_content",
+                  "descendants": {
+                    "7kqxx": {
+                      "content": "⚙",
+                      "x": 14,
+                      "y": 13
+                    },
+                    "DWKWD": {
+                      "content": "个人设置",
+                      "x": 44,
+                      "y": 11
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "eXTV2",
+              "type": "ref",
+              "ref": "NZr5L",
+              "width": "fill_container",
+              "name": "uInst",
+              "x": 12,
+              "y": 828,
+              "height": "fit_content",
+              "descendants": {
+                "I46HZ": {
+                  "x": 12,
+                  "y": 10
+                },
+                "rhqb7": {
+                  "content": "用",
+                  "x": 11,
+                  "y": 8
+                },
+                "PInmK": {
+                  "content": "用户",
+                  "x": 58,
+                  "y": 17
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "G327q",
+          "name": "main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$sr:color.surface",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "UAKm5",
+              "name": "top",
+              "width": "fill_container",
+              "height": 64,
+              "fill": "$sr:color.surface",
+              "padding": [
+                0,
+                24
+              ],
+              "justifyContent": "end",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "38fLK",
+                  "name": "pts",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "j4GF5",
+                      "name": "ptT",
+                      "fill": "$sr:color.text",
+                      "content": "💰 123.45 积分",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OgadQ",
+                      "name": "rfBtn",
+                      "fill": "$sr:color.card-bg",
+                      "cornerRadius": "$sr:radius.control",
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Cmpzg",
+                          "name": "rfTxt",
+                          "fill": "$sr:color.text-secondary",
+                          "content": "↻",
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dUQqU",
+              "name": "Slot · page content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$sr:color.surface",
+              "layout": "vertical",
+              "padding": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TYWA2",
+                  "name": "outNote",
+                  "fill": "$sr:color.text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "<Outlet /> 路由子页面占位",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "OOjWT",
+      "x": 0,
+      "y": 940,
+      "name": "Screen · AppShell · mobile · 390×844",
+      "width": 390,
+      "height": 844,
+      "fill": "$sr:color.bg-subtle",
+      "layout": "vertical",
+      "padding": [
+        12,
+        0,
+        0,
+        0
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "KT4zh",
+          "name": "chrome · top bar",
+          "width": "fill_container",
+          "height": 52,
+          "fill": "$sr:color.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "$sr:color.border"
+          },
+          "padding": [
+            10,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "jW2gP",
+              "fill": "$sr:color.text",
+              "content": "积分大师",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "UlYvG",
+              "fill": "$sr:color.text-secondary",
+              "content": "💰 123.45 积分  ↻",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "16Lau",
+          "name": "Slot · mobile body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$sr:color.surface",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "2pFDw",
+              "fill": "$sr:color.text-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "此处放页面主体（列表/卡片/表单）。规范见右侧 Note「壳层 · 移动端页面规范」：内容宽 358；卡片 $sr:radius.panel；竖向 gap 12–16。",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "L7uhK",
+              "fill": "$sr:color.muted",
+              "content": "≈ 各路由页面替换此区",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "O5ulR",
+          "name": "chrome · bottom tab",
+          "width": "fill_container",
+          "height": 60,
+          "fill": "$sr:color.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "top": 1
+            },
+            "fill": "$sr:color.border"
+          },
+          "gap": 2,
+          "padding": [
+            6,
+            8,
+            18,
+            8
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "0PdCb",
+              "name": "t1",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "v4Dy8",
+                  "fill": "$sr:color.muted",
+                  "content": "▦",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Ci8dQ",
+                  "fill": "$sr:color.muted",
+                  "content": "控制台",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jdQxZ",
+              "name": "t2",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "6Artv",
+                  "fill": "$sr:color.primary",
+                  "content": "⎇",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "UvKaS",
+                  "fill": "$sr:color.text",
+                  "content": "模版",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fFPyl",
+              "name": "t3",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "7Ne1O",
+                  "fill": "$sr:color.muted",
+                  "content": "🛒",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "ZpmYI",
+                  "fill": "$sr:color.muted",
+                  "content": "商店",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "PQpPX",
+              "name": "t4",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IvPDb",
+                  "fill": "$sr:color.muted",
+                  "content": "🏅",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "m5Ffs",
+                  "fill": "$sr:color.muted",
+                  "content": "记录",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "b7gr2",
+              "name": "t5",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "N9GsM",
+                  "fill": "$sr:color.muted",
+                  "content": "🎒",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "nWqdF",
+                  "fill": "$sr:color.muted",
+                  "content": "背包",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "6b2kF",
+              "name": "t6",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "9GbUt",
+                  "fill": "$sr:color.muted",
+                  "content": "⚙",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "a7hN1",
+                  "fill": "$sr:color.muted",
+                  "content": "设置",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "id": "Yl7yO",
+      "x": 420,
+      "y": 940,
+      "name": "壳层 · 移动端页面规范",
+      "width": 440,
+      "height": 360,
+      "content": "【画布】390×844 竖幅；根竖向 flex；背景 $sr:color.bg-subtle。\n【顶栏】高 52，padding [10,16]，底分隔 $sr:color.border；左标题 16/600；右为积分+刷新（两位小数 + 积分），与桌面顶栏语义一致。根容器顶部 +12px 作状态区示意；实现用 env(safe-area-inset-top)。\n【主体 Slot】mainM：padding 16、fill surface；可用内容宽 358。卡片 $sr:radius.panel，控件块 $sr:radius.card；竖向间距 12–16。\n【底栏】高 60 + 底 padding 示意 home indicator；上边框；6 项均分；图标 16；标签 10px：未选 muted，选中 primary+600。简写与侧栏：控制台/模版/商店/记录/背包/设置。\n【业务页】在 Slot · mobile body 内绘制；独立移动 Frame 与本结构对齐并错位摆放，避免重叠。"
+    }
+  ],
+  "imports": {
+    "sr": "../../study-reward.tokens.pen"
+  }
+}

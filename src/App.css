@@ -1,7 +1,24 @@
 :root {
-  --primary-color: #667eea;
+  /* 主题色仍由 applyTheme 覆盖；默认值对齐 study-reward.tokens.pen */
+  --primary-color: #137fec;
   --secondary-color: #764ba2;
-  --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient: linear-gradient(135deg, #137fec 0%, #764ba2 100%);
+  /* Shell / 界面 token（与 docs/design/pencil/design-sources/study-reward.tokens.pen 一致） */
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  /* 与 study-reward.tokens.pen color.input-placeholder 一致 */
+  --input-placeholder: #9ca3af;
+  --surface: #ffffff;
+  --bg-subtle: #f8fafc;
+  --border-color: #e2e8f0;
+  --card-bg: #f1f5f9;
+  --nav-active-bg: #e8f3fe;
+  --radius-tight: 8px;
+  --radius-control: 12px;
+  --radius-card: 16px;
+  --radius-panel: 20px;
+  --hover-bg: rgba(15, 23, 42, 0.04);
 }
 
 .app {
