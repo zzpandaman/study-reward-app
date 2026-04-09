@@ -1,339 +1,279 @@
 {
   "version": "2.10",
-  "imports": {
-    "sr": "../../study-reward.tokens.pen"
-  },
   "children": [
     {
       "type": "frame",
-      "id": "nhzzG",
+      "id": "page_settings",
       "x": 0,
       "y": 0,
-      "name": "Screen · /settings · 样式定制",
-      "width": 960,
-      "height": 720,
-      "fill": "$sr:color.overlay",
+      "name": "Settings",
+      "width": 1280,
+      "height": 800,
+      "fill": "$color.bg.canvas",
       "layout": "vertical",
-      "justifyContent": "center",
+      "gap": "$space.4",
+      "padding": "$space.6",
       "alignItems": "center",
       "children": [
         {
+          "type": "text",
+          "id": "title_settings",
+          "fill": "$color.text.primary",
+          "textGrowth": "fixed-width",
+          "width": 1200,
+          "content": "/settings -> src/pages/SettingsPage.tsx",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "desc_settings",
+          "fill": "$color.text.muted",
+          "textGrowth": "fixed-width",
+          "width": 1200,
+          "content": "主题、账户、计时、偏好四组设置与配对区块。",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
           "type": "frame",
-          "id": "9Wl8r",
-          "name": "pn",
-          "width": 580,
-          "height": 520,
-          "cornerRadius": "$sr:radius.panel",
-          "fill": "$sr:color.surface",
+          "id": "06tQy",
+          "name": "header/settings",
+          "width": 1200,
+          "fill": "$color.bg.surface",
           "stroke": {
-            "align": "outside",
+            "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.border"
+            "fill": "$color.border.subtle"
           },
-          "layout": "vertical",
+          "padding": [
+            "$space.3",
+            "$space.4"
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "NKPma",
+              "name": "text/header",
+              "fill": "#334155",
+              "content": "设置中心：账户、主题、偏好与配对",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "0oZ3w",
+          "name": "content/settings-main",
+          "width": 1200,
+          "height": "fill_container",
+          "fill": "$color.bg.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$color.border.subtle"
+          },
+          "gap": "$space.3",
+          "padding": "$space.3",
           "children": [
             {
               "type": "frame",
-              "id": "xfPmm",
-              "name": "hd",
-              "width": "fill_container",
+              "id": "W9JVE",
+              "name": "sidebar/settings-menu",
+              "width": 260,
+              "height": "fill_container",
+              "fill": "\\$color.bg.surface",
               "stroke": {
                 "align": "inside",
-                "thickness": {
-                  "bottom": 1
-                },
-                "fill": "$sr:color.border"
+                "thickness": 1,
+                "fill": "#F1F5F9"
               },
-              "padding": [
-                18,
-                20
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
+              "layout": "vertical",
               "children": [
                 {
-                  "type": "text",
-                  "id": "sgp9a",
-                  "name": "ht",
-                  "fill": "$sr:color.text",
-                  "content": "样式定制",
-                  "fontFamily": "Inter",
-                  "fontSize": 18,
-                  "fontWeight": "600"
+                  "id": "vYWwy",
+                  "type": "ref",
+                  "ref": "Z8Q2n",
+                  "width": "fill_container",
+                  "name": "setItemUseC1",
+                  "descendants": {
+                    "qZDkd": {
+                      "content": "常规设置"
+                    },
+                    "Fu44q": {
+                      "content": "主题与显示"
+                    }
+                  }
                 },
                 {
-                  "type": "frame",
-                  "id": "MAv5N",
-                  "name": "hx",
-                  "width": 32,
-                  "height": 32,
-                  "cornerRadius": "$sr:radius.tight",
-                  "fill": "$sr:color.card-bg",
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "1vcXz",
-                      "name": "hxx",
-                      "fill": "$sr:color.muted",
-                      "content": "✕",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
+                  "id": "O4Jyn",
+                  "type": "ref",
+                  "ref": "Z8Q2n",
+                  "width": "fill_container",
+                  "name": "setItemUseC2",
+                  "descendants": {
+                    "qZDkd": {
+                      "content": "计时设置"
+                    },
+                    "Fu44q": {
+                      "content": "番茄钟与休息策略"
                     }
-                  ]
+                  }
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "ULLB0",
-              "name": "tb",
-              "width": "fill_container",
-              "fill": "$sr:color.bg-subtle",
-              "gap": 6,
-              "padding": [
-                12,
-                16
-              ],
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "Ea0gH",
-                  "name": "tb1",
-                  "fill": "$sr:color.primary",
-                  "cornerRadius": "$sr:radius.control",
-                  "padding": [
-                    10,
-                    14
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "pxKb1",
-                      "name": "tb1t",
-                      "fill": "$sr:color.surface",
-                      "content": "边框样式",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "SXoZg",
-                  "name": "tb2",
-                  "fill": "$sr:color.card-bg",
-                  "cornerRadius": "$sr:radius.control",
-                  "padding": [
-                    10,
-                    14
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "uRZR8",
-                      "name": "tb2t",
-                      "fill": "$sr:color.text-secondary",
-                      "content": "背景样式",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "PKwm7",
-                  "name": "tb3",
-                  "fill": "$sr:color.card-bg",
-                  "cornerRadius": "$sr:radius.control",
-                  "padding": [
-                    10,
-                    14
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "H5KpV",
-                      "name": "tb3t",
-                      "fill": "$sr:color.text-secondary",
-                      "content": "鼠标图标",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "fVaGh",
-              "name": "co",
+              "id": "vQ43r",
+              "name": "form/settings-content",
               "width": "fill_container",
               "height": "fill_container",
+              "fill": "\\$color.bg.surface",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#F1F5F9"
+              },
               "layout": "vertical",
-              "gap": 12,
-              "padding": 16,
               "children": [
                 {
-                  "type": "text",
-                  "id": "I9z7O",
-                  "name": "sh",
-                  "fill": "$sr:color.text",
-                  "content": "预设边框样式",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "frame",
-                  "id": "ZombT",
-                  "name": "gr",
+                  "id": "MfPoe",
+                  "type": "ref",
+                  "ref": "Z8Q2n",
                   "width": "fill_container",
-                  "gap": 12,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "q0eKA",
-                      "name": "g1",
-                      "width": "fill_container",
-                      "cornerRadius": "$sr:radius.card",
-                      "fill": "$sr:color.surface",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 2,
-                        "fill": "$sr:color.primary"
-                      },
-                      "layout": "vertical",
-                      "gap": 6,
-                      "padding": 10,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "wcQ4I",
-                          "name": "g1p",
-                          "width": "fill_container",
-                          "height": 48,
-                          "cornerRadius": "$sr:radius.tight",
-                          "fill": "$sr:color.tint-blue"
-                        },
-                        {
-                          "type": "text",
-                          "id": "AoP3w",
-                          "name": "g1n",
-                          "fill": "$sr:color.text",
-                          "content": "经典",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
+                  "name": "setItemUseC3",
+                  "descendants": {
+                    "qZDkd": {
+                      "content": "配对设置"
                     },
-                    {
-                      "type": "frame",
-                      "id": "ooRiX",
-                      "name": "g2",
-                      "width": "fill_container",
-                      "cornerRadius": "$sr:radius.card",
-                      "fill": "$sr:color.surface",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$sr:color.border"
-                      },
-                      "layout": "vertical",
-                      "gap": 6,
-                      "padding": 10,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "4OQB4",
-                          "name": "g2p",
-                          "width": "fill_container",
-                          "height": 48,
-                          "cornerRadius": "$sr:radius.tight",
-                          "fill": "$sr:color.card-bg"
-                        },
-                        {
-                          "type": "text",
-                          "id": "OpHqK",
-                          "name": "g2n",
-                          "fill": "$sr:color.text-secondary",
-                          "content": "渐变",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
+                    "Fu44q": {
+                      "content": "设备绑定与同步状态"
                     }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "BAw8S",
-                  "name": "up",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 6,
-                  "padding": [
-                    8,
-                    0,
-                    0,
-                    0
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "1CZDB",
-                      "name": "uh",
-                      "fill": "$sr:color.text",
-                      "content": "自定义边框图片",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "1WaRK",
-                      "name": "uf",
-                      "width": "fill_container",
-                      "height": 40,
-                      "cornerRadius": "$sr:radius.control",
-                      "fill": "$sr:color.bg-subtle",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$sr:color.border"
-                      },
-                      "padding": [
-                        0,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "ewwuR",
-                          "name": "uft",
-                          "fill": "$sr:color.muted",
-                          "content": "选择文件…（image/*）",
-                          "fontFamily": "Inter",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
+                  }
                 }
               ]
             }
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "2elNp",
+      "x": 0,
+      "y": 840,
+      "name": "components/showcase",
+      "width": 360,
+      "fill": "$color.bg.muted",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$color.border.subtle"
+      },
+      "layout": "vertical",
+      "gap": "$space.3",
+      "padding": "$space.4",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Z8Q2n",
+          "name": "component/settings-item",
+          "reusable": true,
+          "width": "fill_container",
+          "height": 72,
+          "fill": "\\$color.bg.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$color.border.subtle"
+          },
+          "layout": "vertical",
+          "padding": [
+            12,
+            14
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "qZDkd",
+              "name": "setItemTextC",
+              "fill": "\\$color.text.primary",
+              "content": "General",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Fu44q",
+              "name": "setHintC",
+              "fill": "\\$color.text.primary",
+              "content": "Config entry",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "variables": {
+    "color.bg.canvas": {
+      "type": "color",
+      "value": "#F5F7FA"
+    },
+    "color.bg.muted": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.bg.surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "color.border.soft": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.border.subtle": {
+      "type": "color",
+      "value": "#E2E8F0"
+    },
+    "color.primary": {
+      "type": "color",
+      "value": "#2563EB"
+    },
+    "color.text.muted": {
+      "type": "color",
+      "value": "#64748B"
+    },
+    "color.text.primary": {
+      "type": "color",
+      "value": "#0F172A"
+    },
+    "space.1": {
+      "type": "number",
+      "value": 4
+    },
+    "space.2": {
+      "type": "number",
+      "value": 8
+    },
+    "space.3": {
+      "type": "number",
+      "value": 12
+    },
+    "space.4": {
+      "type": "number",
+      "value": 16
+    },
+    "space.6": {
+      "type": "number",
+      "value": 24
+    }
+  }
 }

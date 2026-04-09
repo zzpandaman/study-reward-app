@@ -1,219 +1,219 @@
 {
   "version": "2.10",
-  "imports": {
-    "sr": "../../study-reward.tokens.pen"
-  },
   "children": [
     {
       "type": "frame",
-      "id": "0xdpk",
+      "id": "page_template_create",
       "x": 0,
       "y": 0,
-      "name": "Screen · /templates/new",
-      "width": 640,
-      "fill": "$sr:color.surface",
+      "name": "Template Create",
+      "width": 1280,
+      "height": 800,
+      "fill": "$color.bg.canvas",
       "layout": "vertical",
-      "gap": 18,
-      "padding": [
-        32,
-        40
-      ],
+      "gap": "$space.4",
+      "padding": "$space.6",
       "children": [
         {
           "type": "text",
-          "id": "M7OUQ",
-          "name": "back",
-          "fill": "$sr:color.primary",
-          "content": "← 返回积分模版列表",
+          "id": "title_template_create",
+          "fill": "$color.text.primary",
+          "content": "/templates/new -> src/pages/TemplatesNewPage.tsx",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "desc_template_create",
+          "fill": "$color.text.muted",
+          "content": "积分模版创建表单（名称、描述、保存/取消）。",
           "fontFamily": "Inter",
           "fontSize": 14,
           "fontWeight": "normal"
         },
         {
-          "type": "text",
-          "id": "GJgSu",
-          "name": "tit",
-          "fill": "$sr:color.text",
-          "textGrowth": "fixed-width",
-          "width": "fill_container",
-          "content": "新增积分模版",
-          "fontFamily": "Inter",
-          "fontSize": 26,
-          "fontWeight": "600"
-        },
-        {
-          "type": "text",
-          "id": "GQTrp",
-          "name": "sub",
-          "fill": "$sr:color.text-secondary",
-          "textGrowth": "fixed-width",
-          "width": "fill_container",
-          "content": "创建一个全新的自动化积分获取规则。",
-          "fontFamily": "Inter",
-          "fontSize": 15,
-          "fontWeight": "normal"
-        },
-        {
           "type": "frame",
-          "id": "wf5lI",
-          "name": "card",
+          "id": "6JRsX",
+          "name": "header/template-create",
           "width": "fill_container",
-          "fill": "$sr:color.bg-subtle",
-          "cornerRadius": "$sr:radius.panel",
+          "fill": "$color.bg.surface",
           "stroke": {
             "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.border"
+            "fill": "$color.border.subtle"
           },
-          "layout": "vertical",
-          "gap": 18,
-          "padding": 24,
+          "padding": [
+            "$space.3",
+            "$space.4"
+          ],
           "children": [
             {
               "type": "text",
-              "id": "0J3ZP",
-              "name": "l1",
-              "fill": "$sr:color.text",
-              "content": "模版名称",
+              "id": "5mAuk",
+              "name": "text/header",
+              "fill": "#334155",
+              "content": "模版创建 · 面包屑与操作",
               "fontFamily": "Inter",
-              "fontSize": 14,
-              "fontWeight": "600"
-            },
+              "fontSize": 13,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "8VZz5",
+          "name": "content/template-create-main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color.bg.surface",
+          "gap": "$space.3",
+          "padding": "$space.3",
+          "children": [
             {
               "type": "frame",
-              "id": "te4A5",
-              "name": "in1",
+              "id": "tEDH3",
+              "name": "form/template-form",
               "width": "fill_container",
-              "height": 48,
-              "fill": "$sr:color.surface",
-              "cornerRadius": "$sr:radius.control",
+              "height": "fill_container",
+              "fill": "$color.primary",
               "stroke": {
                 "align": "inside",
                 "thickness": 1,
-                "fill": "$sr:color.border"
-              },
-              "padding": [
-                0,
-                16
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "SqKuE",
-                  "name": "in1p",
-                  "fill": "$sr:color.muted",
-                  "content": "例如：深度思考时间",
-                  "fontFamily": "Inter",
-                  "fontSize": 15,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "id": "NlteN",
-              "name": "l2",
-              "fill": "$sr:color.text",
-              "content": "模版描述",
-              "fontFamily": "Inter",
-              "fontSize": 14,
-              "fontWeight": "600"
-            },
-            {
-              "type": "frame",
-              "id": "TNscu",
-              "name": "ta",
-              "width": "fill_container",
-              "height": 140,
-              "fill": "$sr:color.surface",
-              "cornerRadius": "$sr:radius.control",
-              "stroke": {
-                "align": "inside",
-                "thickness": 1,
-                "fill": "$sr:color.border"
+                "fill": "$color.border.subtle"
               },
               "layout": "vertical",
-              "padding": 14,
               "children": [
                 {
-                  "type": "text",
-                  "id": "5XsQI",
-                  "name": "tap",
-                  "fill": "$sr:color.muted",
-                  "textGrowth": "fixed-width",
+                  "id": "9kLby",
+                  "type": "ref",
+                  "ref": "3qiUo",
                   "width": "fill_container",
-                  "content": "使用场景与说明…",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
+                  "name": "secRefA"
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "FeWJ9",
-              "name": "act",
+              "id": "srbDc",
+              "name": "detail/template-preview",
               "width": "fill_container",
-              "gap": 12,
-              "justifyContent": "end",
+              "height": "fill_container",
+              "fill": "$color.primary",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "$color.border.subtle"
+              },
+              "layout": "vertical",
               "children": [
                 {
-                  "type": "frame",
-                  "id": "p2GmE",
-                  "name": "sec",
-                  "fill": "$sr:color.surface",
-                  "cornerRadius": "$sr:radius.control",
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": 1,
-                    "fill": "$sr:color.border"
-                  },
-                  "padding": [
-                    12,
-                    20
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "TYwYH",
-                      "name": "secT",
-                      "fill": "$sr:color.text",
-                      "content": "取消",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "PQVrx",
-                  "name": "pri",
-                  "fill": "$sr:color.primary",
-                  "cornerRadius": "$sr:radius.control",
-                  "padding": [
-                    12,
-                    24
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "Ukv3D",
-                      "name": "priT",
-                      "fill": "$sr:color.surface",
-                      "content": "保存模版",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    }
-                  ]
+                  "id": "s3ukk",
+                  "type": "ref",
+                  "ref": "3qiUo",
+                  "width": "fill_container",
+                  "name": "secRefB"
                 }
               ]
             }
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "3qiUo",
+      "x": 0,
+      "y": 860,
+      "name": "component/form-section",
+      "reusable": true,
+      "width": 360,
+      "height": 120,
+      "fill": "$color.bg.surface",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$color.border.subtle"
+      },
+      "layout": "vertical",
+      "gap": "$space.2",
+      "padding": "$space.3",
+      "children": [
+        {
+          "type": "text",
+          "id": "Ro2hQ",
+          "name": "secTitleA",
+          "fill": "$color.primary",
+          "content": "模版基础字段",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "1je49",
+          "name": "secDescA",
+          "fill": "$color.primary",
+          "content": "名称、描述、启用状态",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
     }
-  ]
+  ],
+  "variables": {
+    "color.bg.canvas": {
+      "type": "color",
+      "value": "#F5F7FA"
+    },
+    "color.bg.muted": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.bg.surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "color.border.soft": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.border.subtle": {
+      "type": "color",
+      "value": "#E2E8F0"
+    },
+    "color.primary": {
+      "type": "color",
+      "value": "#2563EB"
+    },
+    "color.text.muted": {
+      "type": "color",
+      "value": "#64748B"
+    },
+    "color.text.primary": {
+      "type": "color",
+      "value": "#0F172A"
+    },
+    "space.1": {
+      "type": "number",
+      "value": 4
+    },
+    "space.2": {
+      "type": "number",
+      "value": 8
+    },
+    "space.3": {
+      "type": "number",
+      "value": 12
+    },
+    "space.4": {
+      "type": "number",
+      "value": 16
+    },
+    "space.6": {
+      "type": "number",
+      "value": 24
+    }
+  }
 }

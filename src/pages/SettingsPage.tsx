@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout } from '../api';
 import StyleCustomizer from '../components/StyleCustomizer';
+import PairingSettingsSection from '../components/PairingSettingsSection';
 import { themeStorage, applyTheme, themes, Theme } from '../utils/theme';
 import {
   readBackgroundTimerCheckEnabled,
@@ -147,6 +148,7 @@ const SettingsPage: React.FC = () => {
             {displayName}
           </p>
           <p className="settings-hint">资料修改以 SSO 能力为准；当前仅展示。</p>
+          <PairingSettingsSection />
         </section>
       )}
 

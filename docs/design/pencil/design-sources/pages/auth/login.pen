@@ -3,355 +3,463 @@
   "children": [
     {
       "type": "frame",
-      "id": "3AIKx",
-      "x": 624,
-      "y": -223,
-      "name": "Design kit · Auth",
-      "width": 260,
-      "layout": "vertical",
-      "gap": 16,
-      "padding": 16,
-      "children": [
-        {
-          "type": "frame",
-          "id": "l4Q6X",
-          "name": "Auth/FeatureRow",
-          "reusable": true,
-          "width": "fill_container",
-          "gap": 16,
-          "children": [
-            {
-              "type": "frame",
-              "id": "1Gzu6",
-              "name": "ic",
-              "width": 40,
-              "height": 40,
-              "fill": "$sr:color.surface",
-              "cornerRadius": "$sr:radius.card",
-              "stroke": {
-                "align": "inside",
-                "thickness": 1,
-                "fill": "$sr:color.border"
-              },
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "0Mo6O",
-                  "name": "icTx",
-                  "fill": "$sr:color.primary",
-                  "content": "✓",
-                  "fontFamily": "Inter",
-                  "fontSize": 18,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "ZZDsl",
-              "name": "bd",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 2,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "HmC8x",
-                  "name": "ft",
-                  "fill": "$sr:color.text",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "每日任务",
-                  "fontFamily": "Inter",
-                  "fontSize": 16,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "9I1f2",
-                  "name": "fd",
-                  "fill": "#000000",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "完成任务即可赚取云币积分。",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "A88Fq",
+      "id": "page_login",
       "x": 0,
       "y": 0,
-      "name": "Screen · /login",
-      "width": 1280,
-      "height": 800,
-      "fill": {
-        "type": "gradient",
-        "gradientType": "linear",
-        "enabled": true,
-        "rotation": 135,
-        "size": {
-          "height": 1
-        },
-        "colors": [
-          {
-            "color": "$sr:color.tint-blue",
-            "position": 0
-          },
-          {
-            "color": "$sr:color.tint-indigo",
-            "position": 0.5
-          },
-          {
-            "color": "$sr:color.tint-sky",
-            "position": 1
-          }
-        ]
-      },
-      "layout": "vertical",
-      "justifyContent": "center",
-      "alignItems": "center",
+      "name": "Login",
+      "width": 1440,
+      "height": 900,
+      "fill": "$page.bg.canvas",
+      "layout": "none",
       "children": [
         {
+          "type": "ellipse",
+          "id": "iL65i",
+          "x": 40,
+          "y": 80,
+          "name": "bg/blob-left",
+          "fill": "#FFFFFF4D",
+          "width": 256,
+          "height": 256,
+          "effect": {
+            "type": "blur",
+            "radius": 32
+          }
+        },
+        {
+          "type": "ellipse",
+          "id": "ZPzk7",
+          "x": 1016,
+          "y": 436,
+          "name": "bg/blob-right",
+          "fill": "#137FEC1A",
+          "width": 384,
+          "height": 384,
+          "effect": {
+            "type": "blur",
+            "radius": 32
+          }
+        },
+        {
           "type": "frame",
-          "id": "iPrns",
-          "name": "card",
+          "id": "gcMvW",
+          "x": 170,
+          "y": 112,
+          "name": "shell",
           "width": 1100,
-          "height": 640,
-          "fill": "$sr:color.surface",
-          "cornerRadius": "$sr:radius.screen",
+          "height": 676,
+          "fill": "$page.bg.glass",
           "stroke": {
-            "align": "outside",
+            "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.surface"
+            "fill": "#FFFFFF99"
           },
+          "effect": [
+            {
+              "type": "background_blur",
+              "radius": 14
+            },
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "#0F172A26",
+              "offset": {
+                "x": 0,
+                "y": 24
+              },
+              "blur": 48
+            },
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "#0F172A1A",
+              "offset": {
+                "x": 0,
+                "y": 8
+              },
+              "blur": 18
+            }
+          ],
           "children": [
             {
               "type": "frame",
-              "id": "dPPJ5",
-              "name": "left",
+              "id": "wavhE",
+              "name": "panel/left",
               "width": "fill_container",
               "height": "fill_container",
-              "fill": "$sr:color.primary",
+              "fill": "#137FEC0D",
               "stroke": {
                 "align": "inside",
                 "thickness": {
                   "right": 1
                 },
-                "fill": "$sr:color.surface"
+                "fill": "#FFFFFF33"
               },
               "layout": "vertical",
-              "gap": 16,
-              "padding": [
-                72,
-                40
-              ],
+              "justifyContent": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "vnPQZ",
-                  "name": "badge",
-                  "fill": "$sr:color.primary",
-                  "cornerRadius": "$sr:radius.pill",
+                  "id": "k9ji1",
+                  "name": "left/inner",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
                   "padding": [
-                    4,
-                    16
+                    96,
+                    49,
+                    96,
+                    48
                   ],
                   "children": [
                     {
                       "type": "text",
-                      "id": "8IRKU",
-                      "name": "bdTx",
-                      "fill": "$sr:color.primary",
+                      "id": "YKs22",
+                      "name": "left/badge",
+                      "fill": "#137FEC",
                       "content": "游戏化学习",
                       "fontFamily": "Inter",
                       "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "y4dYm",
+                      "name": "left/title",
+                      "fill": "#1E293B",
+                      "content": "让你的目标化为积分。",
+                      "lineHeight": 1.25,
+                      "fontFamily": "Inter",
+                      "fontSize": 36,
                       "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "w8jm9",
-                  "name": "t1",
-                  "fill": "$sr:color.text",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "让你的目标化为积分。",
-                  "fontFamily": "Inter",
-                  "fontSize": 32,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "SvbVr",
-                  "name": "d1",
-                  "fill": "#000000",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "加入 50,000+ 名学习者的行列，在提升技能的同时，于云端商店赢取专属道具。",
-                  "fontFamily": "Inter",
-                  "fontSize": 16,
-                  "fontWeight": "normal"
-                },
-                {
-                  "id": "tqNtK",
-                  "type": "ref",
-                  "ref": "l4Q6X",
-                  "width": "fill_container",
-                  "name": "f1",
-                  "x": 40,
-                  "y": 237,
-                  "height": "fit_content",
-                  "descendants": {
-                    "0Mo6O": {
-                      "content": "✓",
-                      "x": 12,
-                      "y": 9
                     },
-                    "ZZDsl": {
+                    {
+                      "type": "text",
+                      "id": "PNyP6",
+                      "name": "left/desc",
+                      "fill": "#0f172a",
+                      "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "height": "fit_content",
-                      "x": 56
+                      "content": "加入 50,000+ 名学习者的行列，在提升技能的同时，于\n云端商店赢取专属道具。",
+                      "lineHeight": 1.55,
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "normal"
                     },
-                    "HmC8x": {
-                      "content": "每日任务",
-                      "width": "fill_container"
-                    },
-                    "9I1f2": {
-                      "content": "完成任务即可赚取云币积分。",
-                      "width": "fill_container",
-                      "y": 25
-                    }
-                  }
-                },
-                {
-                  "id": "wzXx8",
-                  "type": "ref",
-                  "ref": "l4Q6X",
-                  "width": "fill_container",
-                  "name": "f2",
-                  "x": 40,
-                  "y": 298,
-                  "height": "fit_content",
-                  "descendants": {
-                    "0Mo6O": {
-                      "content": "🛍",
-                      "x": 8.5,
-                      "y": 9.5
-                    },
-                    "ZZDsl": {
-                      "width": "fill_container",
-                      "height": "fit_content",
-                      "x": 56
-                    },
-                    "HmC8x": {
-                      "content": "宝库中心",
-                      "width": "fill_container"
-                    },
-                    "9I1f2": {
-                      "content": "解锁稀有道具和强力增益。",
-                      "width": "fill_container",
-                      "y": 25
-                    }
-                  }
-                },
-                {
-                  "type": "frame",
-                  "id": "SoduT",
-                  "name": "test",
-                  "width": "fill_container",
-                  "fill": "$sr:color.surface",
-                  "cornerRadius": "$sr:radius.screen",
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": 1,
-                    "fill": "$sr:color.surface"
-                  },
-                  "layout": "vertical",
-                  "gap": 12,
-                  "padding": 20,
-                  "children": [
                     {
                       "type": "frame",
-                      "id": "N9v2Z",
-                      "name": "avRow",
-                      "alignItems": "center",
+                      "id": "Qa16k",
+                      "name": "left/features",
+                      "width": "fill_container",
+                      "layout": "vertical",
                       "children": [
                         {
-                          "type": "ellipse",
-                          "id": "ydCL9",
-                          "name": "a1",
-                          "fill": "$sr:color.tint-blue",
-                          "width": 36,
-                          "height": 36,
-                          "stroke": {
-                            "align": "center",
-                            "thickness": 2,
-                            "fill": "$sr:color.surface"
-                          }
+                          "type": "frame",
+                          "id": "1JVLK",
+                          "name": "feature/daily",
+                          "width": "fill_container",
+                          "gap": 16,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "zkMaV",
+                              "name": "feature/icon",
+                              "width": 40,
+                              "height": 40,
+                              "fill": "#FFFFFF",
+                              "cornerRadius": 16,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#0F172A14",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 1
+                                },
+                                "blur": 2
+                              },
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "illcH",
+                                  "name": "icon1Text",
+                                  "fill": "#137FEC",
+                                  "content": "✓",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 18,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "qA07P",
+                              "name": "feature/body",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "sQkfJ",
+                                  "name": "feature1Title",
+                                  "fill": "#1E293B",
+                                  "content": "每日任务",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 16,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "uN3AZ",
+                                  "name": "feature1Desc",
+                                  "fill": "#64748B",
+                                  "content": "完成任务即可赚取云币积分。",
+                                  "lineHeight": 1.4,
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
                         },
                         {
-                          "type": "ellipse",
-                          "id": "KCsZz",
-                          "name": "a2",
-                          "fill": "$sr:color.border",
-                          "width": 36,
-                          "height": 36,
-                          "stroke": {
-                            "align": "center",
-                            "thickness": 2,
-                            "fill": "$sr:color.surface"
-                          }
-                        },
-                        {
-                          "type": "ellipse",
-                          "id": "bm6Fp",
-                          "name": "a3",
-                          "fill": "$sr:color.avatar-warm",
-                          "width": 36,
-                          "height": 36,
-                          "stroke": {
-                            "align": "center",
-                            "thickness": 2,
-                            "fill": "$sr:color.surface"
-                          }
-                        },
-                        {
-                          "type": "ellipse",
-                          "id": "3PBPa",
-                          "name": "a4",
-                          "fill": "$sr:color.primary",
-                          "width": 36,
-                          "height": 36,
-                          "stroke": {
-                            "align": "center",
-                            "thickness": 2,
-                            "fill": "$sr:color.surface"
-                          }
+                          "type": "frame",
+                          "id": "etPTJ",
+                          "name": "feature/shop",
+                          "width": "fill_container",
+                          "gap": 16,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "WPpsl",
+                              "name": "icon2",
+                              "width": 40,
+                              "height": 40,
+                              "fill": "#FFFFFF",
+                              "cornerRadius": 16,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#0F172A14",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 1
+                                },
+                                "blur": 2
+                              },
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "uAn9x",
+                                  "name": "icon2Text",
+                                  "fill": "#137FEC",
+                                  "content": "🛍",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 18,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "QXBwH",
+                              "name": "feature2Body",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "aW1jK",
+                                  "name": "feature2Title",
+                                  "fill": "#1E293B",
+                                  "content": "宝库中心",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 16,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "4JJ7F",
+                                  "name": "feature2Desc",
+                                  "fill": "#64748B",
+                                  "content": "解锁稀有道具和强力增益。",
+                                  "lineHeight": 1.4,
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "text",
-                      "id": "zZh64",
-                      "name": "qt",
-                      "fill": "$sr:color.text",
-                      "textGrowth": "fixed-width",
+                      "type": "frame",
+                      "id": "EF9ub",
+                      "name": "left/testimonial",
                       "width": "fill_container",
-                      "content": "\"这是保持学习动力的最佳方式！\"",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
+                      "fill": "#FFFFFF66",
+                      "cornerRadius": 24,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#FFFFFF80"
+                      },
+                      "layout": "vertical",
+                      "gap": 16,
+                      "padding": 25,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ysILZ",
+                          "name": "avatars",
+                          "width": 152,
+                          "height": 40,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "kmFSJ",
+                              "x": 0,
+                              "y": 0,
+                              "name": "avatar/a",
+                              "width": 40,
+                              "height": 40,
+                              "fill": "#E0F2FE",
+                              "cornerRadius": 999,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#FFFFFF"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "hbfKc",
+                                  "x": 14,
+                                  "y": 10,
+                                  "fill": "#0F172A",
+                                  "content": "A",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 16,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "bxayQ",
+                              "x": 28,
+                              "y": 0,
+                              "name": "avatar/b",
+                              "width": 40,
+                              "height": 40,
+                              "fill": "#E2E8F0",
+                              "cornerRadius": 999,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#FFFFFF"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "lwIpH",
+                                  "x": 13,
+                                  "y": 10,
+                                  "fill": "#334155",
+                                  "content": "B",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 16,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "5krq1",
+                              "x": 56,
+                              "y": 0,
+                              "name": "avatar/c",
+                              "width": 40,
+                              "height": 40,
+                              "fill": "#FDE68A",
+                              "cornerRadius": 999,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#FFFFFF"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "LjI3Q",
+                                  "x": 13,
+                                  "y": 10,
+                                  "fill": "#92400E",
+                                  "content": "C",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 16,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VwlOz",
+                              "x": 84,
+                              "y": 0,
+                              "name": "avatar/more",
+                              "width": 40,
+                              "height": 40,
+                              "fill": "#FFFFFFCC",
+                              "cornerRadius": 999,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 2,
+                                "fill": "#FFFFFF"
+                              },
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "9JW3o",
+                                  "x": 10,
+                                  "y": 12,
+                                  "fill": "#475569",
+                                  "content": "+12",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "rj5RY",
+                          "name": "quote",
+                          "fill": "#334155",
+                          "content": "“这是保持学习动力的最佳方式！”",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -359,223 +467,116 @@
             },
             {
               "type": "frame",
-              "id": "yhWrV",
-              "name": "right",
+              "id": "YIVRK",
+              "name": "panel/right",
               "width": "fill_container",
               "height": "fill_container",
-              "fill": "$sr:color.surface",
+              "fill": "$page.bg.surface",
               "layout": "vertical",
-              "padding": 56,
               "children": [
                 {
                   "type": "frame",
-                  "id": "fKIB3",
-                  "name": "hdr",
+                  "id": "X5G02",
+                  "name": "right/inner",
                   "width": "fill_container",
+                  "height": "fill_container",
                   "layout": "vertical",
-                  "gap": 8,
-                  "padding": [
-                    0,
-                    0,
-                    24,
-                    0
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "k1oib",
-                      "name": "h1",
-                      "fill": "$sr:color.text",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "欢迎回来",
-                      "fontFamily": "Inter",
-                      "fontSize": 28,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "RXWfu",
-                      "name": "sub",
-                      "fill": "$sr:color.text-secondary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "准备好赢取今天的积分了吗？",
-                      "fontFamily": "Inter",
-                      "fontSize": 15,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "DsxZZ",
-                  "name": "tabsWrap",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "padding": [
-                    0,
-                    0,
-                    24,
-                    0
-                  ],
+                  "gap": "$page.space.6",
+                  "padding": "$page.space.16",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "AMdED",
-                      "name": "tabs",
-                      "width": "fill_container",
-                      "fill": "$sr:color.card-bg",
-                      "cornerRadius": "$sr:radius.screen",
-                      "padding": 4,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "z4fz4",
-                          "name": "tabL",
-                          "width": "fill_container",
-                          "height": 40,
-                          "fill": "$sr:color.surface",
-                          "cornerRadius": "$sr:radius.card",
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "pEivH",
-                              "name": "tL",
-                              "fill": "$sr:color.text",
-                              "content": "登录",
-                              "fontFamily": "Inter",
-                              "fontSize": 14,
-                              "fontWeight": "600"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "rYVFY",
-                          "name": "tabR",
-                          "width": "fill_container",
-                          "height": 40,
-                          "cornerRadius": "$sr:radius.card",
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "lNzpi",
-                              "name": "tR",
-                              "fill": "#000000",
-                              "content": "注册",
-                              "fontFamily": "Inter",
-                              "fontSize": 14,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "ejD5I",
-                  "name": "form",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 18,
-                  "children": [
-                    {
-                      "id": "idCfU",
-                      "type": "ref",
-                      "ref": "OpYnw",
-                      "width": "fill_container",
-                      "name": "fi1",
-                      "x": 0,
-                      "y": 0,
-                      "height": "fit_content",
-                      "descendants": {
-                        "TbZuU": {
-                          "content": "电子邮箱"
-                        },
-                        "SrZoY": {
-                          "width": "fill_container",
-                          "y": 28
-                        },
-                        "sSAfQ": {
-                          "content": "name@example.com",
-                          "x": 17,
-                          "y": 17.5
-                        }
-                      }
-                    },
-                    {
-                      "type": "frame",
-                      "id": "rNnav",
-                      "name": "row",
-                      "width": "fill_container",
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "9vubm",
-                          "name": "lbP",
-                          "fill": "$sr:color.text",
-                          "content": "密码",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "CmR5g",
-                          "name": "lnk",
-                          "fill": "$sr:color.primary",
-                          "content": "忘记密码？",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "pXch2",
-                      "name": "fi2",
+                      "id": "KvIr1",
+                      "name": "right/header",
                       "width": "fill_container",
                       "layout": "vertical",
-                      "gap": 8,
+                      "gap": "$page.space.2",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NwT50",
+                          "name": "rightTitle",
+                          "fill": "$page.text.primary",
+                          "content": "欢迎回来",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Inter",
+                          "fontSize": "$page.font.size.title",
+                          "fontWeight": "$page.font.weight.semibold"
+                        },
+                        {
+                          "type": "text",
+                          "id": "03YLE",
+                          "name": "rightSubtitle",
+                          "fill": "$page.text.muted",
+                          "content": "准备好赢取今天的积分了吗？",
+                          "lineHeight": 1.5,
+                          "fontFamily": "Inter",
+                          "fontSize": "$page.font.size.md",
+                          "fontWeight": "$page.font.weight.regular"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "2Qcxr",
+                      "name": "right/tabs",
+                      "width": "fill_container",
+                      "height": 48,
+                      "fill": "$page.bg.muted",
                       "children": [
                         {
                           "type": "frame",
-                          "id": "5Q4X5",
-                          "name": "box2",
+                          "id": "ZCA1N",
+                          "name": "loginTab",
                           "width": "fill_container",
-                          "height": 54,
-                          "fill": "$sr:color.surface",
-                          "cornerRadius": "$sr:radius.screen",
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$sr:color.border"
+                          "height": "fill_container",
+                          "fill": "$page.bg.surface",
+                          "cornerRadius": "$page.radius.md",
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#0F172A14",
+                            "offset": {
+                              "x": 0,
+                              "y": 1
+                            },
+                            "blur": 2
                           },
-                          "padding": [
-                            15,
-                            17
-                          ],
+                          "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
                               "type": "text",
-                              "id": "7T6x5",
-                              "name": "pw",
-                              "fill": "$color.input-placeholder",
-                              "content": "••••••••",
+                              "id": "GQDEU",
+                              "name": "loginTabText",
+                              "fill": "$page.text.secondary",
+                              "content": "登录",
                               "fontFamily": "Inter",
-                              "fontSize": 16,
-                              "fontWeight": "normal"
+                              "fontSize": "$page.font.size.sm",
+                              "fontWeight": "$page.font.weight.semibold"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PMr3I",
+                          "name": "registerTab",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#00000000",
+                          "cornerRadius": "$page.radius.md",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "2cfUa",
+                              "name": "registerTabText",
+                              "fill": "$page.text.muted",
+                              "content": "注册",
+                              "fontFamily": "Inter",
+                              "fontSize": "$page.font.size.sm",
+                              "fontWeight": "$page.font.weight.regular"
                             }
                           ]
                         }
@@ -583,86 +584,263 @@
                     },
                     {
                       "type": "frame",
-                      "id": "eS4We",
-                      "name": "chk",
-                      "gap": 8,
-                      "alignItems": "center",
+                      "id": "Ya6w4",
+                      "name": "right/form",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$page.space.5",
                       "children": [
                         {
-                          "type": "rectangle",
-                          "cornerRadius": "$sr:radius.tight",
-                          "id": "ToyPr",
-                          "name": "cb",
-                          "width": 16,
-                          "height": 16,
-                          "stroke": {
-                            "align": "inside",
-                            "thickness": 1,
-                            "fill": "$sr:color.border"
-                          }
+                          "type": "frame",
+                          "id": "BU8rY",
+                          "name": "emailGroup",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "f5zXP",
+                              "name": "emailLabel",
+                              "fill": "$page.text.secondary",
+                              "content": "电子邮箱",
+                              "fontFamily": "Inter",
+                              "fontSize": "$page.font.size.sm",
+                              "fontWeight": "$page.font.weight.semibold"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "wLyBT",
+                              "name": "emailInput",
+                              "width": "fill_container",
+                              "height": 54,
+                              "fill": "$page.bg.surface",
+                              "cornerRadius": "$page.radius.lg",
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$page.border.subtle"
+                              },
+                              "padding": [
+                                15,
+                                17
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "1w3yT",
+                                  "name": "emailPlaceholder",
+                                  "fill": "$page.text.placeholder",
+                                  "content": "name@example.com",
+                                  "fontFamily": "Inter",
+                                  "fontSize": "$page.font.size.md",
+                                  "fontWeight": "$page.font.weight.regular"
+                                }
+                              ]
+                            }
+                          ]
                         },
                         {
-                          "type": "text",
-                          "id": "1VjzE",
-                          "name": "cs",
-                          "fill": "#000000",
-                          "content": "保持登录状态（30天）",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
+                          "type": "frame",
+                          "id": "2zLNI",
+                          "name": "passwordGroup",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "XP1Jl",
+                              "name": "pwdRow",
+                              "width": "fill_container",
+                              "justifyContent": "space_between",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "0ULrx",
+                                  "name": "pwdLabel",
+                                  "fill": "$page.text.secondary",
+                                  "content": "密码",
+                                  "fontFamily": "Inter",
+                                  "fontSize": "$page.font.size.sm",
+                                  "fontWeight": "$page.font.weight.semibold"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "ANvgY",
+                                  "name": "forgot",
+                                  "fill": "$page.bg.brand",
+                                  "content": "忘记密码？",
+                                  "fontFamily": "Inter",
+                                  "fontSize": "$page.font.size.sm",
+                                  "fontWeight": "$page.font.weight.regular"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "mXZxj",
+                              "name": "pwdInput",
+                              "width": "fill_container",
+                              "height": 54,
+                              "fill": "$page.bg.surface",
+                              "cornerRadius": "$page.radius.lg",
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$page.border.subtle"
+                              },
+                              "padding": [
+                                15,
+                                17
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "qvLq6",
+                                  "name": "pwdPlaceholder",
+                                  "fill": "$page.text.placeholder",
+                                  "content": "••••••••",
+                                  "fontFamily": "Inter",
+                                  "fontSize": "$page.font.size.md",
+                                  "fontWeight": "$page.font.weight.regular"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "qJCVO",
+                                  "name": "eye",
+                                  "width": 20,
+                                  "height": 20,
+                                  "layout": "none",
+                                  "children": [
+                                    {
+                                      "type": "path",
+                                      "id": "9r30F",
+                                      "x": 1,
+                                      "y": 4,
+                                      "name": "eyeOutline",
+                                      "geometry": "M1 6c2.2-3.5 5.2-5 8-5 2.8 0 5.8 1.5 8 5-2.2 3.5-5.2 5-8 5-2.8 0-5.8-1.5-8-5z",
+                                      "fill": "#00000000",
+                                      "width": 18,
+                                      "height": 12,
+                                      "stroke": {
+                                        "align": "center",
+                                        "thickness": 1.5,
+                                        "fill": "#94A3B8"
+                                      }
+                                    },
+                                    {
+                                      "type": "ellipse",
+                                      "id": "ipPus",
+                                      "x": 7,
+                                      "y": 7,
+                                      "name": "eyePupil",
+                                      "fill": "#94A3B8",
+                                      "width": 4,
+                                      "height": 4
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ZmbpQ",
+                          "name": "remember",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "ECh1h",
+                              "name": "checkbox",
+                              "width": 16,
+                              "height": 16,
+                              "fill": "$page.bg.surface",
+                              "cornerRadius": 4,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$page.border.emphasis"
+                              }
+                            },
+                            {
+                              "type": "text",
+                              "id": "InD2G",
+                              "name": "rememberText",
+                              "fill": "$page.text.muted",
+                              "content": "保持登录状态（30天）",
+                              "fontFamily": "Inter",
+                              "fontSize": "$page.font.size.sm",
+                              "fontWeight": "$page.font.weight.regular"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "uoo95",
+                          "name": "submit",
+                          "width": "fill_container",
+                          "height": 52,
+                          "fill": "$page.bg.brand",
+                          "effect": [
+                            {
+                              "type": "shadow",
+                              "shadowType": "outer",
+                              "color": "#137FEC40",
+                              "offset": {
+                                "x": 0,
+                                "y": 10
+                              },
+                              "blur": 15
+                            },
+                            {
+                              "type": "shadow",
+                              "shadowType": "outer",
+                              "color": "#137FEC40",
+                              "offset": {
+                                "x": 0,
+                                "y": 4
+                              },
+                              "blur": 6
+                            }
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LblC3",
+                              "name": "submitText",
+                              "fill": "$page.text.inverse",
+                              "content": "登录 CloudLearn",
+                              "fontFamily": "Inter",
+                              "fontSize": "$page.font.size.md",
+                              "fontWeight": "$page.font.weight.bold"
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "type": "frame",
-                      "id": "3Jqs1",
-                      "name": "btn",
-                      "width": "fill_container",
-                      "height": 52,
-                      "fill": "$sr:color.primary",
-                      "cornerRadius": "$sr:radius.screen",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "IIMmx",
-                          "name": "bTx",
-                          "fill": "$sr:color.surface",
-                          "content": "登录 CloudLearn",
-                          "fontFamily": "Inter",
-                          "fontSize": 16,
-                          "fontWeight": "700"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Y1SQf",
-                  "name": "fnPad",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "padding": [
-                    32,
-                    0,
-                    0,
-                    0
-                  ],
-                  "children": [
-                    {
                       "type": "text",
-                      "id": "ipFrq",
-                      "name": "fn",
-                      "fill": "$sr:color.muted",
+                      "id": "jml03",
+                      "name": "footnote",
+                      "fill": "$page.text.muted",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "继续操作即表示您同意 CloudLearn 的服务条款 和 隐私政策。",
+                      "content": "继续操作即表示您同意 CloudLearn 的 服务条款 和 隐私政策。",
+                      "lineHeight": 1.35,
                       "textAlign": "center",
                       "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
+                      "fontSize": "$page.font.size.xs",
+                      "fontWeight": "$page.font.weight.regular"
                     }
                   ]
                 }
@@ -674,122 +852,47 @@
     },
     {
       "type": "frame",
-      "id": "0z0HW",
-      "x": 40,
-      "y": 860,
-      "name": "Screen · /login · register",
-      "width": 480,
-      "fill": "$sr:color.surface",
-      "cornerRadius": "$sr:radius.panel",
+      "id": "CaVdE",
+      "x": 0,
+      "y": 940,
+      "name": "components/showcase",
+      "width": 360,
+      "fill": "#F8FAFC",
       "stroke": {
-        "align": "outside",
+        "align": "inside",
         "thickness": 1,
-        "fill": "$sr:color.border"
+        "fill": "#E2E8F0"
       },
       "layout": "vertical",
-      "gap": 16,
-      "padding": 40,
+      "gap": 12,
+      "padding": 16,
       "children": [
         {
-          "type": "text",
-          "id": "hAPQt",
-          "name": "rh",
-          "fill": "$sr:color.muted",
-          "textGrowth": "fixed-width",
-          "width": "fill_container",
-          "content": "注册态（同卡右侧）",
-          "fontFamily": "Inter",
-          "fontSize": 12,
-          "fontWeight": "normal"
-        },
-        {
           "type": "frame",
-          "id": "dN3y3",
-          "name": "rTabs",
+          "id": "iyShF",
+          "name": "component/button-primary",
+          "reusable": true,
           "width": "fill_container",
-          "fill": "$sr:color.card-bg",
-          "cornerRadius": "$sr:radius.screen",
-          "padding": 4,
-          "children": [
-            {
-              "type": "frame",
-              "id": "QGgW8",
-              "name": "rt1",
-              "width": "fill_container",
-              "height": 38,
-              "cornerRadius": "$sr:radius.card",
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "9d2wP",
-                  "name": "rtx1",
-                  "fill": "#000000",
-                  "content": "登录",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "v2HVG",
-              "name": "rt2",
-              "width": "fill_container",
-              "height": 38,
-              "fill": "$sr:color.surface",
-              "cornerRadius": "$sr:radius.card",
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "fNC7V",
-                  "name": "rtx2",
-                  "fill": "$sr:color.text",
-                  "content": "注册",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "600"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "iYA2r",
-          "name": "rh2",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": 6,
+          "height": 40,
+          "fill": "#EEF2FF",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "#C7D2FE"
+          },
           "padding": [
-            8,
-            0
+            10,
+            16
           ],
+          "justifyContent": "center",
+          "alignItems": "center",
           "children": [
             {
               "type": "text",
-              "id": "ZzRzV",
-              "name": "rh2a",
-              "fill": "$sr:color.text",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "开启云端之旅",
-              "fontFamily": "Inter",
-              "fontSize": 24,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "edRfk",
-              "name": "rh2b",
-              "fill": "$sr:color.text-secondary",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "注册账号，开始你的积分成长之路。",
+              "id": "SmSEd",
+              "name": "btnTextA",
+              "fill": "#1D4ED8",
+              "content": "Primary Action",
               "fontFamily": "Inter",
               "fontSize": 14,
               "fontWeight": "normal"
@@ -797,499 +900,60 @@
           ]
         },
         {
-          "id": "qk8i6",
-          "type": "ref",
-          "ref": "OpYnw",
-          "width": "fill_container",
-          "name": "rf1",
-          "x": 40,
-          "y": 228,
-          "height": "fit_content",
-          "descendants": {
-            "TbZuU": {
-              "content": "用户名"
-            },
-            "SrZoY": {
-              "width": "fill_container",
-              "y": 28
-            },
-            "sSAfQ": {
-              "content": "你的个性称呼",
-              "y": 15.5,
-              "x": 17
-            }
-          }
-        },
-        {
-          "id": "qqHdB",
-          "type": "ref",
-          "ref": "OpYnw",
-          "width": "fill_container",
-          "name": "rf2",
-          "x": 40,
-          "y": 326,
-          "height": "fit_content",
-          "descendants": {
-            "TbZuU": {
-              "content": "电子邮箱"
-            },
-            "SrZoY": {
-              "width": "fill_container",
-              "y": 28
-            },
-            "sSAfQ": {
-              "content": "name@example.com",
-              "x": 17,
-              "y": 17.5
-            }
-          }
-        },
-        {
-          "id": "75oJy",
-          "type": "ref",
-          "ref": "OpYnw",
-          "width": "fill_container",
-          "name": "rf3",
-          "x": 40,
-          "y": 424,
-          "height": "fit_content",
-          "descendants": {
-            "TbZuU": {
-              "content": "密码"
-            },
-            "SrZoY": {
-              "width": "fill_container",
-              "y": 28
-            },
-            "sSAfQ": {
-              "content": "设置你的密码",
-              "y": 15.5,
-              "x": 17
-            }
-          }
-        },
-        {
-          "id": "1kOx8",
-          "type": "ref",
-          "ref": "OpYnw",
-          "width": "fill_container",
-          "name": "rf4",
-          "x": 40,
-          "y": 522,
-          "height": "fit_content",
-          "descendants": {
-            "TbZuU": {
-              "content": "确认密码"
-            },
-            "SrZoY": {
-              "width": "fill_container",
-              "y": 28
-            },
-            "sSAfQ": {
-              "content": "再次输入密码",
-              "y": 15.5,
-              "x": 17
-            }
-          }
-        },
-        {
           "type": "frame",
-          "id": "PxQXU",
-          "name": "rb",
+          "id": "4h2Wu",
+          "name": "component/section-card",
+          "reusable": true,
           "width": "fill_container",
-          "height": 50,
-          "fill": "$sr:color.primary",
-          "cornerRadius": "$sr:radius.screen",
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "zO5Oc",
-              "name": "rbTx",
-              "fill": "$sr:color.surface",
-              "content": "创建账户",
-              "fontFamily": "Inter",
-              "fontSize": 16,
-              "fontWeight": "700"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "OpYnw",
-      "x": 640,
-      "y": -119,
-      "name": "Auth/FakeInput",
-      "reusable": true,
-      "width": "fill_container(228)",
-      "layout": "vertical",
-      "gap": 8,
-      "children": [
-        {
-          "type": "text",
-          "id": "TbZuU",
-          "name": "lbl",
-          "fill": "$sr:color.text",
-          "content": "标签",
-          "fontFamily": "Inter",
-          "fontSize": 14,
-          "fontWeight": "600"
-        },
-        {
-          "type": "frame",
-          "id": "SrZoY",
-          "name": "box",
-          "width": "fill_container",
-          "height": 54,
-          "fill": "$sr:color.surface",
-          "cornerRadius": "$sr:radius.screen",
+          "height": 88,
+          "fill": "#F8FAFC",
           "stroke": {
             "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.border"
+            "fill": "#CBD5E1"
           },
-          "padding": [
-            15,
-            17
-          ],
-          "alignItems": "center",
+          "layout": "vertical",
+          "padding": 16,
           "children": [
             {
               "type": "text",
-              "id": "sSAfQ",
-              "name": "ph",
-              "fill": "$color.input-placeholder",
-              "content": "placeholder",
+              "id": "FpKwZ",
+              "name": "cardTextA",
+              "fill": "#334155",
+              "content": "Section Card",
               "fontFamily": "Inter",
-              "fontSize": 16,
+              "fontSize": 14,
               "fontWeight": "normal"
             }
           ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "w9hyV",
-      "x": 1360,
-      "y": 40,
-      "name": "Screen · /login · mobile · 390×844",
-      "width": 390,
-      "height": 844,
-      "fill": {
-        "type": "gradient",
-        "gradientType": "linear",
-        "enabled": true,
-        "rotation": 135,
-        "size": {
-          "height": 1
         },
-        "colors": [
-          {
-            "color": "$sr:color.tint-blue",
-            "position": 0
-          },
-          {
-            "color": "$sr:color.tint-indigo",
-            "position": 0.5
-          },
-          {
-            "color": "$sr:color.tint-sky",
-            "position": 1
-          }
-        ]
-      },
-      "layout": "vertical",
-      "gap": 20,
-      "padding": [
-        56,
-        20,
-        32,
-        20
-      ],
-      "children": [
         {
           "type": "frame",
-          "id": "EGMcM",
-          "name": "card · mobile",
+          "id": "X2BRl",
+          "name": "component/field-row",
+          "reusable": true,
           "width": "fill_container",
-          "fill": "$sr:color.surface",
-          "cornerRadius": "$sr:radius.panel",
+          "height": 56,
+          "fill": "#F8FAFC",
           "stroke": {
-            "align": "outside",
+            "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.border"
+            "fill": "#CBD5E1"
           },
           "layout": "vertical",
-          "gap": 16,
-          "padding": 20,
+          "padding": [
+            10,
+            12
+          ],
           "children": [
             {
-              "type": "frame",
-              "id": "0bkOj",
-              "name": "brand · mobile",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "0zgcn",
-                  "name": "badge · mobile",
-                  "fill": "$sr:color.tint-blue",
-                  "cornerRadius": "$sr:radius.pill",
-                  "padding": [
-                    4,
-                    12
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "NMhbo",
-                      "fill": "$sr:color.primary",
-                      "content": "游戏化学习",
-                      "fontFamily": "Inter",
-                      "fontSize": 11,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "6V1gX",
-                  "fill": "$sr:color.text",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "欢迎回来",
-                  "fontFamily": "Inter",
-                  "fontSize": 22,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "BxV2U",
-                  "fill": "$sr:color.text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "准备好赢取今天的积分了吗？",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "WsClQ",
-              "name": "form · mobile",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 14,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "Tn72L",
-                  "name": "tabs · mobile",
-                  "width": "fill_container",
-                  "fill": "$sr:color.card-bg",
-                  "cornerRadius": "$sr:radius.screen",
-                  "gap": 4,
-                  "padding": 4,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "XaSjN",
-                      "width": "fill_container",
-                      "height": 40,
-                      "fill": "$sr:color.surface",
-                      "cornerRadius": "$sr:radius.card",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "7Vy6O",
-                          "fill": "$sr:color.text",
-                          "content": "登录",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "pwdVJ",
-                      "width": "fill_container",
-                      "height": 40,
-                      "cornerRadius": "$sr:radius.card",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "9U8ip",
-                          "fill": "$sr:color.muted",
-                          "content": "注册",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "id": "tE0ay",
-                  "type": "ref",
-                  "ref": "OpYnw",
-                  "width": "fill_container",
-                  "name": "fiEm",
-                  "x": 0,
-                  "y": 62,
-                  "descendants": {
-                    "TbZuU": {
-                      "content": "电子邮箱"
-                    },
-                    "SrZoY": {
-                      "width": "fill_container"
-                    },
-                    "sSAfQ": {
-                      "content": "name@example.com",
-                      "fill": "$color.input-placeholder"
-                    }
-                  }
-                },
-                {
-                  "type": "frame",
-                  "id": "34cvB",
-                  "name": "fiPw",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "DTnWT",
-                      "width": "fill_container",
-                      "justifyContent": "space_between",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "xNr1Y",
-                          "fill": "$sr:color.text",
-                          "content": "密码",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "BQ0jl",
-                          "fill": "$sr:color.primary",
-                          "content": "忘记密码？",
-                          "fontFamily": "Inter",
-                          "fontSize": 14,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "rXi8d",
-                      "width": "fill_container",
-                      "height": 52,
-                      "fill": "$sr:color.surface",
-                      "cornerRadius": "$sr:radius.screen",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$sr:color.border"
-                      },
-                      "padding": [
-                        14,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "1uyYJ",
-                          "fill": "$color.input-placeholder",
-                          "content": "••••••••",
-                          "fontFamily": "Inter",
-                          "fontSize": 16,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "LTHh7",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$sr:radius.tight",
-                      "id": "PXZz8",
-                      "width": 16,
-                      "height": 16,
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$sr:color.border"
-                      }
-                    },
-                    {
-                      "type": "text",
-                      "id": "aqik1",
-                      "fill": "$sr:color.text",
-                      "content": "保持登录状态（30天）",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "6QRD8",
-                  "width": "fill_container",
-                  "height": 48,
-                  "fill": "$sr:color.primary",
-                  "cornerRadius": "$sr:radius.screen",
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "7HwIR",
-                      "fill": "$sr:color.surface",
-                      "content": "登录 CloudLearn",
-                      "fontFamily": "Inter",
-                      "fontSize": 16,
-                      "fontWeight": "700"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
               "type": "text",
-              "id": "UGhvR",
-              "fill": "$sr:color.muted",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "继续操作即表示您同意 CloudLearn 的服务条款 和 隐私政策。",
-              "textAlign": "center",
+              "id": "3jBpD",
+              "name": "fieldTextA",
+              "fill": "#334155",
+              "content": "Field Label",
               "fontFamily": "Inter",
-              "fontSize": 11,
+              "fontSize": 14,
               "fontWeight": "normal"
             }
           ]
@@ -1298,12 +962,128 @@
     }
   ],
   "variables": {
-    "color.input-placeholder": {
+    "page.bg.canvas": {
       "type": "color",
-      "value": "#9ca3af"
+      "value": "#F5F7FA"
+    },
+    "page.bg.muted": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "page.bg.surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "page.border.subtle": {
+      "type": "color",
+      "value": "#E2E8F0"
+    },
+    "page.font.family.base": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "page.font.size.body": {
+      "type": "number",
+      "value": 14
+    },
+    "page.radius.sm": {
+      "type": "number",
+      "value": 8
+    },
+    "page.space.3": {
+      "type": "number",
+      "value": 12
+    },
+    "page.space.4": {
+      "type": "number",
+      "value": 16
+    },
+    "page.space.6": {
+      "type": "number",
+      "value": 24
+    },
+    "page.text.muted": {
+      "type": "color",
+      "value": "#64748B"
+    },
+    "page.text.primary": {
+      "type": "color",
+      "value": "#0F172A"
+    },
+    "page.bg.brand": {
+      "type": "color",
+      "value": "#137FEC"
+    },
+    "page.bg.glass": {
+      "type": "color",
+      "value": "#FFFFFFB3"
+    },
+    "page.border.emphasis": {
+      "type": "color",
+      "value": "#137FEC"
+    },
+    "page.font.size.md": {
+      "type": "number",
+      "value": 16
+    },
+    "page.font.size.sm": {
+      "type": "number",
+      "value": 14
+    },
+    "page.font.size.title": {
+      "type": "number",
+      "value": 30
+    },
+    "page.font.size.xs": {
+      "type": "number",
+      "value": 12
+    },
+    "page.font.weight.bold": {
+      "type": "string",
+      "value": "700"
+    },
+    "page.font.weight.regular": {
+      "type": "string",
+      "value": "normal"
+    },
+    "page.font.weight.semibold": {
+      "type": "string",
+      "value": "600"
+    },
+    "page.radius.lg": {
+      "type": "number",
+      "value": 24
+    },
+    "page.radius.md": {
+      "type": "number",
+      "value": 16
+    },
+    "page.space.16": {
+      "type": "number",
+      "value": 64
+    },
+    "page.space.2": {
+      "type": "number",
+      "value": 8
+    },
+    "page.space.5": {
+      "type": "number",
+      "value": 20
+    },
+    "page.text.inverse": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "page.text.placeholder": {
+      "type": "color",
+      "value": "#9CA3AF"
+    },
+    "page.text.secondary": {
+      "type": "color",
+      "value": "#334155"
     }
   },
   "imports": {
-    "sr": "../../study-reward.tokens.pen"
+    "tokens": "../../study-reward.tokens.pen"
   }
 }

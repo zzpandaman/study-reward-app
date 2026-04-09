@@ -1,82 +1,99 @@
 {
   "version": "2.10",
-  "imports": {
-    "sr": "../../study-reward.tokens.pen"
-  },
   "children": [
     {
       "type": "frame",
-      "id": "rkgWf",
-      "x": 900,
+      "id": "page_points_list",
+      "x": 0,
       "y": 0,
-      "name": "Design kit · Points",
-      "width": 280,
+      "name": "Points List",
+      "width": 1280,
+      "height": 800,
+      "fill": "$color.bg.canvas",
       "layout": "vertical",
-      "gap": 12,
-      "padding": 16,
+      "gap": "$space.4",
+      "padding": "$space.6",
       "children": [
         {
+          "type": "text",
+          "id": "title_points_list",
+          "fill": "$color.text.primary",
+          "content": "/points -> src/components/PointRecords.tsx",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "desc_points_list",
+          "fill": "$color.text.muted",
+          "content": "积分流水列表，支持进入明细页。",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
           "type": "frame",
-          "id": "iQPgN",
-          "name": "Points/RecordRow",
-          "reusable": true,
-          "width": 560,
-          "fill": "$sr:color.surface",
-          "cornerRadius": "$sr:radius.control",
+          "id": "BfgnJ",
+          "name": "header/points",
+          "width": "fill_container",
+          "fill": "$color.bg.surface",
           "stroke": {
             "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.border"
+            "fill": "$color.border.subtle"
           },
-          "gap": 16,
-          "padding": [
-            14,
-            18
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
           "children": [
             {
-              "type": "frame",
-              "id": "64BRb",
-              "name": "info",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 4,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "4RfW1",
-                  "name": "tit",
-                  "fill": "$sr:color.text",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "记录说明",
-                  "fontFamily": "Inter",
-                  "fontSize": 15,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "h1T93",
-                  "name": "meta",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "2026/4/2 10:00:00",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
+              "type": "text",
+              "id": "NFmDv",
+              "name": "text/header",
+              "fill": "#334155",
+              "content": "积分流水总览与筛选",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lCyWd",
+          "name": "list/points-records",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color.bg.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$color.border.subtle"
+          },
+          "layout": "vertical",
+          "gap": "$space.3",
+          "children": [
             {
               "type": "text",
-              "id": "0x6D7",
-              "name": "amt",
-              "fill": "$sr:color.success-accent",
-              "content": "+12.50 积分",
+              "id": "6NYX8",
+              "name": "text/list",
+              "fill": "#334155",
+              "content": "积分流水列表（可进入明细）",
               "fontFamily": "Inter",
-              "fontSize": 15,
-              "fontWeight": "600"
+              "fontSize": 13,
+              "fontWeight": "500"
+            },
+            {
+              "id": "9zu8n",
+              "type": "ref",
+              "ref": "mZUyb",
+              "width": "fill_container",
+              "name": "rowRefP1"
+            },
+            {
+              "id": "2ud03",
+              "type": "ref",
+              "ref": "mZUyb",
+              "width": "fill_container",
+              "name": "rowRefP2"
             }
           ]
         }
@@ -84,259 +101,98 @@
     },
     {
       "type": "frame",
-      "id": "LMOSD",
+      "id": "mZUyb",
       "x": 0,
-      "y": 0,
-      "name": "Screen · /points",
-      "width": 820,
-      "fill": "$sr:color.surface",
-      "cornerRadius": "$sr:radius.screen",
+      "y": 860,
+      "name": "component/point-row",
+      "reusable": true,
+      "width": 360,
+      "height": 120,
+      "fill": "$color.bg.surface",
       "stroke": {
-        "align": "outside",
+        "align": "inside",
         "thickness": 1,
-        "fill": "$sr:color.border"
+        "fill": "$color.border.subtle"
       },
-      "layout": "vertical",
-      "gap": 14,
-      "padding": 20,
+      "padding": "$space.3",
+      "justifyContent": "space_between",
+      "alignItems": "center",
       "children": [
         {
-          "type": "frame",
-          "id": "0ix4B",
-          "name": "tabs",
-          "width": "fill_container",
-          "gap": 8,
-          "children": [
-            {
-              "type": "frame",
-              "id": "CkFkf",
-              "name": "t1",
-              "fill": "$sr:color.primary",
-              "cornerRadius": "$sr:radius.panel",
-              "padding": [
-                10,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "IDllT",
-                  "name": "t1x",
-                  "fill": "$sr:color.surface",
-                  "content": "全部记录",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "DbTs3",
-              "name": "t2",
-              "fill": "$sr:color.card-bg",
-              "cornerRadius": "$sr:radius.panel",
-              "padding": [
-                10,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "YO14V",
-                  "name": "t2x",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "积分获取",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "fTdCt",
-              "name": "t3",
-              "fill": "$sr:color.card-bg",
-              "cornerRadius": "$sr:radius.panel",
-              "padding": [
-                10,
-                16
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "ruXto",
-                  "name": "t3x",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "积分消耗",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            }
-          ]
+          "type": "text",
+          "id": "emjfC",
+          "name": "rowLeftP",
+          "fill": "$color.primary",
+          "content": "完成任务 · +20",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
         },
         {
-          "type": "frame",
-          "id": "lwXqd",
-          "name": "sum",
-          "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "05gPv",
-              "name": "sL",
-              "fill": "$sr:color.text-secondary",
-              "content": "共 24 条记录，第 1 / 2 页",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            },
-            {
-              "type": "frame",
-              "id": "LJ1JJ",
-              "name": "sR",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "UI7w4",
-                  "name": "sR1",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "每页",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "6TJeR",
-                  "name": "sR2",
-                  "width": 48,
-                  "height": 28,
-                  "fill": "$sr:color.surface",
-                  "cornerRadius": "$sr:radius.tight",
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": 1,
-                    "fill": "$sr:color.border"
-                  },
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "iMNw1",
-                      "name": "sR2t",
-                      "fill": "$sr:color.text",
-                      "content": "12",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "ZPy3l",
-          "name": "list",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": 10,
-          "children": [
-            {
-              "id": "Yilja",
-              "type": "ref",
-              "ref": "iQPgN",
-              "width": "fill_container",
-              "name": "r1",
-              "x": 0,
-              "y": 0,
-              "descendants": {
-                "64BRb": {
-                  "width": "fill_container"
-                },
-                "4RfW1": {
-                  "content": "完成任务：晨读英语",
-                  "width": "fill_container"
-                },
-                "h1T93": {
-                  "content": "2026/4/1 08:30:00"
-                },
-                "0x6D7": {
-                  "content": "+5.00 积分",
-                  "fill": "$sr:color.success-accent",
-                  "x": 685
-                }
-              }
-            },
-            {
-              "id": "AOjgD",
-              "type": "ref",
-              "ref": "iQPgN",
-              "width": "fill_container",
-              "name": "r2",
-              "x": 0,
-              "y": 79,
-              "descendants": {
-                "64BRb": {
-                  "width": "fill_container"
-                },
-                "4RfW1": {
-                  "content": "兑换：咖啡券",
-                  "width": "fill_container"
-                },
-                "h1T93": {
-                  "content": "2026/3/30 18:00:00"
-                },
-                "0x6D7": {
-                  "content": "-20.00 积分",
-                  "fill": "$sr:color.danger-accent",
-                  "x": 678
-                }
-              }
-            },
-            {
-              "id": "9kGXK",
-              "type": "ref",
-              "ref": "iQPgN",
-              "width": "fill_container",
-              "name": "r3",
-              "x": 0,
-              "y": 158,
-              "descendants": {
-                "64BRb": {
-                  "width": "fill_container"
-                },
-                "4RfW1": {
-                  "content": "任务未完成，无积分流水",
-                  "width": "fill_container"
-                },
-                "h1T93": {
-                  "content": "2026/3/28 12:00:00"
-                },
-                "0x6D7": {
-                  "content": "未完成，无积分",
-                  "fill": "$sr:color.text-secondary",
-                  "fontSize": 13,
-                  "fontWeight": "400",
-                  "x": 670,
-                  "y": 25
-                }
-              }
-            }
-          ]
+          "type": "text",
+          "id": "zgktD",
+          "name": "rowRightP",
+          "fill": "$color.primary",
+          "content": "2026-04-09 14:20",
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
         }
       ]
     }
-  ]
+  ],
+  "variables": {
+    "color.bg.canvas": {
+      "type": "color",
+      "value": "#F5F7FA"
+    },
+    "color.bg.muted": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.bg.surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "color.border.soft": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.border.subtle": {
+      "type": "color",
+      "value": "#E2E8F0"
+    },
+    "color.primary": {
+      "type": "color",
+      "value": "#2563EB"
+    },
+    "color.text.muted": {
+      "type": "color",
+      "value": "#64748B"
+    },
+    "color.text.primary": {
+      "type": "color",
+      "value": "#0F172A"
+    },
+    "space.1": {
+      "type": "number",
+      "value": 4
+    },
+    "space.2": {
+      "type": "number",
+      "value": 8
+    },
+    "space.3": {
+      "type": "number",
+      "value": 12
+    },
+    "space.4": {
+      "type": "number",
+      "value": 16
+    },
+    "space.6": {
+      "type": "number",
+      "value": 24
+    }
+  }
 }

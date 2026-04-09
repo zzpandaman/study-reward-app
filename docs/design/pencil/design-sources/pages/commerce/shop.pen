@@ -1,141 +1,132 @@
 {
   "version": "2.10",
-  "imports": {
-    "sr": "../../study-reward.tokens.pen"
-  },
   "children": [
     {
       "type": "frame",
-      "id": "ugSMm",
-      "x": 1000,
+      "id": "page_shop",
+      "x": 0,
       "y": 0,
-      "name": "Design kit · Shop",
-      "width": 360,
+      "name": "Shop",
+      "width": 1280,
+      "height": 800,
+      "fill": "$color.bg.canvas",
       "layout": "vertical",
-      "gap": 12,
-      "padding": 16,
+      "gap": "$space.4",
+      "padding": "$space.6",
       "children": [
         {
+          "type": "text",
+          "id": "title_shop",
+          "fill": "$color.text.primary",
+          "content": "商品商城",
+          "fontFamily": "Inter",
+          "fontSize": 28,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "desc_shop",
+          "fill": "$color.text.muted",
+          "content": "支持积分兑换、库存状态与分类筛选，突出本期推荐商品。",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
           "type": "frame",
-          "id": "iveHb",
-          "name": "Shop/ProductCard",
-          "reusable": true,
-          "width": 340,
-          "fill": "$sr:color.surface",
-          "cornerRadius": "$sr:radius.card",
+          "id": "mOsiI",
+          "name": "header/shop",
+          "width": "fill_container",
+          "fill": "$color.bg.surface",
           "stroke": {
             "align": "inside",
             "thickness": 1,
-            "fill": "$sr:color.border"
+            "fill": "$color.border.subtle"
           },
-          "layout": "vertical",
-          "gap": 12,
-          "padding": 18,
+          "padding": [
+            "$space.3",
+            "$space.4"
+          ],
           "children": [
             {
-              "type": "frame",
-              "id": "LzQKG",
-              "name": "hdr",
-              "width": "fill_container",
-              "justifyContent": "space_between",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "hO9kT",
-                  "name": "h3",
-                  "fill": "$sr:color.text",
-                  "textGrowth": "fixed-width",
-                  "width": 180,
-                  "content": "商品名",
-                  "fontFamily": "Inter",
-                  "fontSize": 17,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "frame",
-                  "id": "Md4uv",
-                  "name": "meta",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "doRqd",
-                      "name": "rate",
-                      "fill": "$sr:color.text-secondary",
-                      "content": "1件 = 10积分",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "wXsv4",
-                      "name": "del",
-                      "fill": "$sr:color.muted",
-                      "content": "🗑",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
+              "type": "text",
+              "id": "4rA84",
+              "name": "text/header",
+              "fill": "$color.primary",
+              "content": "当前积分 1,280 / 快速搜索 / 新建商品",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OOlbW",
+          "name": "filters/shop",
+          "width": "fill_container",
+          "fill": "$color.bg.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$color.border.subtle"
+          },
+          "padding": [
+            "$space.2",
+            "$space.3"
+          ],
+          "children": [
             {
               "type": "text",
-              "id": "vFlSY",
-              "name": "desc",
-              "fill": "$sr:color.text-secondary",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "商品描述占位",
+              "id": "wjP58",
+              "name": "text/filters",
+              "fill": "#1E293B",
+              "content": "分类：学习用品 · 数码配件 · 生活服务",
               "fontFamily": "Inter",
               "fontSize": 13,
-              "fontWeight": "normal"
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "e1f1X",
+          "name": "list/shop-items",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color.bg.surface",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$color.border.subtle"
+          },
+          "layout": "vertical",
+          "gap": "$space.3",
+          "padding": "$space.3",
+          "children": [
+            {
+              "type": "text",
+              "id": "KbjQ4",
+              "name": "text/list",
+              "fill": "#1F2937",
+              "content": "item list / cards",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "500"
             },
             {
-              "type": "frame",
-              "id": "jr0OL",
-              "name": "row",
+              "id": "pvlTd",
+              "type": "ref",
+              "ref": "gB6aC",
               "width": "fill_container",
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "l7IYq",
-                  "name": "pl",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "所需积分: 10.00 起",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "ga5q7",
-                  "name": "buy",
-                  "fill": "$sr:color.primary",
-                  "cornerRadius": "$sr:radius.control",
-                  "padding": [
-                    10,
-                    18
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "C2lNU",
-                      "name": "buyT",
-                      "fill": "$sr:color.surface",
-                      "content": "立即购买",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    }
-                  ]
-                }
-              ]
+              "name": "shopInstA"
+            },
+            {
+              "id": "JibcK",
+              "type": "ref",
+              "ref": "gB6aC",
+              "width": "fill_container",
+              "name": "shopInstB"
             }
           ]
         }
@@ -143,529 +134,107 @@
     },
     {
       "type": "frame",
-      "id": "g7jFr",
+      "id": "gB6aC",
       "x": 0,
-      "y": 0,
-      "name": "Screen · /shop",
-      "width": 980,
-      "fill": "$sr:color.surface",
-      "cornerRadius": "$sr:radius.screen",
+      "y": 860,
+      "name": "component/shop-item-card",
+      "reusable": true,
+      "width": 360,
+      "fill": "$color.bg.surface",
       "stroke": {
-        "align": "outside",
+        "align": "inside",
         "thickness": 1,
-        "fill": "$sr:color.card-bg"
+        "fill": "$color.border.subtle"
       },
       "layout": "vertical",
-      "gap": 16,
-      "padding": 22,
+      "gap": "$space.2",
+      "padding": "$space.3",
       "children": [
         {
-          "type": "frame",
-          "id": "lTZdf",
-          "name": "fb",
-          "width": "fill_container",
-          "gap": 12,
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "Edhiy",
-              "name": "srch",
-              "width": "fill_container",
-              "height": 40,
-              "fill": "$sr:color.bg-subtle",
-              "cornerRadius": "$sr:radius.control",
-              "stroke": {
-                "align": "inside",
-                "thickness": 1,
-                "fill": "$sr:color.border"
-              },
-              "padding": [
-                0,
-                14
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "8JmCt",
-                  "name": "sTx",
-                  "fill": "$sr:color.muted",
-                  "content": "搜索商品名称或描述...",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "GU0y7",
-              "name": "sel",
-              "width": 112,
-              "height": 40,
-              "fill": "$sr:color.surface",
-              "cornerRadius": "$sr:radius.control",
-              "stroke": {
-                "align": "inside",
-                "thickness": 1,
-                "fill": "$sr:color.border"
-              },
-              "padding": [
-                0,
-                10
-              ],
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "D6PgP",
-                  "name": "selT",
-                  "fill": "$sr:color.text",
-                  "content": "全部 ▾",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "WXmjE",
-              "name": "addB",
-              "fill": "$sr:color.primary",
-              "cornerRadius": "$sr:radius.control",
-              "padding": [
-                10,
-                16
-              ],
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "0VQKo",
-                  "name": "addT",
-                  "fill": "$sr:color.surface",
-                  "content": "➕ 添加商品",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                }
-              ]
-            }
-          ]
+          "type": "text",
+          "id": "5PPKu",
+          "name": "shopName",
+          "fill": "$color.primary",
+          "content": "机械键盘兑换券",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
         },
         {
-          "type": "frame",
-          "id": "yZS2A",
-          "name": "sum",
-          "width": "fill_container",
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "hA6x2",
-              "name": "sL",
-              "fill": "$sr:color.text-secondary",
-              "content": "共 8 个商品，第 1 / 1 页",
-              "fontFamily": "Inter",
-              "fontSize": 13,
-              "fontWeight": "normal"
-            },
-            {
-              "type": "frame",
-              "id": "HByvl",
-              "name": "sR",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "KLZT7",
-                  "name": "sR1",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "每页",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "tiFPW",
-                  "name": "sR2",
-                  "width": 52,
-                  "height": 30,
-                  "fill": "$sr:color.surface",
-                  "cornerRadius": "$sr:radius.tight",
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": 1,
-                    "fill": "$sr:color.border"
-                  },
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "9wnqC",
-                      "name": "sR2t",
-                      "fill": "$sr:color.text",
-                      "content": "12",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "type": "text",
+          "id": "ZDmlP",
+          "name": "shopMeta",
+          "fill": "$color.primary",
+          "content": "所需积分：599 · 库存：24",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
         },
         {
-          "type": "frame",
-          "id": "6aRoK",
-          "name": "grid",
-          "width": "fill_container",
-          "gap": 14,
-          "children": [
-            {
-              "id": "xks5Q",
-              "type": "ref",
-              "ref": "iveHb",
-              "width": "fill_container",
-              "name": "c1",
-              "x": 0,
-              "y": 0,
-              "descendants": {
-                "LzQKG": {
-                  "width": "fill_container"
-                },
-                "hO9kT": {
-                  "content": "体验卡"
-                },
-                "Md4uv": {
-                  "width": "fit_content",
-                  "x": 169.66666666666669
-                },
-                "doRqd": {
-                  "content": "1件 = 50积分"
-                },
-                "wXsv4": {
-                  "x": 79
-                },
-                "vFlSY": {
-                  "content": "一次性体验兑换",
-                  "width": "fill_container"
-                },
-                "jr0OL": {
-                  "width": "fill_container"
-                },
-                "l7IYq": {
-                  "content": "所需积分: 50.00 起"
-                },
-                "ga5q7": {
-                  "x": 174.66666666666669
-                }
-              }
-            },
-            {
-              "id": "ft12w",
-              "type": "ref",
-              "ref": "iveHb",
-              "width": "fill_container",
-              "name": "c2",
-              "x": 316.6666666666667,
-              "y": 0,
-              "descendants": {
-                "LzQKG": {
-                  "width": "fill_container"
-                },
-                "hO9kT": {
-                  "content": "云币礼包"
-                },
-                "Md4uv": {
-                  "width": "fit_content",
-                  "x": 190.66666666666669
-                },
-                "doRqd": {
-                  "content": "1包 = 100积分"
-                },
-                "wXsv4": {
-                  "enabled": false
-                },
-                "vFlSY": {
-                  "content": "小额积分包",
-                  "width": "fill_container"
-                },
-                "jr0OL": {
-                  "width": "fill_container"
-                },
-                "l7IYq": {
-                  "content": "所需积分: 100.00 起"
-                },
-                "ga5q7": {
-                  "x": 174.66666666666669
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "ima9f",
-              "name": "exp",
-              "width": "fill_container",
-              "fill": "$sr:color.surface",
-              "cornerRadius": "$sr:radius.card",
-              "stroke": {
-                "align": "inside",
-                "thickness": 2,
-                "fill": "$sr:color.primary"
-              },
-              "layout": "vertical",
-              "gap": 12,
-              "padding": 18,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "tag5W",
-                  "name": "exh",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "QVMwX",
-                      "name": "exT",
-                      "fill": "$sr:color.text",
-                      "content": "展开态 · 咖啡券",
-                      "fontFamily": "Inter",
-                      "fontSize": 17,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "1c0nF",
-                      "name": "exR",
-                      "fill": "$sr:color.text-secondary",
-                      "content": "1杯 = 20积分",
-                      "fontFamily": "Inter",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "WyGnd",
-                  "name": "exD",
-                  "fill": "$sr:color.text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "门店兑换券",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "cowZG",
-                  "name": "lb",
-                  "fill": "$sr:color.text",
-                  "content": "购买份数",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "frame",
-                  "id": "QFF2i",
-                  "name": "step",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "hhoWY",
-                      "name": "m",
-                      "width": 36,
-                      "height": 36,
-                      "fill": "$sr:color.card-bg",
-                      "cornerRadius": "$sr:radius.tight",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "Bet12",
-                          "name": "mT",
-                          "fill": "$sr:color.text",
-                          "content": "−",
-                          "fontFamily": "Inter",
-                          "fontSize": 18,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "aVJY0",
-                      "name": "num",
-                      "width": 48,
-                      "height": 36,
-                      "fill": "$sr:color.surface",
-                      "cornerRadius": "$sr:radius.tight",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$sr:color.border"
-                      },
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "BW2mt",
-                          "name": "numT",
-                          "fill": "$sr:color.text",
-                          "content": "2",
-                          "fontFamily": "Inter",
-                          "fontSize": 15,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "paA8X",
-                      "name": "p",
-                      "width": 36,
-                      "height": 36,
-                      "fill": "$sr:color.card-bg",
-                      "cornerRadius": "$sr:radius.tight",
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "8ND9A",
-                          "name": "pT",
-                          "fill": "$sr:color.text",
-                          "content": "+",
-                          "fontFamily": "Inter",
-                          "fontSize": 18,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "uBz35",
-                  "name": "hint",
-                  "fill": "$sr:color.text-secondary",
-                  "content": "即 2杯",
-                  "fontFamily": "Inter",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "tHvHT",
-                  "name": "tot",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "PSP3X",
-                      "name": "totL",
-                      "fill": "$sr:color.text-secondary",
-                      "content": "总计",
-                      "fontFamily": "Inter",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Q9vwE",
-                      "name": "totV",
-                      "fill": "$sr:color.primary",
-                      "content": "40.00 积分",
-                      "fontFamily": "Inter",
-                      "fontSize": 15,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "SOSSu",
-                  "name": "act",
-                  "width": "fill_container",
-                  "gap": 10,
-                  "justifyContent": "end",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "J6FuL",
-                      "name": "can",
-                      "fill": "$sr:color.surface",
-                      "cornerRadius": "$sr:radius.control",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "$sr:color.border"
-                      },
-                      "padding": [
-                        8,
-                        16
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "am2ie",
-                          "name": "canT",
-                          "fill": "$sr:color.text",
-                          "content": "取消",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "b0sJ6",
-                      "name": "ok",
-                      "fill": "$sr:color.primary",
-                      "cornerRadius": "$sr:radius.control",
-                      "padding": [
-                        8,
-                        18
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "2JiiU",
-                          "name": "okT",
-                          "fill": "$sr:color.surface",
-                          "content": "确认购买",
-                          "fontFamily": "Inter",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "type": "text",
+          "id": "cVsQj",
+          "name": "shopAct",
+          "fill": "$color.primary",
+          "content": "立即兑换",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
         }
       ]
     }
-  ]
+  ],
+  "variables": {
+    "color.bg.canvas": {
+      "type": "color",
+      "value": "#F5F7FA"
+    },
+    "color.bg.muted": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.bg.surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "color.border.soft": {
+      "type": "color",
+      "value": "#F1F5F9"
+    },
+    "color.border.subtle": {
+      "type": "color",
+      "value": "#E2E8F0"
+    },
+    "color.primary": {
+      "type": "color",
+      "value": "#2563EB"
+    },
+    "color.text.muted": {
+      "type": "color",
+      "value": "#64748B"
+    },
+    "color.text.primary": {
+      "type": "color",
+      "value": "#0F172A"
+    },
+    "space.1": {
+      "type": "number",
+      "value": 4
+    },
+    "space.2": {
+      "type": "number",
+      "value": 8
+    },
+    "space.3": {
+      "type": "number",
+      "value": 12
+    },
+    "space.4": {
+      "type": "number",
+      "value": 16
+    },
+    "space.6": {
+      "type": "number",
+      "value": 24
+    }
+  }
 }

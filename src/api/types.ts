@@ -188,3 +188,41 @@ export interface ApiError {
   message: string;
   details?: any;
 }
+
+// ============ 结对（star-reward pairs）============
+export interface CurrentPairData {
+  relationNo: string;
+  status: string;
+  relationType?: string;
+  partnerUserNo?: string;
+  effectiveTime?: number;
+  inviteExpireTime?: number;
+  initiatorNo?: string;
+  inviteeNo?: string;
+}
+
+export interface PairRelationRow extends CurrentPairData {
+  userLowNo?: string;
+  userHighNo?: string;
+}
+
+// ============ 许愿 ============
+export interface ProductWishRow {
+  id: number;
+  wishNo?: string;
+  name: string;
+  description?: string;
+  suggestedPrice?: number;
+  minQuantity?: number;
+  unit?: string;
+  status: string;
+  wisherNo?: string;
+  approverNo?: string;
+  productId?: number;
+}
+
+export interface PointWalletRow {
+  publishById: number;
+  publishBy: string;
+  points: number;
+}

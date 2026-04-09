@@ -6,10 +6,12 @@ export * from './types';
 export * from './task-api';
 export * from './product-api';
 export * from './user-api';
+export * from './pair-api';
+export * from './wish-api';
 export { configureApi, initializeApi, getApiConfig, isHttpMode } from './config';
 export { setToken, clearToken } from './client';
 export { login, register, logout, getCurrentUser, hasToken } from './auth-api';
-export type { LoginRequest, LoginResponse, RegisterRequest } from './auth-api';
+export type { LoginRequest, LoginResponse, RegisterRequest, CurrentUserProfile } from './auth-api';
 
 // 统一API入口（便于后续替换为HTTP请求）
 export const API = {

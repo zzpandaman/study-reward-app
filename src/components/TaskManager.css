@@ -20,27 +20,50 @@
   margin-right: 0;
 }
 
-.templates-console-hint {
-  padding: 12px 14px;
-  margin-bottom: 16px;
-  border-radius: 10px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #1e40af;
-  font-size: 0.875rem;
-  line-height: 1.5;
+.template-publish-meta {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
 }
 
-.templates-console-hint-link {
-  margin: 0 4px;
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--primary-color, #2563eb);
-  font: inherit;
+.template-grant-row {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.template-grant-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.template-grant-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.template-grant-btn,
+.template-revoke-btn {
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  text-decoration: underline;
   cursor: pointer;
+  border: none;
+}
+
+.template-grant-btn {
+  background: #137fec;
+  color: #fff;
+}
+
+.template-revoke-btn {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .task-selection {

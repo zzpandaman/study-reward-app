@@ -11,6 +11,7 @@ import {
   ExchangeResponse,
   PurchaseRecordResponse,
   ApiResponse,
+  PointWalletRow,
 } from './types';
 import type { PointRecord } from '../types';
 import ApiClientFactory from './client';
@@ -84,5 +85,18 @@ export class UserAPI {
   static async exchange(request: ExchangeRequest): Promise<ApiResponse<ExchangeResponse>> {
     const client = ApiClientFactory.getClient();
     return client.post<ExchangeResponse>('/api/purchase-record/exchange', request);
+  }
+
+  /**
+   * GET /api/users/point-wallets
+   * 按发布人维度的积分钱包列表
+   */
+  static async getPointWallets(): Promise<ApiResponse<PointWalletRow[]>> {
+    const client = ApiClientFactory.getClient();
+    const res = await client.get<PointWalletRow[] | { data?: PointWalletRow[] }>('/api/users/point-wallets');
+    if (!res.success) return res as ApiResponse<PointWalletRow[]>;
+    const raw = res.data as PointWalletRow[] | { data?: PointWalletRow[] } | undefined;
+    const list = Array.isArray(raw) ? raw : raw?.data;
+    return { ...res, data: Array.isArray(list) ? list : [] };
   }
 }

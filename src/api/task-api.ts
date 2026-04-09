@@ -66,6 +66,42 @@ export class TaskTemplateAPI {
     const client = ApiClientFactory.getClient();
     return client.post('/api/task-templates/delete', { id: Number(id) });
   }
+
+  /**
+   * GET /api/task-templates/executable
+   * 当前用户可执行的模版（可筛选发布人）
+   */
+  static async getExecutableTemplates(params: {
+    page?: number;
+    pageSize?: number;
+    publishBy?: string;
+    publishById?: number;
+    keyword?: string;
+    isPreset?: boolean;
+  }): Promise<ApiResponse<GetTaskTemplatesResponse>> {
+    const client = ApiClientFactory.getClient();
+    const q = new URLSearchParams();
+    if (params.page != null) q.set('page', String(params.page));
+    if (params.pageSize != null) q.set('pageSize', String(params.pageSize));
+    if (params.publishBy) q.set('publishBy', params.publishBy);
+    if (params.publishById != null) q.set('publishById', String(params.publishById));
+    if (params.keyword) q.set('keyword', params.keyword);
+    if (params.isPreset !== undefined) q.set('isPreset', String(params.isPreset));
+    const suffix = q.toString() ? `?${q.toString()}` : '';
+    return client.get<GetTaskTemplatesResponse>(`/api/task-templates/executable${suffix}`);
+  }
+
+  /** POST /api/task-templates/grant */
+  static async grantTemplate(templateId: number, executorUserNos: string[]): Promise<ApiResponse<boolean>> {
+    const client = ApiClientFactory.getClient();
+    return client.post<boolean>('/api/task-templates/grant', { templateId, executorUserNos });
+  }
+
+  /** POST /api/task-templates/revoke */
+  static async revokeTemplateGrant(templateId: number, executorUserNo: string): Promise<ApiResponse<boolean>> {
+    const client = ApiClientFactory.getClient();
+    return client.post<boolean>('/api/task-templates/revoke', { templateId, executorUserNo });
+  }
 }
 
 /**

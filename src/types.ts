@@ -5,6 +5,9 @@ export interface TaskTemplate {
   description: string;
   isPreset: boolean; // 是否为预设任务
   createdAt?: number; // 创建时间
+  /** 发布者账号（结对改造后接口可能返回，用于「我发布的」与分账展示） */
+  publishBy?: string;
+  publishById?: number;
 }
 
 // 任务执行记录

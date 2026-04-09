@@ -27,6 +27,29 @@
   font-weight: 900;
 }
 
+.template-mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.template-mode-tab {
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 18px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.template-mode-tab--active {
+  background: var(--primary-color, #137fec);
+  color: #fff;
+}
+
 .page-sub {
   color: #64748b;
   font-size: 0.875rem;

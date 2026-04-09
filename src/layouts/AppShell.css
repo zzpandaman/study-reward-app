@@ -221,30 +221,73 @@
   white-space: nowrap;
 }
 
+.app-shell-points-dropdown {
+  position: relative;
+}
+
 .app-shell-topbar-points {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 0.9375rem;
   color: var(--text-primary, #0f172a);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--radius-control, 12px);
+  padding: 8px 10px;
 }
 
-.app-shell-refresh {
-  border: none;
-  margin: 0;
-  padding: 8px 12px;
-  border-radius: var(--radius-control, 12px);
-  background: var(--card-bg, #f1f5f9);
-  color: var(--text-secondary, #64748b);
-  cursor: pointer;
+.app-shell-publisher-icon {
   font-size: 1rem;
   line-height: 1;
-  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.app-shell-refresh:hover {
+.app-shell-topbar-points:hover {
   background: var(--hover-bg, rgba(15, 23, 42, 0.06));
+}
+
+.app-shell-points-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  padding: 6px;
+  z-index: 20;
+}
+
+.app-shell-points-menu-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
   color: var(--text-primary, #0f172a);
+}
+
+.app-shell-points-menu-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.app-shell-points-menu-item:hover {
+  background: var(--hover-bg, rgba(15, 23, 42, 0.06));
+}
+
+.app-shell-points-menu-item.active {
+  background: var(--nav-active-bg, #e8f3fe);
+  color: var(--primary-color, #137fec);
 }
 
 .app-shell-outlet {
@@ -304,9 +347,9 @@
     font-weight: 600;
   }
 
-  .app-shell-refresh {
-    padding: 6px 8px;
-    font-size: 14px;
+  .app-shell-points-menu {
+    right: 0;
+    min-width: 190px;
   }
 
   .app-shell-outlet {

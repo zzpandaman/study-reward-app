@@ -1,143 +1,130 @@
 {
   "version": "2.10",
+  "children": [],
   "variables": {
     "color.primary": {
       "type": "color",
-      "value": "#137fec"
+      "value": "#2563EB"
     },
-    "color.text": {
+    "color.bg.canvas": {
       "type": "color",
-      "value": "#0f172a"
+      "value": "#F5F7FA"
     },
-    "color.text-secondary": {
+    "color.bg.muted": {
       "type": "color",
-      "value": "#64748b"
+      "value": "#F1F5F9"
     },
-    "color.muted": {
-      "type": "color",
-      "value": "#94a3b8"
-    },
-    "color.surface": {
+    "color.bg.surface": {
       "type": "color",
       "value": "#FFFFFF"
     },
-    "color.bg-subtle": {
+    "color.border.soft": {
       "type": "color",
-      "value": "#f8fafc"
+      "value": "#F1F5F9"
     },
-    "color.border": {
+    "color.border.subtle": {
       "type": "color",
-      "value": "#e2e8f0"
+      "value": "#E2E8F0"
     },
-    "color.card-bg": {
+    "color.brand.500": {
       "type": "color",
-      "value": "#f1f5f9"
+      "value": "#137FEC"
     },
-    "color.nav-active-bg": {
+    "color.text.inverse": {
       "type": "color",
-      "value": "#E8F3FE"
+      "value": "#FFFFFF"
     },
-    "color.hint-bg": {
+    "color.text.muted": {
       "type": "color",
-      "value": "#EFF6FF"
+      "value": "#64748B"
     },
-    "color.hint-text": {
+    "color.text.primary": {
       "type": "color",
-      "value": "#1e40af"
+      "value": "#0F172A"
     },
-    "color.hint-stroke": {
+    "color.text.secondary": {
       "type": "color",
-      "value": "rgba(59,130,246,0.25)"
+      "value": "#334155"
     },
-    "color.tint-blue": {
-      "type": "color",
-      "value": "#e0f2fe"
-    },
-    "color.overlay": {
-      "type": "color",
-      "value": "#99000000"
-    },
-    "color.success-bg": {
-      "type": "color",
-      "value": "#ecfdf5"
-    },
-    "color.success-text": {
-      "type": "color",
-      "value": "#15803d"
-    },
-    "color.success-accent": {
-      "type": "color",
-      "value": "#16a34a"
-    },
-    "color.danger-bg": {
-      "type": "color",
-      "value": "#fef2f2"
-    },
-    "color.danger-text": {
-      "type": "color",
-      "value": "#b91c1c"
-    },
-    "color.danger-accent": {
-      "type": "color",
-      "value": "#dc2626"
-    },
-    "color.avatar-warm": {
-      "type": "color",
-      "value": "#fde68a"
-    },
-    "color.accent-blue": {
-      "type": "color",
-      "value": "#3b82f6"
-    },
-    "color.tint-blue-40": {
-      "type": "color",
-      "value": "#3b82f640"
-    },
-    "color.tint-indigo": {
-      "type": "color",
-      "value": "#eef2ff"
-    },
-    "color.tint-sky": {
-      "type": "color",
-      "value": "#f0f9ff"
-    },
-    "radius.tight": {
+    "font.size.lg": {
       "type": "number",
-      "value": 8
+      "value": 18
     },
-    "radius.control": {
-      "type": "number",
-      "value": 12
-    },
-    "radius.card": {
+    "font.size.md": {
       "type": "number",
       "value": 16
     },
-    "radius.panel": {
+    "font.size.sm": {
       "type": "number",
-      "value": 20
+      "value": 14
     },
-    "radius.screen": {
+    "font.size.xl": {
       "type": "number",
       "value": 24
     },
-    "radius.pill": {
+    "font.size.xs": {
       "type": "number",
-      "value": 999
+      "value": 12
+    },
+    "font.weight.bold": {
+      "type": "string",
+      "value": "700"
+    },
+    "font.weight.regular": {
+      "type": "string",
+      "value": "normal"
+    },
+    "font.weight.semibold": {
+      "type": "string",
+      "value": "600"
+    },
+    "radius.lg": {
+      "type": "number",
+      "value": 16
+    },
+    "radius.md": {
+      "type": "number",
+      "value": 12
+    },
+    "radius.sm": {
+      "type": "number",
+      "value": 10
+    },
+    "radius.xl": {
+      "type": "number",
+      "value": 24
+    },
+    "space.1": {
+      "type": "number",
+      "value": 4
+    },
+    "space.12": {
+      "type": "number",
+      "value": 48
+    },
+    "space.2": {
+      "type": "number",
+      "value": 8
+    },
+    "space.3": {
+      "type": "number",
+      "value": 12
+    },
+    "space.4": {
+      "type": "number",
+      "value": 16
+    },
+    "space.5": {
+      "type": "number",
+      "value": 20
+    },
+    "space.6": {
+      "type": "number",
+      "value": 24
+    },
+    "space.8": {
+      "type": "number",
+      "value": 32
     }
-  },
-  "children": [
-    {
-      "type": "note",
-      "id": "token-readme",
-      "name": "Design tokens",
-      "x": 0,
-      "y": 0,
-      "width": 420,
-      "height": 200,
-      "content": "全局 token：圆角 radius.tight→screen、pill；颜色 color.*。\n各页面通过 imports.sr 引用本文件。\n运行时「样式定制」改的是 CSS 类与 --border-style 等，与 token 语义对应：边框/背景/光标预设影响 .app 与 body；稿内用 $color / $radius 与产品默认主题对齐。",
-      "fontSize": 12,
-      "fill": "$color.text-secondary"
-    }
-  ]
+  }
 }

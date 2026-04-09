@@ -1,0 +1,147 @@
+.pairing-section {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pairing-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pairing-section__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.pairing-section__refresh {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  color: #475569;
+}
+
+.pairing-section__refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pairing-section__muted {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0 0 12px;
+}
+
+.pairing-section__card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.pairing-section__card--active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.pairing-section__card--pending {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.pairing-section__row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.pairing-section__status {
+  margin-bottom: 8px;
+}
+
+.pairing-section__status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pairing-section__status-pill--active {
+  background: #ecfdf5;
+  color: #15803d;
+}
+
+.pairing-section__status-pill--pending {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.pairing-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.pairing-input {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+.pairing-section__btn-primary {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: var(--primary-color, #137fec);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pairing-section__btn-muted {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.pairing-section__btn-danger {
+  margin-top: 12px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pairing-section__foot {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.pairing-section__hint {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+}

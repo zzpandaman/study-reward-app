@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TaskTemplate, TaskExecution } from '../types';
 import { calculateReward } from '../utils/reward';
-import { TaskTemplateAPI, TaskExecutionAPI } from '../api';
+import { TaskTemplateAPI, TaskExecutionAPI, PairAPI, UserAPI } from '../api';
+import ConsoleTodoPanel from './ConsoleTodoPanel';
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../utils/pagination';
 import {
   readBackgroundTimerCheckEnabled,
@@ -26,6 +27,8 @@ interface TaskManagerProps {
   suppressAddButton?: boolean;
   /** true：仅模版列表与管理，不展示进行中任务与计时设置（用于积分模版页；执行与计时应在控制台） */
   hideExecutionUi?: boolean;
+  /** 积分模版页 Tab：可执行列表 / 我发布的（含授权） */
+  templatesListTab?: 'executable' | 'published';
 }
 
 const TaskManager: React.FC<TaskManagerProps> = ({
@@ -34,6 +37,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   variant = 'full',
   suppressAddButton = false,
   hideExecutionUi = false,
+  templatesListTab = 'executable',
 }) => {
   const navigate = useNavigate();
   const [focusExpanded, setFocusExpanded] = useState(false);
@@ -55,6 +59,9 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   const [filterType, setFilterType] = useState<'all' | 'preset' | 'custom'>('all');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [publishByFilter, setPublishByFilter] = useState('');
+  const [pointWallets, setPointWallets] = useState<{ publishBy: string; publishById: number }[]>([]);
+  const [partnerUserNo, setPartnerUserNo] = useState<string | null>(null);
 
   const pauseRequestedRef = useRef(false); // 解决暂停时 interval 读到旧闭包的问题
   const elapsedSecondsRef = useRef(0);
@@ -68,8 +75,35 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   }, []);
 
   useEffect(() => {
-    loadTaskTemplates(page);
-  }, [page]);
+    if (hideExecutionUi && templatesListTab) {
+      void loadTemplatesForTab(page);
+    } else {
+      void loadTaskTemplates(page);
+    }
+  }, [page, pageSize, hideExecutionUi, templatesListTab, publishByFilter, searchKeyword]);
+
+  useEffect(() => {
+    if (!hideExecutionUi || templatesListTab !== 'executable') return;
+    UserAPI.getPointWallets().then((res) => {
+      if (res.success && res.data) {
+        setPointWallets(res.data.map((w) => ({ publishBy: w.publishBy, publishById: w.publishById })));
+      }
+    });
+  }, [hideExecutionUi, templatesListTab]);
+
+  useEffect(() => {
+    if (!hideExecutionUi || templatesListTab !== 'published') {
+      setPartnerUserNo(null);
+      return;
+    }
+    PairAPI.getCurrent().then((res) => {
+      if (res.success && res.data?.status === 'ACTIVE' && res.data.partnerUserNo) {
+        setPartnerUserNo(res.data.partnerUserNo);
+      } else {
+        setPartnerUserNo(null);
+      }
+    });
+  }, [hideExecutionUi, templatesListTab]);
 
   useEffect(() => {
     const sync = () => setEnableBackgroundCheck(readBackgroundTimerCheckEnabled());
@@ -253,6 +287,28 @@ const TaskManager: React.FC<TaskManagerProps> = ({
     }
   };
 
+  const loadTemplatesForTab = async (currentPage: number = page) => {
+    if (templatesListTab === 'executable') {
+      const res = await TaskTemplateAPI.getExecutableTemplates({
+        page: currentPage,
+        pageSize,
+        keyword: searchKeyword.trim() || undefined,
+        publishBy: publishByFilter.trim() || undefined,
+      });
+      if (res.success && res.data?.data) {
+        const templates = (res.data.data as TaskTemplate[]).filter(
+          (t) => t.name?.trim() && t.description?.trim()
+        );
+        setTaskTemplates(templates);
+        setTaskTemplatesTotal(res.data.total ?? templates.length);
+        return;
+      }
+      await loadTaskTemplates(currentPage);
+      return;
+    }
+    await loadTaskTemplates(currentPage);
+  };
+
   const loadExecutions = async () => {
     const res = await TaskExecutionAPI.getTaskExecutions();
     if (!res.success || !res.data) return;
@@ -341,6 +397,9 @@ const TaskManager: React.FC<TaskManagerProps> = ({
       setElapsedSeconds(0);
       setIsPaused(false);
       setSelectedTemplateId('');
+      if (hideExecutionUi) {
+        navigate('/console');
+      }
     }
   };
 
@@ -423,8 +482,33 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   const actualMinutes = Math.floor(elapsedSeconds / 60);
   const estimatedReward = calculateReward(actualMinutes);
 
+  const handleGrantPartner = async (templateId: string) => {
+    if (!partnerUserNo) {
+      alert('请先在「个人设置」建立 ACTIVE 结对');
+      return;
+    }
+    const res = await TaskTemplateAPI.grantTemplate(Number(templateId), [partnerUserNo]);
+    if (res.success) {
+      alert('已授权给结对伙伴');
+    }
+  };
+
+  const handleRevokeGrant = async (templateId: string) => {
+    if (!partnerUserNo) return;
+    if (!confirm('撤销该模版对结对伙伴的执行授权？')) return;
+    const res = await TaskTemplateAPI.revokeTemplateGrant(Number(templateId), partnerUserNo);
+    if (res.success) {
+      alert('已撤销授权');
+    }
+  };
+
+  const templateSourceList =
+    hideExecutionUi && templatesListTab === 'published'
+      ? taskTemplates.filter((t) => !t.isPreset)
+      : taskTemplates;
+
   // 筛选和分页逻辑
-  const filteredTemplates = taskTemplates.filter((template) => {
+  const filteredTemplates = templateSourceList.filter((template) => {
     // 搜索过滤
     const matchesSearch = !searchKeyword.trim() || 
       template.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
@@ -461,6 +545,10 @@ const TaskManager: React.FC<TaskManagerProps> = ({
   useEffect(() => {
     setPage(1);
   }, [searchKeyword, filterType]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [templatesListTab, publishByFilter]);
 
   useEffect(() => {
     if (!runningExecution) {
@@ -510,8 +598,9 @@ const TaskManager: React.FC<TaskManagerProps> = ({
           {!runningExecution ? (
             <div className="tm-console-main">
               <header className="tm-console-page-header">
-                <p className="tm-console-sub">持续专注，实时结算奖励</p>
+                <p className="tm-console-sub">持续专注，实时结算奖励 · 待办与许愿入口见下方</p>
               </header>
+              <ConsoleTodoPanel />
               {(() => {
                 const running = executions.find((e) => e.status === 'running' || e.status === 'paused');
                 if (!running) return null;
@@ -566,7 +655,9 @@ const TaskManager: React.FC<TaskManagerProps> = ({
             {runningExecution ? (
               runningTaskSection
             ) : (
-              <div className="tm-console-focus-placeholder">在左侧从「积分模版」开始任务后在此专注</div>
+              <div className="tm-console-focus-placeholder">
+                从积分模版点击「开始」成功后将自动进入本页进行专注计时
+              </div>
             )}
           </aside>
         </div>
@@ -616,15 +707,6 @@ const TaskManager: React.FC<TaskManagerProps> = ({
       {/* 选择任务：积分模版页在存在进行中任务时仍展示列表，但不展示进行中面板 */}
       {(!runningExecution || hideExecutionUi) && (
         <div className="task-selection">
-          {hideExecutionUi && hasOngoingElsewhere && (
-            <div className="templates-console-hint" role="status">
-              当前有任务进行中，请到
-              <button type="button" className="templates-console-hint-link" onClick={() => navigate('/console')}>
-                控制台
-              </button>
-              查看计时与操作。
-            </div>
-          )}
           {/* 进行中任务入口 banner（仅非积分模版页展示） */}
           {!hideExecutionUi &&
             (() => {
@@ -667,6 +749,23 @@ const TaskManager: React.FC<TaskManagerProps> = ({
               />
             </div>
             <div className="filter-actions">
+              {hideExecutionUi && templatesListTab === 'executable' && (
+                <div className="type-filter">
+                  <select
+                    className="filter-select"
+                    value={publishByFilter}
+                    onChange={(e) => setPublishByFilter(e.target.value)}
+                    aria-label="按发布人筛选"
+                  >
+                    <option value="">发布人 · 全部</option>
+                    {pointWallets.map((w) => (
+                      <option key={w.publishById} value={w.publishBy}>
+                        {w.publishBy}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="type-filter">
                 <select
                   className="filter-select"
@@ -759,7 +858,41 @@ const TaskManager: React.FC<TaskManagerProps> = ({
                 <div style={{ flex: 1 }}>
                 <h4>{template.name}</h4>
                 <p>{template.description}</p>
+                {(template.publishBy || template.publishById != null) && (
+                  <div className="template-publish-meta">
+                    发布人 {template.publishBy ?? template.publishById}
+                  </div>
+                )}
                 <div className="reward-info">积分: 1/分钟</div>
+                {hideExecutionUi && templatesListTab === 'published' && !template.isPreset && (
+                  <div className="template-grant-row">
+                    <span className="template-grant-hint">
+                      {partnerUserNo ? `当前已绑定伙伴：${partnerUserNo}` : '先在个人设置完成结对，再为伙伴开通可执行权限'}
+                    </span>
+                    <div className="template-grant-actions">
+                      <button
+                        type="button"
+                        className="template-grant-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void handleGrantPartner(template.id);
+                        }}
+                      >
+                        授权执行
+                      </button>
+                      <button
+                        type="button"
+                        className="template-revoke-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void handleRevokeGrant(template.id);
+                        }}
+                      >
+                        撤销
+                      </button>
+                    </div>
+                  </div>
+                )}
                 </div>
                 <button
                   type="button"
